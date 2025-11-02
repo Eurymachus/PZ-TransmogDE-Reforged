@@ -13,6 +13,7 @@ IGUI_EN = {
     ; Reforged Additions
     ; =======================
     IGUI_TransmogDE_Info = "Double-click an item to Transmog your clothing.",
-    IGUI_TransmogDE_Info2 = "Click Reset to switch back.",
+    IGUI_TransmogDE_Info2 = "Click Hide to hide the item or Reset to switch back to Default.",
     IGUI_TransmogDE_ListViewer_Standard = "Transmog List - Standard Mode",
+    IGUI_TransmogDE_ListViewer_Hide = "Hide",
 }

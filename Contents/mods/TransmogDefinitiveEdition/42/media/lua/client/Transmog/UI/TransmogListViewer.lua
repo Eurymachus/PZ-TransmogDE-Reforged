@@ -14,8 +14,7 @@ function TransmogListViewer:initialise()
     ISItemsListViewer.initialise(self)
     local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1")+50
     
-    self.reset = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickReset);
-    --self.reset = ISButton:new(self.ok.x - (UI_BORDER_SPACING + 1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickReset);
+    self.reset = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickTransmog);
     self.reset.internal = "RESET";
     self.reset.anchorTop = false
     self.reset.anchorLeft = false
@@ -25,6 +24,17 @@ function TransmogListViewer:initialise()
     self.reset:instantiate();
     self.reset:enableCancelColor()
     self:addChild(self.reset);
+    
+    self.hideItem = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid - (UI_BORDER_SPACING+1) - self.reset.width, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Hide"), self, TransmogListViewer.onClickTransmog);
+    self.hideItem.internal = "HIDEITEM";
+    self.hideItem.anchorTop = false
+    self.hideItem.anchorLeft = false
+    self.hideItem.anchorBottom = true
+    self.hideItem.anchorRight = true
+    self.hideItem:initialise();
+    self.hideItem:instantiate();
+    --self.hideItem:enableCancelColor()
+    self:addChild(self.hideItem);
 end
 
 function TransmogListViewer:new(x, y, width, height, itemToTmog)
@@ -46,10 +56,17 @@ function TransmogListViewer:new(x, y, width, height, itemToTmog)
   return o;
 end
 
-function TransmogListViewer:onClickReset(button)
+function TransmogListViewer:onClickTransmog(button)
     if button.internal == "RESET" then
         TransmogDE.setItemToDefault(self.itemToTmog)
         TransmogDE.triggerUpdate()
+        return
+    end
+    
+    if button.internal == "HIDEITEM" then
+        TransmogDE.setClothingHidden(self.itemToTmog)
+        TransmogDE.triggerUpdate()
+        return
     end
 end
 
