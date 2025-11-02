@@ -305,12 +305,14 @@ TransmogDE.setItemTransmog = function(itemToTmog, scriptItem)
   end
 
   moddata.transmogTo = scriptItem:getFullName()
+  moddata.lastTransmogTo = scriptItem:getFullName()
 end
 
 TransmogDE.setItemToDefault = function(item)
   local moddata = TransmogDE.getItemTransmogModData(item)
 
   moddata.transmogTo = item:getScriptItem():getFullName()
+  moddata.lastTransmogTo = item:getScriptItem():getFullName()
 
   TransmogDE.forceUpdateClothing(item)
 end
@@ -390,7 +392,22 @@ end
 TransmogDE.setClothingHidden = function(item)
   local moddata = TransmogDE.getItemTransmogModData(item)
 
+  if moddata.transmogTo ~= nil then
+      moddata.lastTransmogTo = moddata.transmogTo
+  end
   moddata.transmogTo = nil
+
+  TransmogDE.forceUpdateClothing(item)
+end
+
+TransmogDE.setClothingShown = function(item)
+  local moddata = TransmogDE.getItemTransmogModData(item)
+
+  if moddata.lastTransmogTo ~= nil then
+      moddata.transmogTo = moddata.lastTransmogTo
+  else
+      item:getScriptItem():getFullName()
+  end
 
   TransmogDE.forceUpdateClothing(item)
 end
@@ -406,4 +423,11 @@ TransmogDE.immersiveModeItemCheck = function(item)
     return true
   end
   return TransmogDE.getImmersiveModeData()[item:getFullName()] == true
+end
+
+-- Returns true if this clothing item is currently hidden by TransmogDE
+TransmogDE.isItemHidden = function(item)
+    if not item then return false end
+    local md = TransmogDE.getItemTransmogModData(item)
+    return md.transmogTo == nil
 end

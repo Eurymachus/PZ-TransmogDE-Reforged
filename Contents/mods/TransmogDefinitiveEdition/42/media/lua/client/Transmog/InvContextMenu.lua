@@ -2,6 +2,7 @@ local iconTexture = getTexture("media/ui/TransmogIcon.png")
 local textMenu = getText("IGUI_TransmogDE_Context_Menu")
 local textTransmogrify = getText("IGUI_TransmogDE_Context_Transmogrify")
 local textHide = getText("IGUI_TransmogDE_Context_Hide")
+local textShow = getText("IGUI_TransmogDE_Context_Show")
 local textDefault = getText("IGUI_TransmogDE_Context_Default")
 local textColor = getText("IGUI_TransmogDE_Context_Color")
 local textTexture = getText("IGUI_TransmogDE_Context_Texture")
@@ -31,10 +32,17 @@ local addEditTransmogItemOption = function(player, context, items)
       TransmogDE.triggerUpdate()
     end);
 
-    menuContext:addOption(textHide, clothing, function()
-      TransmogDE.setClothingHidden(clothing)
-      TransmogDE.triggerUpdate()
-    end);
+    if not TransmogDE.isItemHidden(clothing) then
+      menuContext:addOption(textHide, clothing, function()
+        TransmogDE.setClothingHidden(clothing)
+        TransmogDE.triggerUpdate()
+      end);
+    else
+      menuContext:addOption(textShow, clothing, function()
+        TransmogDE.setClothingShown(clothing)
+        TransmogDE.triggerUpdate()
+      end);
+    end
 
 		menuContext:addOption(textDefault, clothing, function()
       TransmogDE.setItemToDefault(clothing)

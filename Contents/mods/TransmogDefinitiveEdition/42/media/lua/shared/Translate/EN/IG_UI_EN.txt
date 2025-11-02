@@ -16,4 +16,6 @@ IGUI_EN = {
     IGUI_TransmogDE_Info2 = "Click Hide to hide the item or Reset to switch back to Default.",
     IGUI_TransmogDE_ListViewer_Standard = "Transmog List - Standard Mode",
     IGUI_TransmogDE_ListViewer_Hide = "Hide",
+    IGUI_TransmogDE_ListViewer_Show = "Show",
+    IGUI_TransmogDE_Context_Show = "Show Item",
 }

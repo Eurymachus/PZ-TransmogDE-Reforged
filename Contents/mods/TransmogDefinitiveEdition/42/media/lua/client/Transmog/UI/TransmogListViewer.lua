@@ -11,30 +11,47 @@ local LABEL_HGT = FONT_HGT_MEDIUM + 6
 
 -- local old_ISItemsListViewer_initialise = ISItemsListViewer.initialise
 function TransmogListViewer:initialise()
-    ISItemsListViewer.initialise(self)
-    local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1")+50
-    
-    self.reset = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickTransmog);
-    self.reset.internal = "RESET";
-    self.reset.anchorTop = false
-    self.reset.anchorLeft = false
-    self.reset.anchorBottom = true
-    self.reset.anchorRight = true
-    self.reset:initialise();
-    self.reset:instantiate();
-    self.reset:enableCancelColor()
-    self:addChild(self.reset);
-    
-    self.hideItem = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid - (UI_BORDER_SPACING+1) - self.reset.width, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Hide"), self, TransmogListViewer.onClickTransmog);
-    self.hideItem.internal = "HIDEITEM";
-    self.hideItem.anchorTop = false
-    self.hideItem.anchorLeft = false
-    self.hideItem.anchorBottom = true
-    self.hideItem.anchorRight = true
-    self.hideItem:initialise();
-    self.hideItem:instantiate();
-    --self.hideItem:enableCancelColor()
-    self:addChild(self.hideItem);
+    if not self._initialised then
+        self._initialised = true
+        ISItemsListViewer.initialise(self)
+        local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1")+50
+        
+        self.reset = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickTransmog);
+        self.reset.internal = "RESET";
+        self.reset.anchorTop = false
+        self.reset.anchorLeft = false
+        self.reset.anchorBottom = true
+        self.reset.anchorRight = true
+        self.reset:initialise();
+        self.reset:instantiate();
+        self.reset:enableCancelColor()
+        self:addChild(self.reset);
+        
+        self.hideItem = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid - (UI_BORDER_SPACING+1) - self.reset.width, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Hide"), self, TransmogListViewer.onClickTransmog);
+        self.hideItem.internal = "HIDEITEM";
+        self.hideItem.anchorTop = false
+        self.hideItem.anchorLeft = false
+        self.hideItem.anchorBottom = true
+        self.hideItem.anchorRight = true
+        self.hideItem:initialise();
+        self.hideItem:instantiate();
+        self.hideItem:enableCancelColor()
+        self:addChild(self.hideItem);
+        
+        self.showItem = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid - (UI_BORDER_SPACING+1) - self.reset.width, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Show"), self, TransmogListViewer.onClickTransmog);
+        self.showItem.internal = "SHOWITEM";
+        self.showItem.anchorTop = false
+        self.showItem.anchorLeft = false
+        self.showItem.anchorBottom = true
+        self.showItem.anchorRight = true
+        self.showItem:initialise();
+        self.showItem:instantiate();
+        self.showItem:enableAcceptColor()
+        self:addChild(self.showItem);
+    end
+    local isHidden = TransmogDE.isItemHidden(self.itemToTmog)
+    self.hideItem:setVisible(not isHidden)
+    self.showItem:setVisible(isHidden)
 end
 
 function TransmogListViewer:new(x, y, width, height, itemToTmog)
@@ -60,18 +77,28 @@ function TransmogListViewer:onClickTransmog(button)
     if button.internal == "RESET" then
         TransmogDE.setItemToDefault(self.itemToTmog)
         TransmogDE.triggerUpdate()
+        self:initialise()
         return
     end
     
     if button.internal == "HIDEITEM" then
         TransmogDE.setClothingHidden(self.itemToTmog)
         TransmogDE.triggerUpdate()
+        self:initialise()
+        return
+    end
+    
+    if button.internal == "SHOWITEM" then
+        TransmogDE.setClothingShown(self.itemToTmog)
+        TransmogDE.triggerUpdate()
+        self:initialise()
         return
     end
 end
 
 function TransmogListViewer:updateItemToTmog(clothing)
     self.itemToTmog = clothing
+    self:initialise()
 end
 
 function TransmogListViewer.Open(itemToTmog)
