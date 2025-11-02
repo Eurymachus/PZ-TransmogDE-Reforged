@@ -169,7 +169,14 @@ function ISItemsListTable:render()
     local y = self.datas.y + self.datas.height + UI_BORDER_SPACING + 3
     self:drawText(getText("IGUI_DbViewer_TotalResult") .. self.totalResult, 0, y, 1,1,1,1,UIFont.Small)
     self:drawText(getText("IGUI_TransmogDE_Info"), 0, y + BUTTON_HGT, 1,1,1,1,UIFont.Small)
-    self:drawText(getText("IGUI_TransmogDE_Info2"), 0, y + BUTTON_HGT*2, 1,1,1,1,UIFont.Small)
+
+    -- Show/Hide Prompt
+    local isHidden = TransmogDE.isItemHidden(self.viewer.itemToTmog)
+    local showOrHide = isHidden and "IGUI_TransmogDE_Info_Show" or "IGUI_TransmogDE_Info_Hide"
+    self:drawText(getText(showOrHide), 0, y + BUTTON_HGT*2, 1,1,1,1,UIFont.Small)
+
+    -- Reset Prompt
+    self:drawText(getText("IGUI_TransmogDE_Info_Reset"), 0, y + BUTTON_HGT*3, 1,1,1,1,UIFont.Small)
 
     y = self.filters:getBottom()
     
@@ -274,7 +281,10 @@ function ISItemsListTable:createChildren()
 end
 
 function ISItemsListTable:sendItemToTransmog(scriptItem)
-  local text = getText("IGUI_TransmogDE_Text_TransmoggedTo", getItemNameFromFullType(scriptItem:getFullName()))
+  --local text = getText("IGUI_TransmogDE_Text_TransmoggedTo", getItemNameFromFullType(scriptItem:getFullName()))
+  local fromName = getItemNameFromFullType(self.viewer.itemToTmog:getScriptItem():getFullName())
+  local toName = getItemNameFromFullType(scriptItem:getFullName())
+  local text = getText("IGUI_TransmogDE_Text_WasTransmoggedTo", fromName, toName)
   HaloTextHelper.addGoodText(getPlayer(), text)
   TransmogDE.setItemTransmog(self.viewer.itemToTmog, scriptItem)
   TransmogDE.forceUpdateClothing(self.viewer.itemToTmog)

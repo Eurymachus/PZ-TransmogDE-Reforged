@@ -309,12 +309,22 @@ TransmogDE.setItemTransmog = function(itemToTmog, scriptItem)
 end
 
 TransmogDE.setItemToDefault = function(item)
-  local moddata = TransmogDE.getItemTransmogModData(item)
+    local moddata = TransmogDE.getItemTransmogModData(item)
+    local isHidden = TransmogDE.isItemHidden(item)
+    local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
 
-  moddata.transmogTo = item:getScriptItem():getFullName()
-  moddata.lastTransmogTo = item:getScriptItem():getFullName()
-
-  TransmogDE.forceUpdateClothing(item)
+    moddata.transmogTo = item:getScriptItem():getFullName()
+    moddata.lastTransmogTo = item:getScriptItem():getFullName()
+    
+    local toName = getItemNameFromFullType(moddata.transmogTo)
+    local text = nil
+    if fromName and fromName ~= toName or isHidden then
+        text = getText("IGUI_TransmogDE_Text_WasReset", toName)
+    end
+    if text then
+        HaloTextHelper.addGoodText(getPlayer(), text)
+    end
+    TransmogDE.forceUpdateClothing(item)
 end
 
 -- Converted from java\characters\WornItems\WornItems.java using chatgtp -> public void setItem(String var1, InventoryItem var2)
@@ -397,6 +407,10 @@ TransmogDE.setClothingHidden = function(item)
   end
   moddata.transmogTo = nil
 
+  local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
+  local text = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
+  HaloTextHelper.addGoodText(getPlayer(), text)
+
   TransmogDE.forceUpdateClothing(item)
 end
 
@@ -408,6 +422,10 @@ TransmogDE.setClothingShown = function(item)
   else
       item:getScriptItem():getFullName()
   end
+
+  local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
+  local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
+  HaloTextHelper.addGoodText(getPlayer(), text)
 
   TransmogDE.forceUpdateClothing(item)
 end
