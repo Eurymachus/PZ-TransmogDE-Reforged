@@ -3,6 +3,27 @@ require "ISUI/ISLabel"
 
 TransmogListViewer = ISItemsListViewer:derive("TransmogListViewer");
 
+local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
+local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
+local UI_BORDER_SPACING = 10
+local BUTTON_HGT = FONT_HGT_SMALL + 6
+local LABEL_HGT = FONT_HGT_MEDIUM + 6
+
+-- local old_ISItemsListViewer_initialise = ISItemsListViewer.initialise
+function TransmogListViewer:initialise()
+    ISItemsListViewer.initialise(self)
+    local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1")+50
+    
+    self.reset = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickReset);
+    self.reset.internal = "RESET";
+    self.reset.anchorTop = false
+    self.reset.anchorBottom = true
+    self.reset:initialise();
+    self.reset:instantiate();
+    self.reset:enableCancelColor()
+    self:addChild(self.reset);
+end
+
 function TransmogListViewer:new(x, y, width, height, itemToTmog)
   local o = {}
   x = getCore():getScreenWidth() / 2 - (width / 2);
@@ -20,6 +41,13 @@ function TransmogListViewer:new(x, y, width, height, itemToTmog)
   o.isTransmogListViewer = true
   TransmogListViewer.instance = o;
   return o;
+end
+
+function TransmogListViewer:onClickReset(button)
+    if button.internal == "RESET" then
+        TransmogDE.setItemToDefault(self.itemToTmog)
+        TransmogDE.triggerUpdate()
+    end
 end
 
 function TransmogListViewer.Open(itemToTmog)
@@ -77,11 +105,38 @@ function TransmogListViewer:prerender()
     UIFont.Medium);
 end
 
-local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-local UI_BORDER_SPACING = 10
-local BUTTON_HGT = FONT_HGT_SMALL + 6
-local LABEL_HGT = FONT_HGT_MEDIUM + 6
+local old_ISItemsListTable_render = ISItemsListTable.render
+function ISItemsListTable:render()
+    if not self.viewer.isTransmogListViewer then
+        old_ISItemsListTable_render(self)
+        return
+    end
+    ISPanel.render(self);
+    
+    local y = self.datas.y + self.datas.height + UI_BORDER_SPACING + 3
+    self:drawText(getText("IGUI_DbViewer_TotalResult") .. self.totalResult, 0, y, 1,1,1,1,UIFont.Small)
+    self:drawText(getText("IGUI_TransmogDE_Info"), 0, y + BUTTON_HGT, 1,1,1,1,UIFont.Small)
+    self:drawText(getText("IGUI_TransmogDE_Info2"), 0, y + BUTTON_HGT*2, 1,1,1,1,UIFont.Small)
+
+    y = self.filters:getBottom()
+    
+    self:drawRectBorder(self.datas.x, y, self.datas:getWidth(), BUTTON_HGT, 1, self.borderColor.r, self.borderColor.g, self.borderColor.b);
+    self:drawRect(self.datas.x, y, self.datas:getWidth(), BUTTON_HGT, self.listHeaderColor.a, self.listHeaderColor.r, self.listHeaderColor.g, self.listHeaderColor.b);
+
+    local x = 0;
+    for i,v in ipairs(self.datas.columns) do
+        local size;
+        if i == #self.datas.columns then
+            size = self.datas.width - x
+        else
+            size = self.datas.columns[i+1].size - self.datas.columns[i].size
+        end
+--        print(v.name, x, v.size)
+        self:drawText(v.name, x+UI_BORDER_SPACING+1, y+3, 1,1,1,1,UIFont.Small);
+        self:drawRectBorder(self.datas.x + x, y, 1, BUTTON_HGT, 1, self.borderColor.r, self.borderColor.g, self.borderColor.b);
+        x = x + size;
+    end
+end
 
 -- Remove a column and its associated filter widgets from the table
 -- Returns true if a column was removed

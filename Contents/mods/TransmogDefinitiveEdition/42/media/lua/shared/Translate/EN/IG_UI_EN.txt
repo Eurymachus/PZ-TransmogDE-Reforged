@@ -8,4 +8,10 @@ IGUI_EN = {
     IGUI_TransmogDE_Context_Color = "Change Color",
     IGUI_TransmogDE_Context_Texture = "Change Texture",
     IGUI_TransmogDE_Text_TransmoggedTo = "Transmogged to %1",
+
+    ; =======================
+    ; Reforged Additions
+    ; =======================
+    IGUI_TransmogDE_Info = "Double-click an item to Transmog your clothing.",
+    IGUI_TransmogDE_Info2 = "Click Reset to switch back.",
 }
