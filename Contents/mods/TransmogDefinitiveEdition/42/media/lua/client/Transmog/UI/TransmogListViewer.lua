@@ -15,9 +15,12 @@ function TransmogListViewer:initialise()
     local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1")+50
     
     self.reset = ISButton:new(self:getWidth() - (UI_BORDER_SPACING+1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickReset);
+    --self.reset = ISButton:new(self.ok.x - (UI_BORDER_SPACING + 1) - btnWid, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self, TransmogListViewer.onClickReset);
     self.reset.internal = "RESET";
     self.reset.anchorTop = false
+    self.reset.anchorLeft = false
     self.reset.anchorBottom = true
+    self.reset.anchorRight = true
     self.reset:initialise();
     self.reset:instantiate();
     self.reset:enableCancelColor()
@@ -50,9 +53,15 @@ function TransmogListViewer:onClickReset(button)
     end
 end
 
+function TransmogListViewer:updateItemToTmog(clothing)
+    self.itemToTmog = clothing
+end
+
 function TransmogListViewer.Open(itemToTmog)
   if TransmogListViewer.instance then
-    TransmogListViewer.instance:close()
+      --TransmogListViewer.instance:close()
+      TransmogListViewer.instance:updateItemToTmog(itemToTmog)
+      return
   end
   local x = 50
   local y = 200
@@ -100,7 +109,7 @@ function TransmogListViewer:prerender()
     self.backgroundColor.b);
   self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
     self.borderColor.b);
-  local text = "Transmog List - Standard Mode"
+  local text = getTextOrNull("IGUI_TransmogDE_ListViewer_Standard") or "Transmog List - Standard Mode"
   self:drawText(text, self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, text) / 2), z, 1, 1, 1, 1,
     UIFont.Medium);
 end
@@ -159,15 +168,15 @@ local function _removeColumnByName(self, columnName)
         for i = #filters, 1, -1 do
             local widget = filters[i]
             if widget and widget.columnName == columnName then
-                DebugLog.log(DebugType.General, "[TransmogDE] Found Widget for column: " .. tostring(columnName))
+                --DebugLog.log(DebugType.General, "[TransmogDE] Found Widget for column: " .. tostring(columnName))
 
                 if widget and widget.getParent then
                     local parent = widget:getParent()
                     if parent == self or parent == self.datas then
-                        DebugLog.log(DebugType.General, "[TransmogDE] Removing Widget UI element for: " .. tostring(columnName))
+                        --DebugLog.log(DebugType.General, "[TransmogDE] Removing Widget UI element for: " .. tostring(columnName))
                         parent:removeChild(widget)
                     else
-                        DebugLog.log(DebugType.General, "[TransmogDE] Widget parent is " .. tostring(parent))
+                        --DebugLog.log(DebugType.General, "[TransmogDE] Widget parent is " .. tostring(parent))
                     end
                 end
 
@@ -298,8 +307,8 @@ end
 local old_ISItemsListTable_initList = ISItemsListTable.initList
 function ISItemsListTable:initList(module)
     if self.filterWidgetMap.LootCategory ~= nil then
-      DebugLog.log(DebugType.General, "[TransmogDE] Default Init List")
-      return old_ISItemsListTable_initList(self, module)
+        DebugLog.log(DebugType.General, "[TransmogDE] Default Init List")
+        return old_ISItemsListTable_initList(self, module)
     end
     DebugLog.log(DebugType.General, "[TransmogDE] Transmog Init List")
     self.totalResult = 0;
@@ -310,12 +319,6 @@ function ISItemsListTable:initList(module)
     local displayCategoryMap = {}
     local lootCategoryMap = {}
     local spawnNumMap = {}
---     local craftNames = {}
---     local craftMap = {}
---     local forageNames = {}
---     local forageMap = {}
---     local lootNames = {}
---     local lootMap = {}
     for x,v in ipairs(module) do
         self.datas:addItem(v:getDisplayName(), v);
         if not categoryMap[v:getTypeString()] then
@@ -330,23 +333,6 @@ function ISItemsListTable:initList(module)
             lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] = true
             table.insert(lootCategoryNames, getText("Sandbox_" .. v:getLootType() .. "LootNew"))
         end
---         local spawned = getText(v:getNumSpawned())
---         if not spawnNumMap[spawned] then
---             spawnNumMap[spawned] = true
---             table.insert(spawnNumMap, getText(spawned))
---         end
---         if not craftMap[tostring(v:isCraftRecipeProduct())] then
---             craftMap[tostring(v:isCraftRecipeProduct())] = true
---             table.insert(craftNames, tostring(v:isCraftRecipeProduct()))
---         end
---         if not forageMap[tostring(v:canBeForaged())] then
---             forageMap[tostring(v:canBeForaged())] = true
---             table.insert(forageNames, tostring(v:canBeForaged()))
---         end
---         if not lootMap[tostring(v:canSpawnAsLoot())] then
---             lootMap[tostring(v:canSpawnAsLoot())] = true
---             table.insert(lootNames, tostring(v:canSpawnAsLoot()))
---         end
         self.totalResult = self.totalResult + 1;
     end
     table.sort(self.datas.items, function(a,b) return not string.sort(a.item:getDisplayName(), b.item:getDisplayName()); end);

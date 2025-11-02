@@ -14,4 +14,5 @@ IGUI_EN = {
     ; =======================
     IGUI_TransmogDE_Info = "Double-click an item to Transmog your clothing.",
     IGUI_TransmogDE_Info2 = "Click Reset to switch back.",
+    IGUI_TransmogDE_ListViewer_Standard = "Transmog List - Standard Mode",
 }
