@@ -305,7 +305,7 @@ TransmogDE.setItemTransmog = function(itemToTmog, scriptItem)
     moddata.lastTransmogTo = scriptItem:getFullName()
 end
 
-TransmogDE.setItemToDefault = function(item)
+TransmogDE.setItemToDefault = function(item, supressUpdates)
     local moddata = TransmogDE.getItemTransmogModData(item)
     local isHidden = TransmogDE.isItemHidden(item)
     local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
@@ -318,10 +318,69 @@ TransmogDE.setItemToDefault = function(item)
     if fromName and fromName ~= toName or isHidden then
         text = getText("IGUI_TransmogDE_Text_WasReset", toName)
     end
-    if text then
-        HaloTextHelper.addGoodText(getPlayer(), text)
+    if not supressUpdates then
+        if text then
+            HaloTextHelper.addGoodText(getPlayer(), text)
+        end
+        TransmogDE.forceUpdateClothing(item)
     end
-    TransmogDE.forceUpdateClothing(item)
+end
+
+TransmogDE.resetAllWornTransmogs = function()
+    local player = getPlayer()
+    if not player then
+        return
+    end
+    local wornItems = player:getWornItems()
+    if not wornItems or not (wornItems:size() > 0) then
+        return
+    end
+
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i);
+        if item and TransmogDE.isTransmoggable(item) then
+            TransmogDE.setItemToDefault(item, true)
+        end
+    end
+    triggerEvent("OnClothingUpdated", player)
+end
+
+TransmogDE.hideAllWornTransmogs = function()
+    local player = getPlayer()
+    if not player then
+        return
+    end
+    local wornItems = player:getWornItems()
+    if not wornItems or not (wornItems:size() > 0) then
+        return
+    end
+
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i);
+        if item and TransmogDE.isTransmoggable(item) and (not TransmogDE.isItemHidden(item)) then
+            TransmogDE.setClothingHidden(item, true)
+        end
+    end
+    triggerEvent("OnClothingUpdated", player)
+end
+
+TransmogDE.showAllWornTransmogs = function()
+    local player = getPlayer()
+    if not player then
+        return
+    end
+    local wornItems = player:getWornItems()
+    if not wornItems or not (wornItems:size() > 0) then
+        return
+    end
+
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i);
+        if item and TransmogDE.isTransmoggable(item) and TransmogDE.isItemHidden(item) then
+            TransmogDE.setClothingShown(item, true)
+        end
+    end
+    triggerEvent("OnClothingUpdated", player)
 end
 
 -- Converted from java\characters\WornItems\WornItems.java using chatgtp -> public void setItem(String var1, InventoryItem var2)
@@ -397,7 +456,10 @@ TransmogDE.forceUpdateClothing = function(item)
     end
 end
 
-TransmogDE.setClothingHidden = function(item)
+TransmogDE.setClothingHidden = function(item, suppressUpdates)
+    if not item then
+        return
+    end
     local moddata = TransmogDE.getItemTransmogModData(item)
 
     if moddata.transmogTo ~= nil then
@@ -405,14 +467,16 @@ TransmogDE.setClothingHidden = function(item)
     end
     moddata.transmogTo = nil
 
-    local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
-    local text = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
-    HaloTextHelper.addGoodText(getPlayer(), text)
+    if not suppressUpdates then
+        local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
+        local text = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
 
+        HaloTextHelper.addGoodText(getPlayer(), text)
+    end
     TransmogDE.forceUpdateClothing(item)
 end
 
-TransmogDE.setClothingShown = function(item)
+TransmogDE.setClothingShown = function(item, suppressUpdates)
     local moddata = TransmogDE.getItemTransmogModData(item)
 
     if moddata.lastTransmogTo ~= nil then
@@ -421,11 +485,14 @@ TransmogDE.setClothingShown = function(item)
         item:getScriptItem():getFullName()
     end
 
-    local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
-    local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
-    HaloTextHelper.addGoodText(getPlayer(), text)
+    if not suppressUpdates then
+        local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
+        local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
+        
+        HaloTextHelper.addGoodText(getPlayer(), text)
 
-    TransmogDE.forceUpdateClothing(item)
+        TransmogDE.forceUpdateClothing(item)
+    end
 end
 
 -- Immersive mode code
