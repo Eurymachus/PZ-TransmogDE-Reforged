@@ -3,16 +3,16 @@ local function wearHideEverything(player)
 
     local hideItem = playerInv:FindAndReturn("TransmogDE.Hide_Everything");
     if not hideItem then
-        --TmogPrint('Hide_Everything is missing, lets add it')
+        -- TmogPrint('Hide_Everything is missing, lets add it')
         hideItem = player:getInventory():AddItem('TransmogDE.Hide_Everything');
     end
     if not hideItem:isWorn() then
-        --TmogPrint('Hide_Everything is not equipped, lets wear it')
+        -- TmogPrint('Hide_Everything is not equipped, lets wear it')
         player:setWornItem(hideItem:getBodyLocation(), hideItem)
         hideItem:setFavorite(true)
     end
 
-    --TmogPrint('wearHideEverything - Done')
+    -- TmogPrint('wearHideEverything - Done')
 end
 
 local function wearTransmogItems(player)
@@ -23,7 +23,7 @@ local function wearTransmogItems(player)
     local toRemove = {}
     for i = 0, wornItems:size() - 1 do
         local item = wornItems:getItemByIndex(i);
-        --TmogPrint("Worn item: " .. tostring(item:getScriptItem():getFullName()))
+        -- TmogPrint("Worn item: " .. tostring(item:getScriptItem():getFullName()))
         if item and TransmogDE.isTransmoggable(item) and not TransmogDE.getTransmogChild(item) then
             -- check if it has an existing tmogitem
             -- if not create a new tmog item, and bind it using the parent item id
@@ -57,7 +57,7 @@ local function wearTransmogItems(player)
     if isClient() then
         sendClothing(player)
     end
-    --TmogPrint('wearTransmogItems, to wear:', #toWear, ' to remove:', #toRemove)
+    -- TmogPrint('wearTransmogItems, to wear:', #toWear, ' to remove:', #toRemove)
 end
 
 local function applyTransmogToPlayerItems(player)
@@ -71,16 +71,16 @@ LuaEventManager.AddEvent("ApplyTransmogToPlayerItems");
 Events.ApplyTransmogToPlayerItems.Add(applyTransmogToPlayerItems);
 
 local function onClothingUpdated(player)
-    --local hotbar = getPlayerHotbar(player:getPlayerNum());
-    --if hotbar == nil then return end -- player is dead
+    -- local hotbar = getPlayerHotbar(player:getPlayerNum());
+    -- if hotbar == nil then return end -- player is dead
 
     -- I need to use the same check as the ISHotbar otherwise it shits itself,
     -- and it will randomly start spamming `OnClothingUpdated`, dunno why, but this seems to fix it
-    --local itemsChanged = hotbar:compareWornItems()
-    --if not itemsChanged then
+    -- local itemsChanged = hotbar:compareWornItems()
+    -- if not itemsChanged then
     --  return
-    --end
-    --DebugLog.log(DebugType.General, "[TransmogDE] onClothingUpdated Fired")
+    -- end
+    -- DebugLog.log(DebugType.General, "[TransmogDE] onClothingUpdated Fired")
     TransmogDE.triggerUpdate()
 end
 
