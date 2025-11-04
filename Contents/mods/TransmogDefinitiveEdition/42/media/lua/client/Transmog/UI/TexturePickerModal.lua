@@ -1,4 +1,5 @@
 require "ISUI/ISCollapsableWindowJoypad"
+local Prefs     = require("Transmog/Transmog_Prefs")
 
 TexturePickerModal = ISCollapsableWindowJoypad:derive("TexturePickerModal")
 
@@ -60,6 +61,41 @@ function TexturePickerModal:close()
     end
 end
 
+-- Restore position + pin state + visibility (from INI)
+function TexturePickerModal:restoreWindowState()
+    Prefs.restoreWindowStateOrCenter(self)
+end
+
+function TexturePickerModal:saveWindowState()
+    if Prefs then
+        Prefs.saveWindowState(self)
+    end
+end
+
+function TexturePickerModal:onMouseUp(x, y)
+    local moving   = self.moving   == true
+    local resizing = self.resizing == true
+    ISCollapsableWindowJoypad.onMouseUp(self, x, y)
+    if moving or resizing then self:saveWindowState() end
+end
+
+function TexturePickerModal:onMouseUpOutside(x, y)
+    local moving   = self.moving   == true
+    local resizing = self.resizing == true
+    ISCollapsableWindowJoypad.onMouseUpOutside(self, x, y)
+    if moving or resizing then self:saveWindowState() end
+end
+
+function TexturePickerModal.Open(clothing, playerObj, textureChoices)
+    if TexturePickerModal.instance then
+        TexturePickerModal.instance:close()
+    end
+    local modal = TexturePickerModal:new(clothing, playerObj, textureChoices)
+    modal:initialise()
+    modal:addToUIManager()
+    modal:restoreWindowState()
+end
+
 function TexturePickerModal:new(item, character, textureChoices)
     local width = 260
     local height = 180
@@ -70,9 +106,10 @@ function TexturePickerModal:new(item, character, textureChoices)
     o.character = character
     o.item = item
     o.textureChoices = textureChoices
-    o.title = "Set texture of: " .. item:getName();
-    o.desc = character:getDescriptor();
+    o.title = "Set texture of: " .. item:getName()
+    o.desc = character:getDescriptor()
     o.playerNum = playerNum
     o:setResizable(false)
+    TexturePickerModal.instance = o
     return o
 end

@@ -52,7 +52,7 @@ TransmogDE.patchAllItemsFromModData = function(modData)
 
                 if not SandboxVars.TransmogDE.DisableHeadGearFix and
                     (originalClothingItemAsset:isHat() or originalClothingItemAsset:isMask()) then
-                    -- Since we use the tmog item to check textureChoices and colorTint in Transmog\InvContextMenu.lua
+                    -- Since we use the tmog item to check textureChoices and colorTint in Transmog\InventoryContextMenu.lua
                     -- using the backup will be handy to ensure we always select the original textureChoices and colorTint
                     TransmogDE.BackupClothingItemAsset[originalItemName] = originalClothingItemAsset
                     -- Hide hats to avoid having the hair being compressed if wearning an helmet or something similiar
@@ -155,6 +155,7 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     end
 
     local tmogItem = player:getInventory():AddItem(tmogItemName);
+
     -- set tmogItem as child of ogItem
     itemTmogModData.childId = tmogItem:getID()
     -- set ogItem as parent of tmogItem
@@ -174,7 +175,6 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     -- player:setWornItem(tmogItem:getBodyLocation(), tmogItem)
 
     TmogPrint('createTransmogItem', ogItem:getName())
-
     return tmogItem
 end
 
@@ -307,7 +307,7 @@ end
 
 TransmogDE.setItemToDefault = function(item, supressUpdates)
     local moddata = TransmogDE.getItemTransmogModData(item)
-    local isHidden = TransmogDE.isItemHidden(item)
+    local isHidden = TransmogDE.isClothingHidden(item)
     local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
 
     moddata.transmogTo = item:getScriptItem():getFullName()
@@ -322,8 +322,8 @@ TransmogDE.setItemToDefault = function(item, supressUpdates)
         if text then
             HaloTextHelper.addGoodText(getPlayer(), text)
         end
-        TransmogDE.forceUpdateClothing(item)
     end
+    TransmogDE.forceUpdateClothing(item)
 end
 
 TransmogDE.resetAllWornTransmogs = function()
@@ -342,7 +342,7 @@ TransmogDE.resetAllWornTransmogs = function()
             TransmogDE.setItemToDefault(item, true)
         end
     end
-    triggerEvent("OnClothingUpdated", player)
+    -- triggerEvent("OnClothingUpdated", player)
 end
 
 TransmogDE.hideAllWornTransmogs = function()
@@ -357,11 +357,11 @@ TransmogDE.hideAllWornTransmogs = function()
 
     for i = 0, wornItems:size() - 1 do
         local item = wornItems:getItemByIndex(i);
-        if item and TransmogDE.isTransmoggable(item) and (not TransmogDE.isItemHidden(item)) then
+        if item and TransmogDE.isTransmoggable(item) and (not TransmogDE.isClothingHidden(item)) then
             TransmogDE.setClothingHidden(item, true)
         end
     end
-    triggerEvent("OnClothingUpdated", player)
+    -- triggerEvent("OnClothingUpdated", player)
 end
 
 TransmogDE.showAllWornTransmogs = function()
@@ -376,11 +376,11 @@ TransmogDE.showAllWornTransmogs = function()
 
     for i = 0, wornItems:size() - 1 do
         local item = wornItems:getItemByIndex(i);
-        if item and TransmogDE.isTransmoggable(item) and TransmogDE.isItemHidden(item) then
+        if item and TransmogDE.isTransmoggable(item) and TransmogDE.isClothingHidden(item) then
             TransmogDE.setClothingShown(item, true)
         end
     end
-    triggerEvent("OnClothingUpdated", player)
+    -- triggerEvent("OnClothingUpdated", player)
 end
 
 -- Converted from java\characters\WornItems\WornItems.java using chatgtp -> public void setItem(String var1, InventoryItem var2)
@@ -488,11 +488,19 @@ TransmogDE.setClothingShown = function(item, suppressUpdates)
     if not suppressUpdates then
         local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
         local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
-        
-        HaloTextHelper.addGoodText(getPlayer(), text)
 
-        TransmogDE.forceUpdateClothing(item)
+        HaloTextHelper.addGoodText(getPlayer(), text)
     end
+    TransmogDE.forceUpdateClothing(item)
+end
+
+-- Returns true if this clothing item is currently hidden by TransmogDE
+TransmogDE.isClothingHidden = function(item)
+    if not item then
+        return false
+    end
+    local md = TransmogDE.getItemTransmogModData(item)
+    return md.transmogTo == nil
 end
 
 -- Immersive mode code
@@ -506,13 +514,4 @@ TransmogDE.immersiveModeItemCheck = function(item)
         return true
     end
     return TransmogDE.getImmersiveModeData()[item:getFullName()] == true
-end
-
--- Returns true if this clothing item is currently hidden by TransmogDE
-TransmogDE.isItemHidden = function(item)
-    if not item then
-        return false
-    end
-    local md = TransmogDE.getItemTransmogModData(item)
-    return md.transmogTo == nil
 end

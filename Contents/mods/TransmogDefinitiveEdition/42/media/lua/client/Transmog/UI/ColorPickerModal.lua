@@ -1,4 +1,5 @@
 require "ISUI/ISCollapsableWindowJoypad"
+local Prefs     = require("Transmog/Transmog_Prefs")
 
 ColorPickerModal = ISCollapsableWindowJoypad:derive("ColorPickerModal")
 
@@ -40,6 +41,41 @@ function ColorPickerModal:close()
 	end
 end
 
+-- Restore position + pin state + visibility (from INI)
+function ColorPickerModal:restoreWindowState()
+    Prefs.restoreWindowStateOrCenter(self)
+end
+
+function ColorPickerModal:saveWindowState()
+    if Prefs then
+        Prefs.saveWindowState(self)
+    end
+end
+
+function ColorPickerModal:onMouseUp(x, y)
+    local moving   = self.moving   == true
+    local resizing = self.resizing == true
+    ISCollapsableWindowJoypad.onMouseUp(self, x, y)
+    if moving or resizing then self:saveWindowState() end
+end
+
+function ColorPickerModal:onMouseUpOutside(x, y)
+    local moving   = self.moving   == true
+    local resizing = self.resizing == true
+    ISCollapsableWindowJoypad.onMouseUpOutside(self, x, y)
+    if moving or resizing then self:saveWindowState() end
+end
+
+function ColorPickerModal.Open(clothing, playerObj)
+	if ColorPickerModal.instance then
+		ColorPickerModal.instance:close()
+	end
+	local modal = ColorPickerModal:new(clothing, playerObj)
+	modal:initialise()
+	modal:addToUIManager()
+	modal:restoreWindowState()
+end
+
 function ColorPickerModal:new(item, character)
 	local width = 550
 	local height = 200
@@ -53,5 +89,6 @@ function ColorPickerModal:new(item, character)
 	o.desc = character:getDescriptor();
 	o.playerNum = playerNum
 	o:setResizable(false)
+	ColorPickerModal.instance = o
 	return o
 end

@@ -12,6 +12,7 @@ local old_ISClothingExtraAction_createItem = ISClothingExtraAction.createItem
 function ISClothingExtraAction:createItem(item, itemType)
     local newItem = old_ISClothingExtraAction_createItem(self, item, itemType)
 
+    TmogPrint('ISClothingExtraAction:createItem()')
     TransmogDE.setItemToDefault(newItem)
 
     return newItem

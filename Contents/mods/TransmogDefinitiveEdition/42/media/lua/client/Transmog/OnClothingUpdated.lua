@@ -11,8 +11,7 @@ local function wearHideEverything(player)
         player:setWornItem(hideItem:getBodyLocation(), hideItem)
         hideItem:setFavorite(true)
     end
-
-    -- TmogPrint('wearHideEverything - Done')
+    TmogPrint('wearHideEverything - Done')
 end
 
 local function wearTransmogItems(player)
@@ -57,7 +56,7 @@ local function wearTransmogItems(player)
     if isClient() then
         sendClothing(player)
     end
-    -- TmogPrint('wearTransmogItems, to wear:', #toWear, ' to remove:', #toRemove)
+    TmogPrint('wearTransmogItems, to wear:', #toWear, ' to remove:', #toRemove)
 end
 
 local function applyTransmogToPlayerItems(player)

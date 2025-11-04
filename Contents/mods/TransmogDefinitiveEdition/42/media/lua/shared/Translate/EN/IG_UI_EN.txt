@@ -25,4 +25,13 @@ IGUI_EN = {
     IGUI_TransmogDE_Text_WasHidden = "Hidden (%1)",
     IGUI_TransmogDE_Text_WasShown = "Shown (%1)",
     IGUI_TransmogDE_Text_WasReset = "Restored (%1)",
+    IGUI_TransmogDE_ListViewer_Standard_Item = "Transmog (Standard) - %1",
+    IGUI_TransmogDE_ListViewer_HideAllWorn = "Hide All Worn Items",
+    IGUI_TransmogDE_ListViewer_ShowAllWorn = "Show All Worn Items",
+    IGUI_TransmogDE_ListViewer_ResetAllWorn = "Reset All Worn Transmogged Items",
+    IGUI_TransmogDE_Tooltip_BatchActions = "Batch Actions",
+    IGUI_TransmogDE_Text_BatchActionDone = "%1 - Complete",
+    IGUI_TransmogDE_Text_BatchActionHide = "Hide All",
+    IGUI_TransmogDE_Text_BatchActionShow = "Show All",
+    IGUI_TransmogDE_Text_BatchActionReset = "Reset All",
 }

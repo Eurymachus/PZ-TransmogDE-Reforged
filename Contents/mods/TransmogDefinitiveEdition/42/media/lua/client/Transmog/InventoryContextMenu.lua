@@ -12,12 +12,12 @@ local addEditTransmogItemOption = function(player, context, items)
     local testItem = nil
     local clothing = nil
     for _, v in ipairs(items) do
-        testItem = v;
+        testItem = v
         if not instanceof(v, "InventoryItem") then
-            testItem = v.items[1];
+            testItem = v.items[1]
         end
         if TransmogDE.isTransmoggable(testItem) then
-            clothing = testItem;
+            clothing = testItem
         end
     end
 
@@ -32,7 +32,7 @@ local addEditTransmogItemOption = function(player, context, items)
             TransmogDE.triggerUpdate()
         end);
 
-        if not TransmogDE.isItemHidden(clothing) then
+        if not TransmogDE.isClothingHidden(clothing) then
             menuContext:addOption(textHide, clothing, function()
                 TransmogDE.setClothingHidden(clothing)
                 TransmogDE.triggerUpdate()
@@ -62,9 +62,7 @@ local addEditTransmogItemOption = function(player, context, items)
         local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
         if tmogClothingItemAsset:getAllowRandomTint() then
             menuContext:addOption(textColor, clothing, function()
-                local modal = ColorPickerModal:new(clothing, playerObj);
-                modal:initialise();
-                modal:addToUIManager();
+                ColorPickerModal.Open(clothing, playerObj)
             end);
         end
 
@@ -80,9 +78,7 @@ local addEditTransmogItemOption = function(player, context, items)
         -- TmogPrint('getBaseTextures()', tmogClothingItemAsset:getBaseTextures())
         if textureChoices and (textureChoices:size() > 1) then
             menuContext:addOption(textTexture, clothing, function()
-                local modal = TexturePickerModal:new(clothing, playerObj, textureChoices);
-                modal:initialise();
-                modal:addToUIManager();
+                TexturePickerModal.Open(clothing, playerObj, textureChoices)
             end);
         end
     end
@@ -90,4 +86,4 @@ local addEditTransmogItemOption = function(player, context, items)
     return context
 end
 
-Events.OnFillInventoryObjectContextMenu.Add(addEditTransmogItemOption);
+Events.OnFillInventoryObjectContextMenu.Add(addEditTransmogItemOption)

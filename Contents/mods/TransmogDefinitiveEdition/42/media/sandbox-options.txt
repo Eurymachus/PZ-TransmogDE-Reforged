@@ -2,7 +2,7 @@ VERSION = 1,
 
 option TransmogDE.ImmersiveModeToggle
 {
-	type = boolean, default = false,
+	type = boolean, default = true,
 	page = TransmogDE, translation = TransmogDE_ImmersiveModeToggle,
 }
 
@@ -14,6 +14,6 @@ option TransmogDE.DisableHeadGearFix
 
 option TransmogDE.LimitTransmogToSameBodyLocation
 {
-	type = boolean, default = false,
+	type = boolean, default = true,
 	page = TransmogDE, translation = TransmogDE_LimitTransmogToSameBodyLocation,
 }
