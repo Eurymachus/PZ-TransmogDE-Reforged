@@ -249,9 +249,9 @@ function TransmogListViewer:initList()
         local allItems = backupGetAllItems()
         for i = 0, allItems:size() - 1 do
             local item = allItems:get(i)
-            if TransmogDE.isTransmoggable(item) and TransmogDE.immersiveModeItemCheck(item) then
+            if TransmogDE.isTransmoggable(item) and (TransmogDE.immersiveModeItemCheck(item) or (getCore():getDebug() or isAdmin())) then
                 local isSameBodyLocation = item:getBodyLocation() == self.itemToTmog:getBodyLocation()
-                if not SandboxVars.TransmogDE.LimitTransmogToSameBodyLocation then
+                if (getCore():getDebug() or isAdmin()) or (not SandboxVars.TransmogDE.LimitTransmogToSameBodyLocation) then
                     filteredItems:add(item)
                 else
                     if isSameBodyLocation then
@@ -515,10 +515,10 @@ function ISItemsListTable:initList(module)
             displayCategoryMap[v:getDisplayCategory()] = true
             table.insert(displayCategoryNames, v:getDisplayCategory())
         end
-        if not lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] then
+--[[         if not lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] then
             lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] = true
             table.insert(lootCategoryNames, getText("Sandbox_" .. v:getLootType() .. "LootNew"))
-        end
+        end ]]
         self.totalResult = self.totalResult + 1
     end
     table.sort(self.datas.items, function(a, b)

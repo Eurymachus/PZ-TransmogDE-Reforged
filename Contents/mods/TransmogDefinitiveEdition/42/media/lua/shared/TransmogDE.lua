@@ -80,6 +80,9 @@ TransmogDE.triggerUpdate = function(player)
     local player = player or getPlayer()
     TmogPrint('triggerUpdate')
     triggerEvent("ApplyTransmogToPlayerItems", player)
+    if TransmogListViewer.instance then
+        TransmogListViewer.instance:initialise()
+    end
 end
 
 TransmogDE.invalidBodyLocations = {
