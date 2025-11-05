@@ -329,6 +329,53 @@ TransmogDE.setItemToDefault = function(item, supressUpdates)
     TransmogDE.forceUpdateClothing(item)
 end
 
+-- Returns true if this clothing item is currently hidden by TransmogDE
+TransmogDE.isClothingHidden = function(item)
+    if not item then
+        return false
+    end
+    local md = TransmogDE.getItemTransmogModData(item)
+    return md.transmogTo == nil
+end
+
+TransmogDE.setClothingHidden = function(item, suppressUpdates)
+    if not item then
+        return
+    end
+    local moddata = TransmogDE.getItemTransmogModData(item)
+
+    if moddata.transmogTo ~= nil then
+        moddata.lastTransmogTo = moddata.transmogTo
+    end
+    moddata.transmogTo = nil
+
+    if not suppressUpdates then
+        local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
+        local text = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
+
+        HaloTextHelper.addGoodText(getPlayer(), text)
+    end
+    TransmogDE.forceUpdateClothing(item)
+end
+
+TransmogDE.setClothingShown = function(item, suppressUpdates)
+    local moddata = TransmogDE.getItemTransmogModData(item)
+
+    if moddata.lastTransmogTo ~= nil then
+        moddata.transmogTo = moddata.lastTransmogTo
+    else
+        item:getScriptItem():getFullName()
+    end
+
+    if not suppressUpdates then
+        local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
+        local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
+
+        HaloTextHelper.addGoodText(getPlayer(), text)
+    end
+    TransmogDE.forceUpdateClothing(item)
+end
+
 TransmogDE.resetAllWornTransmogs = function()
     local player = getPlayer()
     if not player then
@@ -435,75 +482,33 @@ TransmogDE.forceUpdateClothing = function(item)
     local player = instanceof(container:getParent(), "IsoGameCharacter") and container:getParent()
 
     -- find the item by ID, ensure it exists, then remove it from container and player
-    if not childItem or not player then
+    if not player then
         print('ERROR: TransmogDE.forceUpdateClothing childItem or player missing!')
         return
     end
 
-    -- Remove the old tmog item
-    player:getWornItems():remove(childItem)
-    container:Remove(childItem);
+    if childItem then
+        -- Remove the old tmog item
+        player:getWornItems():remove(childItem)
+        container:Remove(childItem);
+    end
+
 
     -- Create and wear new tmog item
     local tmogItem = TransmogDE.createTransmogItem(item, player)
-    if not tmogItem then
-        print('ERROR: TransmogDE.forceUpdateClothing tmogItem missing!')
-        return
+    if tmogItem then
+        TransmogDE.setWornItemTmog(player, tmogItem)
     end
 
-    TransmogDE.setWornItemTmog(player, tmogItem)
-
     player:resetModelNextFrame();
+    
+    if instanceof(player, 'IsoPlayer') and player:isLocalPlayer() and getPlayerInfoPanel(player:getPlayerNum()) then
+		getPlayerInfoPanel(player:getPlayerNum()).charScreen.refreshNeeded = true
+	end
+
     if isClient() then
         sendClothing(player)
     end
-end
-
-TransmogDE.setClothingHidden = function(item, suppressUpdates)
-    if not item then
-        return
-    end
-    local moddata = TransmogDE.getItemTransmogModData(item)
-
-    if moddata.transmogTo ~= nil then
-        moddata.lastTransmogTo = moddata.transmogTo
-    end
-    moddata.transmogTo = nil
-
-    if not suppressUpdates then
-        local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
-        local text = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
-
-        HaloTextHelper.addGoodText(getPlayer(), text)
-    end
-    TransmogDE.forceUpdateClothing(item)
-end
-
-TransmogDE.setClothingShown = function(item, suppressUpdates)
-    local moddata = TransmogDE.getItemTransmogModData(item)
-
-    if moddata.lastTransmogTo ~= nil then
-        moddata.transmogTo = moddata.lastTransmogTo
-    else
-        item:getScriptItem():getFullName()
-    end
-
-    if not suppressUpdates then
-        local fromName = getItemNameFromFullType(item:getScriptItem():getFullName())
-        local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
-
-        HaloTextHelper.addGoodText(getPlayer(), text)
-    end
-    TransmogDE.forceUpdateClothing(item)
-end
-
--- Returns true if this clothing item is currently hidden by TransmogDE
-TransmogDE.isClothingHidden = function(item)
-    if not item then
-        return false
-    end
-    local md = TransmogDE.getItemTransmogModData(item)
-    return md.transmogTo == nil
 end
 
 -- Immersive mode code
