@@ -6,29 +6,32 @@ description=[i]Thanks to Mxswat for the Original - [/i][url=https://steamcommuni
 description=
 description=[i]A mod that allows you to hot-swap your appearance with any armour or clothing of your choice.[/i]
 description=
-description=[hr]
+description=[hr][/hr]
 description=[h2]What it does[/h2]
+description=[i]Right-click on an item > Transmog Menu[/i]
 description=[list]
-description=[*][b]Transmog Menu:[/b] hot-swap the appearance of any piece of clothing or armor
-description=[*][b]Colour Picker:[/b] change to a wide range or supported colours
-description=[*][b]Texture Picker:[/b] if the item allows you can switch the texture
+description=[*][b]Transmog Viewer:[/b] hot-swap the appearance of any piece of clothing or armor.
+description=[*][b]Hide/Show:[/b] sets the visibility on an item.
+description=[*][b]Colour Picker:[/b] change to a wide range or supported colours.
+description=[*][b]Texture Picker:[/b] if the item allows you can switch the texture.
 description=[/list]
 description=
 description=[hr][/hr]
 description=[h2]Mod Support and Twitch[/h2]
 description=Any questions you can find me in any of the places below:
+description=[list]
+description=[*][url=https://twitch.tv/eurymachus]Twitch[/url]
+description=[*][url=https://discord.gg/eurymachus]Discord[/url]
+description=[/list]
 description=
-description=[url=https://twitch.tv/eurymachus]Twitch[/url]
-description=[url=https://discord.gg/eurymachus]Discord[/url]
-description=
-description=[hr]
+description=[hr][/hr]
 description=[h2]Sandbox Options[/h2]
 description=[list]
 description=[*][b]Immersive Mode:[/b] When you enable the Immersive Mode, you can only Transmog to the items you have found.
 description=[*][b]Limit Body Location:[/b] Hats can only be Transmogged to other Hats, Pants to other Legwear, Rucksacks to other backpacks etc.
 description=[/list]
 description=
-description=[hr]
+description=[hr][/hr]
 description=[h2]Compatibility[/h2]
 description=[list]
 description=[*][b]Build:[/b] 42.*
@@ -41,9 +44,10 @@ description=[*][b]Clothing mods:[/b] In theory compatible; the Transmogable item
 description=[*]Vanilla Tooltip is replaced via hooks; all other hooks are pass-through so fully compatibile.
 description=[/list]
 description=
+description=
 description=[i]Transmog creates 'fake' worn items that are hidden in the UI. These items are required for the mod to work and will allow support for 1000s of clothing items.[/i]
 description=
-description=[hr]
+description=[hr][/hr]
 description=[h2]FAQ[/h2]
 description=[b]Q: Does this Add new clothing?[/b]
 description=[i]A: No — it’s a purely cosmetic mod.[/i]
