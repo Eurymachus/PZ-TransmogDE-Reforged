@@ -33,10 +33,15 @@ description=[h2]Compatibility[/h2]
 description=[list]
 description=[*][b]Build:[/b] 42.*
 description=[*][b]UI mods:[/b] Generally compatible. Mods replacing vanilla Item Tooltips will likely intefere (depending on mod load order).
-description=[*][b][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3036830549]Better Clothing Info Comparison[/url][/b] Directly compatible with BCIC tooltips
+description=[*][b][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3036830549]Better Clothing Info[/url][/b]
+description= - Directly compatible with BCIC tooltips
+description=[*][b][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950902979]Equipment UI[/url][/b]
+description= - Directly compatible with the EUI Paperdoll
 description=[*][b]Clothing mods:[/b] In theory compatible; the Transmogable items should appear in the List Viewer.
 description=[*]Vanilla Tooltip is replaced via hooks; all other hooks are pass-through so fully compatibile.
 description=[/list]
+description=
+description=[i]Transmog creates 'fake' worn items that are hidden in the UI. These items are required for the mod to work and will allow support for 1000s of clothing items.[/i]
 description=
 description=[hr]
 description=[h2]FAQ[/h2]
@@ -46,4 +51,4 @@ description=
 description=[b]Q: Can I add new clothes for Transmogging?[/b]
 description=[i]A: Yes - Just install the mod via Workshop and you should be golden.[/i]
 tags=Build 42;Clothing/Armor;Models;Silly/Fun;Textures
-visibility=private
+visibility=public
