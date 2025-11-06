@@ -4,8 +4,8 @@ local function _filterList(list)
     for i = 1, #list do
         local row = list[i]
         local rowItem = (row and row.items and row.items[1]) or row
-        -- if not (rowItem and _isTransmogFake(rowItem)) then
         if not (rowItem and TransmogDE.isTransmogItem(rowItem)) then
+            TmogPrint("Hiding row: " .. tostring(rowItem))
             out[#out + 1] = row
         end
     end
@@ -20,7 +20,8 @@ end
 
 local _hooked = false
 local function hideTransmogs()
-    if _hooked then return end
+    local _skipHide = getCore():getDebug() or isAdmin()
+    if _skipHide or _hooked then return end
     _hooked = true
 
     -- Chain AFTER whoever last patched refreshContainer - Works with EquipmentUI
@@ -52,4 +53,4 @@ local function hideTransmogs()
     DebugLog.log(DebugType.General, "[TransmogDE] Post-refresh filter installed (compatible with Equipment UI).")
 end
 
-Events.OnGameStart.Add(hideTransmogs)
+--Events.OnGameStart.Add(hideTransmogs)
