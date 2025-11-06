@@ -201,6 +201,7 @@ TransmogDE.getItemTransmogModData = function(item)
 
     local clothingItemAsset = TransmogDE.getClothingItemAsset(item:getScriptItem())
     local color = clothingItemAsset:getAllowRandomTint() and item:getVisual():getTint()
+    local textureChoice = item:getVisual():getTextureChoice()
 
     itemModData['Transmog'] = {
         color = color and {
@@ -209,7 +210,7 @@ TransmogDE.getItemTransmogModData = function(item)
             b = color:getBlueFloat(),
             a = color:getAlphaFloat()
         },
-        texture = 0,
+        texture = textureChoice,
         transmogTo = item:getScriptItem():getFullName(),
         childId = nil
     }
@@ -272,7 +273,8 @@ TransmogDE.setClothingTexture = function(item, textureIndex)
         item:getVisual():setBaseTexture(textureIndex)
     end
 
-    item:synchWithVisual();
+    getPlayer():resetModelNextFrame();
+    -- item:synchWithVisual();
     -- TmogPrint('setClothingTexture' .. tostring(textureIndex))
 end
 
