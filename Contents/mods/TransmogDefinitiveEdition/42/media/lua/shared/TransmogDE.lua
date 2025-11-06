@@ -176,6 +176,10 @@ TransmogDE.createTransmogItem = function(ogItem, player)
 
     -- don't wear the new item yet
     -- player:setWornItem(tmogItem:getBodyLocation(), tmogItem)
+    
+    if not TransmogDE.syncVisuals(tmogItem, ogItem) then
+        TmogPrint("Visual Sync failed.")
+    end
 
     TmogPrint('createTransmogItem', ogItem:getName())
     return tmogItem
@@ -484,23 +488,24 @@ TransmogDE.forceUpdateClothing = function(item)
     local player = instanceof(container:getParent(), "IsoGameCharacter") and container:getParent()
 
     -- find the item by ID, ensure it exists, then remove it from container and player
-    if not player then
-        print('ERROR: TransmogDE.forceUpdateClothing childItem or player missing!')
+    if not childItem or not player then
+        TmogPrint("forceUpdateClothing childItem or player missing!")
         return
     end
 
-    if childItem then
-        -- Remove the old tmog item
-        player:getWornItems():remove(childItem)
-        container:Remove(childItem);
-    end
+    -- Remove the old tmog item
+    player:getWornItems():remove(childItem)
+    container:Remove(childItem);
 
 
     -- Create and wear new tmog item
     local tmogItem = TransmogDE.createTransmogItem(item, player)
-    if tmogItem then
-        TransmogDE.setWornItemTmog(player, tmogItem)
+    if not tmogItem then
+        TmogPrint("forceUpdateClothing tmogItem missing")
+        return
     end
+
+    TransmogDE.setWornItemTmog(player, tmogItem)
 
     player:resetModelNextFrame();
     
@@ -511,6 +516,30 @@ TransmogDE.forceUpdateClothing = function(item)
     if isClient() then
         sendClothing(player)
     end
+end
+
+function TransmogDE.syncVisuals(carrierItem, sourceItem)
+    TmogPrint("Sync Blood, Dirst and Holes...")
+    -- 1) Defensive checks: both items exist and have visuals
+    if carrierItem and sourceItem and carrierItem.getVisual and sourceItem.getVisual then
+
+        -- 2) Get both ItemVisuals
+        local vDst = carrierItem:getVisual()
+        local vSrc = sourceItem:getVisual()
+        if not (vDst and vSrc) then return false end
+
+        -- 3) Copy blood, dirt, holes and patches
+        vDst:copyBlood(vSrc)
+        vDst:copyDirt(vSrc)
+        vDst:copyHoles(vSrc)
+        vDst:copyPatches(vSrc)
+
+        -- 4) carrierItem:synchWithVisual()
+        carrierItem:synchWithVisual()
+        TmogPrint("Sync Blood, Dirt and Holes Complete.")
+        return true
+    end
+    return false
 end
 
 -- Immersive mode code

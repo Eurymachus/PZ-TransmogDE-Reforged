@@ -27,6 +27,9 @@ local function wearTransmogItems(player)
             -- check if it has an existing tmogitem
             -- if not create a new tmog item, and bind it using the parent item id
             local tmogItem = TransmogDE.createTransmogItem(item, player)
+--            if not TransmogDE.syncVisuals(tmogItem, item) then
+--                TmogPrint("Visual Sync failed.")
+--            end
             table.insert(toWear, tmogItem)
         end
         if item and TransmogDE.isTransmogItem(item) and not item:hasTag("Hide_Everything") then
