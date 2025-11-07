@@ -336,6 +336,8 @@ TransmogDE.setClothingColor = function(item, color)
     end
 
     item:getVisual():setTint(color)
+    
+    item:synchWithVisual();
 
     getPlayer():resetModelNextFrame();
 end
@@ -351,8 +353,9 @@ TransmogDE.setClothingTexture = function(item, textureIndex)
         item:getVisual():setBaseTexture(textureIndex)
     end
 
+    item:synchWithVisual();
+
     getPlayer():resetModelNextFrame();
-    -- item:synchWithVisual();
     -- TmogPrint('setClothingTexture' .. tostring(textureIndex))
 end
 
@@ -388,7 +391,10 @@ TransmogDE.setItemTransmog = function(itemToTmog, scriptItem)
     moddata.lastTransmogTo = scriptItem:getFullName()
 end
 
-TransmogDE.setItemToDefault = function(item, supressUpdates)
+-- Reset transmog mapping to this item's own script,
+-- but KEEP current tint/texture and do not touch carriers (except clearing stale childId).
+-- Used for style-variant swaps (ISClothingExtraAction) so colors survive equip/unequip.
+TransmogDE.setTransmogToSelfKeepVisuals = function(item)
     local moddata = TransmogDE.getItemTransmogModData(item)
     local isHidden = TransmogDE.isClothingHidden(item)
     local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
@@ -406,6 +412,175 @@ TransmogDE.setItemToDefault = function(item, supressUpdates)
             HaloTextHelper.addGoodText(getPlayer(), text)
         end
     end
+    TransmogDE.forceUpdateClothing(item)
+end
+
+-- ==========================================================
+-- Is Transmogged
+-- ==========================================================
+-- Purpose:
+--   Returns true if the given item currently has an active
+--   transmog applied (i.e., its transmogTo field points to
+--   a different script item than itself).
+--
+-- Inputs:
+--   item (InventoryItem) -- the item to check
+--
+-- Output:
+--   boolean -- true if actively transmogged, false otherwise
+--
+-- Usage:
+--   if TransmogDE.isTransmogged(item) then
+--       ...
+--   end
+--
+TransmogDE.isTransmogged = function(item)
+    if not item then
+        return false
+    end
+
+    local moddata = TransmogDE.getItemTransmogModData(item)
+    if not moddata or not moddata.transmogTo then
+        return false
+    end
+
+    local scriptItem = item:getScriptItem()
+    if scriptItem and scriptItem.getScriptItem then
+        scriptItem = scriptItem:getScriptItem()
+    end
+
+    local selfFullName = scriptItem and scriptItem:getFullName()
+    if not selfFullName then
+        return false
+    end
+
+    return moddata.transmogTo ~= selfFullName
+end
+
+-- ==========================================================
+-- Remove Transmog (keep visuals)
+-- ==========================================================
+-- Purpose:
+--   Removes any active transmog link from the given item but
+--   keeps its current tint, texture, and appearance intact.
+--   Also removes any existing transmog carrier item.
+--
+-- Inputs:
+--   item (InventoryItem)  -- item to remove transmog from
+--   suppressUpdates (bool) -- if true, no halo text feedback
+--
+-- Usage:
+--   TransmogDE.removeTransmog(item)
+--
+-- Notes:
+--   - Differs from setItemToDefault(), which restores the
+--     *original* appearance snapshot (original tint/texture).
+--   - This function only clears the transmog link and carrier,
+--     leaving the current visuals untouched.
+--
+TransmogDE.removeTransmog = function(item, suppressUpdates)
+    if not item then
+        return
+    end
+
+    local moddata = TransmogDE.getItemTransmogModData(item)
+    if not moddata then
+        return
+    end
+
+    -- Determine if this was actively transmogged before removal.
+    local wasTransmogged = TransmogDE.isTransmogged(item)
+
+    -- 1) Clear the mapping but retain current visuals.
+    TransmogDE.setTransmogToSelfKeepVisuals(item)
+
+    -- 2) Remove carrier and refresh worn visuals/inventory.
+    TransmogDE.forceUpdateClothing(item)
+
+    -- 3) Optional halo text feedback.
+    if wasTransmogged and not suppressUpdates then
+        local toName = getItemNameFromFullType(moddata.transmogTo)
+        if toName then
+            HaloTextHelper.addGoodText(getPlayer(), getText("IGUI_TransmogDE_Text_TransmogRemoved", toName))
+        end
+    end
+end
+
+-- Reset this item back to its original appearance and transmog target.
+-- This should match how it looked when first picked up/crafted
+-- (based on the initial snapshot from getItemTransmogModData).
+TransmogDE.setItemToDefault = function(item, supressUpdates)
+    if not item then
+        return
+    end
+
+    local moddata = TransmogDE.getItemTransmogModData(item)
+    if not moddata then
+        return
+    end
+
+    local wasHidden = TransmogDE.isClothingHidden and TransmogDE.isClothingHidden(item) or false
+    local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
+
+    -- Resolve the item’s own script fullType as the canonical default target.
+    local scriptItem = item:getScriptItem()
+    if scriptItem and scriptItem.getScriptItem then
+        scriptItem = scriptItem:getScriptItem()
+    end
+    local selfFullName = scriptItem and scriptItem:getFullName() or moddata.transmogTo
+
+    -- Choose default color/texture from immutable originals when available,
+    -- with sane fallbacks for legacy data.
+    local defaultColorTbl = moddata.originalColor or moddata.color or nil
+    local defaultTexture  = (moddata.originalTexture ~= nil and moddata.originalTexture)
+                         or (moddata.texture ~= nil and moddata.texture)
+                         or nil
+
+    -- Apply default tint back onto the item visual.
+    if defaultColorTbl then
+        local c = Color.new(
+            defaultColorTbl.r or 1.0,
+            defaultColorTbl.g or 1.0,
+            defaultColorTbl.b or 1.0,
+            defaultColorTbl.a or 1.0
+        )
+        local immutable = ImmutableColor.new(c)
+        TransmogDE.setClothingColor(item, immutable)
+
+        -- Keep active color in sync with the default snapshot.
+        moddata.color = {
+            r = defaultColorTbl.r or 1.0,
+            g = defaultColorTbl.g or 1.0,
+            b = defaultColorTbl.b or 1.0,
+            a = defaultColorTbl.a or 1.0,
+        }
+    else
+        -- If absolutely nothing is stored, clear any custom tint.
+        -- This lets the engine/scriptItem decide its natural look.
+        item:getVisual():setTint(nil)
+    end
+
+    -- Apply default texture back onto the item visual.
+    if defaultTexture ~= nil then
+        TransmogDE.setClothingTexture(item, defaultTexture)
+        moddata.texture = defaultTexture
+    end
+
+    -- Reset mapping so we no longer transmog into anything else.
+    moddata.transmogTo = selfFullName
+    moddata.lastTransmogTo = selfFullName
+
+    local toName = getItemNameFromFullType(selfFullName)
+    local text = nil
+    if (fromName and fromName ~= toName) or wasHidden then
+        text = getText("IGUI_TransmogDE_Text_WasReset", toName)
+    end
+
+    if not supressUpdates and text then
+        HaloTextHelper.addGoodText(getPlayer(), text)
+    end
+
+    -- Rebuild the carrier so the visible item matches the restored defaults.
     TransmogDE.forceUpdateClothing(item)
 end
 

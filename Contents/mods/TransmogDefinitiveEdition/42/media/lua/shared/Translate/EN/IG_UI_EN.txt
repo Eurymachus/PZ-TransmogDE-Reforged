@@ -34,4 +34,5 @@ IGUI_EN = {
     IGUI_TransmogDE_Text_BatchActionHide = "Hide All",
     IGUI_TransmogDE_Text_BatchActionShow = "Show All",
     IGUI_TransmogDE_Text_BatchActionReset = "Reset All",
+    IGUI_TransmogDE_Context_RemoveTransmog = "Remove Transmog",
 }

@@ -4,6 +4,7 @@ local textTransmogrify = getText("IGUI_TransmogDE_Context_Transmogrify")
 local textHide = getText("IGUI_TransmogDE_Context_Hide")
 local textShow = getText("IGUI_TransmogDE_Context_Show")
 local textDefault = getText("IGUI_TransmogDE_Context_Default")
+local textRemoveTransmog = getText("IGUI_TransmogDE_Context_RemoveTransmog")
 local textColor = getText("IGUI_TransmogDE_Context_Color")
 local textTexture = getText("IGUI_TransmogDE_Context_Texture")
 
@@ -44,11 +45,6 @@ local addEditTransmogItemOption = function(player, context, items)
             end);
         end
 
-        menuContext:addOption(textDefault, clothing, function()
-            TransmogDE.setItemToDefault(clothing)
-            TransmogDE.triggerUpdate()
-        end);
-
         local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
         if not transmogTo then
             return
@@ -81,6 +77,24 @@ local addEditTransmogItemOption = function(player, context, items)
                 TexturePickerModal.Open(clothing, playerObj, textureChoices)
             end);
         end
+
+        if TransmogDE.isTransmogged(clothing) then
+            local removeTransmog = menuContext:addOption(textRemoveTransmog, clothing, function()
+                TransmogDE.removeTransmog(clothing)
+                TransmogDE.triggerUpdate()
+            end);
+            removeTransmog.goodColor = true
+        end
+
+        local setItemToDefault = menuContext:addOption(
+            textDefault,
+            clothing,
+            function()
+                TransmogDE.setItemToDefault(clothing)
+                TransmogDE.triggerUpdate()
+            end
+        );
+        setItemToDefault.badColor = true
     end
 
     return context
