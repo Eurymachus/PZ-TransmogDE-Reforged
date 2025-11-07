@@ -191,29 +191,73 @@ TransmogDE.getClothingItemAsset = function(scriptItem)
     return clothingItemAsset
 end
 
+-- Return (and lazily initialize) Transmog moddata for a given item.
+-- Fields:
+--   originalColor    = first-seen tint (table or nil)
+--   originalTexture  = first-seen texture index (or nil)
+--   color            = current/default tint used by transmog
+--   texture          = current/default texture used by transmog
+--   transmogTo       = current transmog target fullType
+--   lastTransmogTo   = last non-hidden transmog target
+--   childId          = carrier item id (if any)
 TransmogDE.getItemTransmogModData = function(item)
     local itemModData = item:getModData()
-    if itemModData['Transmog'] then
-        return itemModData['Transmog']
+    local tmog = itemModData['Transmog']
+
+    -- If already initialized, ensure original* fields exist for legacy saves.
+    if tmog then
+        -- Legacy compatibility: if originalColor/Texture missing, seed them once.
+        if not tmog.originalColor and tmog.color then
+            tmog.originalColor = {
+                r = tmog.color.r,
+                g = tmog.color.g,
+                b = tmog.color.b,
+                a = tmog.color.a or 1.0,
+            }
+        end
+        if tmog.originalTexture == nil and tmog.texture ~= nil then
+            tmog.originalTexture = tmog.texture
+        end
+        return tmog
     end
 
+    -- First-time initialization: capture how the item looks RIGHT NOW.
     local clothingItemAsset = TransmogDE.getClothingItemAsset(item:getScriptItem())
-    local color = clothingItemAsset:getAllowRandomTint() and item:getVisual():getTint()
-    local textureChoice = item:getVisual():getTextureChoice()
+    local visual = item:getVisual()
 
-    itemModData['Transmog'] = {
-        color = color and {
-            r = color:getRedFloat(),
-            g = color:getGreenFloat(),
-            b = color:getBlueFloat(),
-            a = color:getAlphaFloat()
-        },
+    local colorObj = clothingItemAsset:getAllowRandomTint() and visual:getTint() or nil
+    local textureChoice = visual:getTextureChoice()
+
+    local originalColor = colorObj and {
+        r = colorObj:getRedFloat(),
+        g = colorObj:getGreenFloat(),
+        b = colorObj:getBlueFloat(),
+        a = colorObj:getAlphaFloat()
+    } or nil
+
+    local fullName = item:getScriptItem():getFullName()
+
+    tmog = {
+        -- Original look at discovery/craft time
+        originalColor = originalColor,
+        originalTexture = textureChoice,
+
+        -- Active/default look used by transmog logic (starts as original)
+        color = originalColor and {
+            r = originalColor.r,
+            g = originalColor.g,
+            b = originalColor.b,
+            a = originalColor.a,
+        } or nil,
         texture = textureChoice,
-        transmogTo = item:getScriptItem():getFullName(),
-        childId = nil
+
+        transmogTo = fullName,
+        lastTransmogTo = fullName,
+        childId = nil,
     }
 
-    return itemModData['Transmog']
+    itemModData['Transmog'] = tmog
+    return tmog
 end
 
 TransmogDE.getTransmogChild = function(invItem)
@@ -549,28 +593,70 @@ TransmogDE.forceUpdateClothing = function(item)
     end
 end
 
-function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
-    --TmogPrint("Sync Blood, Dirt, Holes and Patches...")
-    -- 1) Defensive checks: both items exist and have visuals
-    if carrierItem and sourceItem and carrierItem.getVisual and sourceItem.getVisual then
-
-        -- 2) Get both ItemVisuals
-        local vDst = carrierItem:getVisual()
-        local vSrc = sourceItem:getVisual()
-        if not (vDst and vSrc) then return false end
-
-        -- 3) Copy blood, dirt, holes and patches
-        vDst:copyBlood(vSrc)
-        vDst:copyDirt(vSrc)
-        vDst:copyHoles(vSrc)
-        vDst:copyPatches(vSrc)
-
-        -- 4) carrierItem:synchWithVisual()
-        carrierItem:synchWithVisual()
-        --TmogPrint("Sync Blood, Dirt, Holes and Patches Complete.")
-        return true
+local function clearHoles(vDst)
+    if not (vDst and BloodBodyPartType and BloodBodyPartType.MAX) then return end
+    local maxIndex = BloodBodyPartType.MAX:index()
+    for idx = 0, maxIndex - 1 do
+        vDst:removeHole(idx)
     end
-    return false
+end
+
+local function clearPatches(vDst)
+    if not (vDst and BloodBodyPartType and BloodBodyPartType.MAX) then return end
+    local maxIndex = BloodBodyPartType.MAX:index()
+    for idx = 0, maxIndex - 1 do
+        vDst:removePatch(idx)
+    end
+end
+
+function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
+    if not (carrierItem and sourceItem and carrierItem.getVisual and sourceItem.getVisual) then
+        return false
+    end
+
+    local vDst = carrierItem:getVisual()
+    local vSrc = sourceItem:getVisual()
+    if not (vDst and vSrc) then
+        return false
+    end
+
+    local OPS = TransmogDE.Options or {}
+
+    local hideBlood   = OPS.shouldHideBlood   and OPS.shouldHideBlood()   or false
+    local hideDirt    = OPS.shouldHideDirt    and OPS.shouldHideDirt()    or false
+    local hideHoles   = OPS.shouldHideHoles   and OPS.shouldHideHoles()   or false
+    local hidePatches = OPS.shouldHidePatches and OPS.shouldHidePatches() or false
+
+    -- Blood
+    if hideBlood then
+        vDst:removeBlood()
+    else
+        vDst:copyBlood(vSrc)
+    end
+
+    -- Dirt
+    if hideDirt then
+        vDst:removeDirt()
+    else
+        vDst:copyDirt(vSrc)
+    end
+
+    -- Holes
+    if hideHoles then
+        clearHoles(vDst)
+    else
+        vDst:copyHoles(vSrc)
+    end
+
+    -- Patches
+    if hidePatches then
+        clearPatches(vDst)
+    else
+        vDst:copyPatches(vSrc)
+    end
+
+    carrierItem:synchWithVisual()
+    return true
 end
 
 function TransmogDE.syncConditionVisualsToTmog(ogItem)
