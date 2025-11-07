@@ -68,7 +68,7 @@ function ISClothingExtraAction:createItem(item, itemType)
         -- this is just a style variant swap. Ensure the new item maps to itself,
         -- keeps its visuals, and has no stale carrier link.
         TmogPrint('[TransmogDE] ISClothingExtraAction:createItem() normalize non-transmog variant')
-        TransmogDE.setTransmogToSelfKeepVisuals(newItem)
+        TransmogDE.setTransmogToSelfKeepVisuals(newItem, true)
     end
 
     return newItem

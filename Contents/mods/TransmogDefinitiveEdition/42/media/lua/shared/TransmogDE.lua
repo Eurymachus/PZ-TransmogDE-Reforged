@@ -488,22 +488,7 @@ TransmogDE.removeTransmog = function(item, suppressUpdates)
         return
     end
 
-    -- Determine if this was actively transmogged before removal.
-    local wasTransmogged = TransmogDE.isTransmogged(item)
-
-    -- 1) Clear the mapping but retain current visuals.
     TransmogDE.setTransmogToSelfKeepVisuals(item)
-
-    -- 2) Remove carrier and refresh worn visuals/inventory.
-    TransmogDE.forceUpdateClothing(item)
-
-    -- 3) Optional halo text feedback.
-    if wasTransmogged and not suppressUpdates then
-        local toName = getItemNameFromFullType(moddata.transmogTo)
-        if toName then
-            HaloTextHelper.addGoodText(getPlayer(), getText("IGUI_TransmogDE_Text_TransmogRemoved", toName))
-        end
-    end
 end
 
 -- Reset this item back to its original appearance and transmog target.
@@ -631,7 +616,26 @@ TransmogDE.setClothingShown = function(item, suppressUpdates)
     TransmogDE.forceUpdateClothing(item)
 end
 
-TransmogDE.resetAllWornTransmogs = function()
+TransmogDE.removeAllWornTransmogs = function()
+    local player = getPlayer()
+    if not player then
+        return
+    end
+    local wornItems = player:getWornItems()
+    if not wornItems or not (wornItems:size() > 0) then
+        return
+    end
+
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i);
+        if item and TransmogDE.isTransmoggable(item) then
+            TransmogDE.removeTransmog(item, true)
+        end
+    end
+    -- triggerEvent("OnClothingUpdated", player)
+end
+
+TransmogDE.resetDefaultAllWornTransmogs = function()
     local player = getPlayer()
     if not player then
         return

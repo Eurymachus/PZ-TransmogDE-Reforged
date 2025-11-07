@@ -47,6 +47,7 @@ function TransmogListViewer:initialise()
         self.reset:initialise()
         self.reset:instantiate()
         self.reset:enableCancelColor()
+        self.reset:setTooltip(getText("IGUI_TransmogDE_ListViewer_Reset_tooltip"))
         self:addChild(self.reset)
 
         local hideShowX = self.reset.x - (UI_BORDER_SPACING + 1) - btnWid
@@ -61,6 +62,7 @@ function TransmogListViewer:initialise()
         self.hideItem:initialise()
         self.hideItem:instantiate()
         self.hideItem:enableCancelColor()
+        self.hideItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Hide_tooltip"))
         self:addChild(self.hideItem)
 
         self.showItem = ISButton:new(hideShowX, hideShowY, btnWid, BUTTON_HGT,
@@ -73,6 +75,7 @@ function TransmogListViewer:initialise()
         self.showItem:initialise()
         self.showItem:instantiate()
         self.showItem:enableAcceptColor()
+        self.showItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Show_tooltip"))
         self:addChild(self.showItem)
     end
     local isHidden = TransmogDE.isClothingHidden(self.itemToTmog)
@@ -157,7 +160,19 @@ function TransmogListViewer:onClickTransmogMenu(button)
     local x = button:getAbsoluteX()
     local y = button:getAbsoluteY() + button:getHeight()
 
-    -- RECOMMENDED: use get(...) in B42; clear before reuse
+    local function addTooltip(option, text)
+        if not text or text == "" then return end
+
+        local tip = ISToolTip:new()
+        tip:initialise()
+        tip:setVisible(false)
+        tip.description = text
+        -- tip.name = "" -- optional, if you want a bold title line
+        -- tip.maxLineWidth = 400 -- optional clamp
+
+        option.toolTip = tip
+    end
+
     local menu = ISContextMenu.get(pn, x, y)
     if not menu then return end
 
@@ -165,30 +180,49 @@ function TransmogListViewer:onClickTransmogMenu(button)
     if menu.setX then menu:setX(x) end
     if menu.setY then menu:setY(y) end
 
-    menu:addOption(getTextOrNull("IGUI_TransmogDE_ListViewer_HideAllWorn") or "Hide All Worn Items",
-        self, TransmogListViewer.onBatchAction, "HIDE_ALL")
-    menu:addOption(getTextOrNull("IGUI_TransmogDE_ListViewer_ShowAllWorn") or "Show All Worn Items",
-        self, TransmogListViewer.onBatchAction, "SHOW_ALL")
-    menu:addOption(getTextOrNull("IGUI_TransmogDE_ListViewer_ResetAllWorn") or "Reset All Worn Transmogged Items",
-        self, TransmogListViewer.onBatchAction, "RESET_ALL")
+    local hideAll = menu:addOption(
+        getText("IGUI_TransmogDE_ListViewer_HideAllWorn"),
+        self, TransmogListViewer.onBatchAction, "HIDE_ALL"
+    )
+    addTooltip(hideAll, getText("IGUI_TransmogDE_ListViewer_HideAllWorn_tooltip"))
+
+    local showAll = menu:addOption(
+        getText("IGUI_TransmogDE_ListViewer_ShowAllWorn"),
+        self, TransmogListViewer.onBatchAction, "SHOW_ALL"
+    )
+    addTooltip(showAll, getText("IGUI_TransmogDE_ListViewer_ShowAllWorn_tooltip"))
+
+    local removeAll = menu:addOption(
+        getText("IGUI_TransmogDE_ListViewer_RemoveAllWorn"),
+        self, TransmogListViewer.onBatchAction, "REMOVE_ALL"
+    )
+    removeAll.goodColor = true
+    addTooltip(removeAll, getText("IGUI_TransmogDE_ListViewer_RemoveAllWorn_tooltip"))
+
+    local resetAll = menu:addOption(
+        getText("IGUI_TransmogDE_ListViewer_ResetAllWorn"),
+        self, TransmogListViewer.onBatchAction, "RESET_ALL"
+    )
+    resetAll.badColor = true
+    addTooltip(resetAll, getText("IGUI_TransmogDE_ListViewer_ResetAllWorn_tooltip"))
 
     menu:addToUIManager()
-    -- DO NOT call: menu:setCapture(true)
-    -- DO NOT call: menu:setAlwaysOnTop(true)
-    -- No need to call setVisible(true)
 end
 
 function TransmogListViewer:onBatchAction(action)
     local actionText = ""
     if action == "HIDE_ALL" then
-        actionText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionHide") or "Hide All"
+        actionText = getText("IGUI_TransmogDE_Text_BatchActionHide")
         TransmogDE.hideAllWornTransmogs(getPlayer())
     elseif action == "SHOW_ALL" then
-        actionText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionShow") or "Show All"
+        actionText = getText("IGUI_TransmogDE_Text_BatchActionShow")
         TransmogDE.showAllWornTransmogs(getPlayer())
+    elseif action == "REMOVE_ALL" then
+        actionText = getText("IGUI_TransmogDE_Text_BatchActionRemove")
+        TransmogDE.removeAllWornTransmogs(getPlayer())
     elseif action == "RESET_ALL" then
-        actionText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionReset") or "Reset All"
-        TransmogDE.resetAllWornTransmogs(getPlayer())
+        actionText = getText("IGUI_TransmogDE_Text_BatchActionReset")
+        TransmogDE.resetDefaultAllWornTransmogs(getPlayer())
     end
 
     TransmogDE.triggerUpdate()
@@ -198,7 +232,7 @@ end
 
 function TransmogListViewer:onClickTransmog(button)
     if button.internal == "RESET" then
-        TransmogDE.setItemToDefault(self.itemToTmog)
+        TransmogDE.removeTransmog(self.itemToTmog)
         TransmogDE.triggerUpdate()
         self:initialise()
         return
