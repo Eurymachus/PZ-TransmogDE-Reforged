@@ -27,9 +27,6 @@ local function wearTransmogItems(player)
             -- check if it has an existing tmogitem
             -- if not create a new tmog item, and bind it using the parent item id
             local tmogItem = TransmogDE.createTransmogItem(item, player)
---            if not TransmogDE.syncVisuals(tmogItem, item) then
---                TmogPrint("Visual Sync failed.")
---            end
             table.insert(toWear, tmogItem)
         end
         if item and TransmogDE.isTransmogItem(item) and not item:hasTag("Hide_Everything") then
@@ -62,6 +59,19 @@ local function wearTransmogItems(player)
     TmogPrint('wearTransmogItems, to wear:', #toWear, ' to remove:', #toRemove)
 end
 
+local function syncAllVisuals(player)
+    local player = player or getPlayer() or getSpecificPlayer(0)
+    if not player then return end
+    local wornItems = player:getWornItems()
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i);
+        -- TmogPrint("Worn item: " .. tostring(item:getScriptItem():getFullName()))
+        if item and TransmogDE.isTransmogItem(item) then
+            TransmogDE.syncConditionVisualsForTmog(item)
+        end
+    end
+end
+
 local function applyTransmogToPlayerItems(player)
     local player = player or getPlayer() -- getSpecificPlayer(playerNum);
     wearHideEverything(player);
@@ -69,28 +79,29 @@ local function applyTransmogToPlayerItems(player)
 end
 
 LuaEventManager.AddEvent("ApplyTransmogToPlayerItems");
+LuaEventManager.AddEvent("SyncConditionVisuals");
 
 Events.ApplyTransmogToPlayerItems.Add(applyTransmogToPlayerItems);
+Events.SyncConditionVisuals.Add(syncAllVisuals);
 
 local function onClothingUpdated(player)
-    -- local hotbar = getPlayerHotbar(player:getPlayerNum());
-    -- if hotbar == nil then return end -- player is dead
-
-    -- I need to use the same check as the ISHotbar otherwise it shits itself,
-    -- and it will randomly start spamming `OnClothingUpdated`, dunno why, but this seems to fix it
-    -- local itemsChanged = hotbar:compareWornItems()
-    -- if not itemsChanged then
-    --  return
-    -- end
-    -- DebugLog.log(DebugType.General, "[TransmogDE] onClothingUpdated Fired")
+    TmogPrint("onClothingUpdated Fired")
     TransmogDE.triggerUpdate()
+
+    if TransmogListViewer.instance then
+        TransmogListViewer.instance:initialise()
+    end
 end
 
 Events.OnClothingUpdated.Add(onClothingUpdated)
 
-if not TransmogDE then
-    TransmogDE = TransmogDE or {}
-end
+
+Events.OnGameStart.Add(function()
+    local player = getPlayer() or getSpecificPlayer(0) or nil
+    if player then
+        syncAllVisuals(player)
+    end
+end)
 
 -- cache original function once
 if not TransmogDE._orig_ISWearClothing_complete then

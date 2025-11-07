@@ -80,9 +80,7 @@ TransmogDE.triggerUpdate = function(player)
     local player = player or getPlayer()
     TmogPrint('triggerUpdate')
     triggerEvent("ApplyTransmogToPlayerItems", player)
-    if TransmogListViewer.instance then
-        TransmogListViewer.instance:initialise()
-    end
+    triggerEvent("SyncConditionVisuals", player)
 end
 
 TransmogDE.invalidBodyLocations = {
@@ -176,10 +174,6 @@ TransmogDE.createTransmogItem = function(ogItem, player)
 
     -- don't wear the new item yet
     -- player:setWornItem(tmogItem:getBodyLocation(), tmogItem)
-    
-    if not TransmogDE.syncVisuals(tmogItem, ogItem) then
-        TmogPrint("Visual Sync failed.")
-    end
 
     TmogPrint('createTransmogItem', ogItem:getName())
     return tmogItem
@@ -231,6 +225,42 @@ TransmogDE.getTransmogChild = function(invItem)
     local container = invItem:getContainer()
     -- find the item by ID, ensure it exists, then return it
     return container:getItemById(itemTmogModData.childId)
+end
+
+TransmogDE.getTransmogParent = function(invItem)
+    if not invItem then return nil end
+    local parentID = invItem:getModData() and invItem:getModData().TransmogParent
+    if not parentID then return nil end
+
+    -- 1) Try same container first (fast path)
+    local container = invItem:getContainer()
+    if container then
+        local found = container:getItemById(parentID)
+        if found then return found end
+    end
+
+    --[[
+    -- 2) Try player’s worn items (most common for transmog pairs)
+    local player = getPlayer()
+    if player then
+        local worn = player:getWornItems()
+        for i = 0, worn:size() - 1 do
+            local item = worn:getItemByIndex(i)
+            if item and item:getID() == parentID then
+                return item
+            end
+        end
+    end
+
+    -- 3) As fallback, search player inventory (if carrier somehow desynced)
+    if player then
+        local inv = player:getInventory()
+        local found = inv and inv:getItemById(parentID)
+        if found then return found end
+    end
+    ]]
+
+    return nil
 end
 
 TransmogDE.setClothingColorModdata = function(item, color)
@@ -505,6 +535,7 @@ TransmogDE.forceUpdateClothing = function(item)
         return
     end
 
+    TransmogDE.syncConditionVisualsForTmog(tmogItem)
     TransmogDE.setWornItemTmog(player, tmogItem)
 
     player:resetModelNextFrame();
@@ -518,8 +549,8 @@ TransmogDE.forceUpdateClothing = function(item)
     end
 end
 
-function TransmogDE.syncVisuals(carrierItem, sourceItem)
-    TmogPrint("Sync Blood, Dirst and Holes...")
+function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
+    --TmogPrint("Sync Blood, Dirt, Holes and Patches...")
     -- 1) Defensive checks: both items exist and have visuals
     if carrierItem and sourceItem and carrierItem.getVisual and sourceItem.getVisual then
 
@@ -536,10 +567,23 @@ function TransmogDE.syncVisuals(carrierItem, sourceItem)
 
         -- 4) carrierItem:synchWithVisual()
         carrierItem:synchWithVisual()
-        TmogPrint("Sync Blood, Dirt and Holes Complete.")
+        --TmogPrint("Sync Blood, Dirt, Holes and Patches Complete.")
         return true
     end
     return false
+end
+
+function TransmogDE.syncConditionVisualsToTmog(ogItem)
+    local tmogItem = TransmogDE.getTransmogChild(ogItem)
+    if not tmogItem then return false end
+    return TransmogDE.syncConditionVisuals(tmogItem, ogItem)
+end
+
+function TransmogDE.syncConditionVisualsForTmog(tmogItem)
+    if tmogItem:hasTag("Hide_Everything") then return false end
+    local ogItem = TransmogDE.getTransmogParent(tmogItem)
+    if not ogItem then return false end
+    return TransmogDE.syncConditionVisuals(tmogItem, ogItem)
 end
 
 -- Immersive mode code
