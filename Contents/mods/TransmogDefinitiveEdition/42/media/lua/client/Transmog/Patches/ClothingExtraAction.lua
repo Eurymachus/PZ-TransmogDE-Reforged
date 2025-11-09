@@ -49,6 +49,7 @@ function ISClothingExtraAction:createItem(item, itemType)
 
     local newItem = old_ISClothingExtraAction_createItem(self, item, itemType)
     if not newItem then
+        TmogPrint('[TransmogDE] ISClothingExtraAction:createItem() no new item Created')
         return nil
     end
 
@@ -63,6 +64,7 @@ function ISClothingExtraAction:createItem(item, itemType)
         TmogPrint('[TransmogDE] ISClothingExtraAction:createItem() preserve active transmog on variant')
         -- Let our normal pipeline rebuild the carrier for this new item.
         TransmogDE.forceUpdateClothing(newItem)
+        triggerEvent("TransmogClothingUpdate", self.character, newItem)
     else
         -- Original item was NOT transmogged (reset/default):
         -- this is just a style variant swap. Ensure the new item maps to itself,
@@ -73,3 +75,5 @@ function ISClothingExtraAction:createItem(item, itemType)
 
     return newItem
 end
+
+LuaEventManager.AddEvent("TransmogClothingUpdate");

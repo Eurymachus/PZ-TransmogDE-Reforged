@@ -112,6 +112,12 @@ function TransmogListViewer:new(x, y, width, height, itemToTmog)
     return o
 end
 
+function TransmogListViewer:setPlayer(player)
+    if player then
+        self.player = player
+    end
+end
+
 function TransmogListViewer:saveWindowState()
     if Prefs then
         Prefs.saveWindowState(self)
@@ -213,52 +219,50 @@ function TransmogListViewer:onBatchAction(action)
     local actionText = ""
     if action == "HIDE_ALL" then
         actionText = getText("IGUI_TransmogDE_Text_BatchActionHide")
-        TransmogDE.hideAllWornTransmogs(getPlayer())
+        TransmogDE.hideAllWornTransmogs(self.player)
     elseif action == "SHOW_ALL" then
         actionText = getText("IGUI_TransmogDE_Text_BatchActionShow")
-        TransmogDE.showAllWornTransmogs(getPlayer())
+        TransmogDE.showAllWornTransmogs(self.player)
     elseif action == "REMOVE_ALL" then
         actionText = getText("IGUI_TransmogDE_Text_BatchActionRemove")
-        TransmogDE.removeAllWornTransmogs(getPlayer())
+        TransmogDE.removeAllWornTransmogs(self.player)
     elseif action == "RESET_ALL" then
         actionText = getText("IGUI_TransmogDE_Text_BatchActionReset")
-        TransmogDE.resetDefaultAllWornTransmogs(getPlayer())
+        TransmogDE.resetDefaultAllWornTransmogs(self.player)
     end
 
-    TransmogDE.triggerUpdate()
+    TransmogDE.triggerUpdate(self.player)
     local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or actionText .. " - Complete"
-    HaloTextHelper.addGoodText(getPlayer(), haloText)
+    HaloTextHelper.addGoodText(player, haloText)
+    triggerEvent("TransmogClothingUpdate", self.player, self.itemToTmog)
 end
 
 function TransmogListViewer:onClickTransmog(button)
-    if button.internal == "RESET" then
+    local request = button.internal
+    if request == "RESET" then
         TransmogDE.removeTransmog(self.itemToTmog)
-        TransmogDE.triggerUpdate()
-        self:initialise()
-        return
     end
 
-    if button.internal == "HIDEITEM" then
+    if request == "HIDEITEM" then
         TransmogDE.setClothingHidden(self.itemToTmog)
-        TransmogDE.triggerUpdate()
-        self:initialise()
-        return
     end
 
-    if button.internal == "SHOWITEM" then
+    if request == "SHOWITEM" then
         TransmogDE.setClothingShown(self.itemToTmog)
-        TransmogDE.triggerUpdate()
-        self:initialise()
-        return
     end
-end
-
-function TransmogListViewer:updateItemToTmog(clothing)
-    self.itemToTmog = clothing
+    
+    TransmogDE.triggerUpdate(self.player)
     self:initialise()
+    triggerEvent("TransmogClothingUpdate", self.player, self.itemToTmog)
 end
 
-function TransmogListViewer.Open(itemToTmog)
+function TransmogListViewer:close()
+    TexturePickerModal.Close()
+    ColorPickerModal.Close()
+    ISItemsListViewer.close(self)
+end
+
+function TransmogListViewer.Open(player, itemToTmog)
     if TransmogListViewer.instance then
         TransmogListViewer.instance:close()
     end
@@ -271,8 +275,21 @@ function TransmogListViewer.Open(itemToTmog)
     modal:addToUIManager()
     modal:restoreWindowState()
     modal:removeChild(modal.playerSelect)
+    modal.instance:setPlayer(player)
     modal.instance:setKeyboardFocus()
+    ColorPickerModal.updateItemToColor(player, itemToTmog)
+    TexturePickerModal.updateItemToTexture(player, itemToTmog)
 end
+
+local function updateItemToTmog(player, clothing)
+    if TransmogListViewer.instance then
+        if TransmogListViewer.instance.itemToTmog ~= clothing then
+            TransmogListViewer.Open(player, clothing)
+        end
+    end
+end
+
+Events.TransmogClothingUpdate.Add(updateItemToTmog);
 
 function TransmogListViewer:initList()
     -- Hack to use as litte code as possible and keep backcompatibility
@@ -448,9 +465,10 @@ function ISItemsListTable:sendItemToTransmog(scriptItem)
     local fromName = getItemNameFromFullType(self.viewer.itemToTmog:getScriptItem():getFullName())
     local toName = getItemNameFromFullType(scriptItem:getFullName())
     local text = getText("IGUI_TransmogDE_Text_WasTransmoggedTo", fromName, toName)
-    HaloTextHelper.addGoodText(getPlayer(), text)
+    HaloTextHelper.addGoodText(self.viewer.player, text)
     TransmogDE.setItemTransmog(self.viewer.itemToTmog, scriptItem)
     TransmogDE.forceUpdateClothing(self.viewer.itemToTmog)
+    triggerEvent("TransmogClothingUpdate", self.viewer.player, self.viewer.itemToTmog)
 end
 
 local old_ISItemsListTable_drawDatas = ISItemsListTable.drawDatas

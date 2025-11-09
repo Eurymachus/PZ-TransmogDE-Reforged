@@ -86,15 +86,43 @@ function TexturePickerModal:onMouseUpOutside(x, y)
     if moving or resizing then self:saveWindowState() end
 end
 
-function TexturePickerModal.Open(clothing, playerObj, textureChoices)
+function TexturePickerModal.Open(clothing, player, textureChoices)
     if TexturePickerModal.instance then
         TexturePickerModal.instance:close()
     end
-    local modal = TexturePickerModal:new(clothing, playerObj, textureChoices)
-    modal:initialise()
-    modal:addToUIManager()
-    modal:restoreWindowState()
+    if textureChoices and (textureChoices:size() > 1) then
+        local modal = TexturePickerModal:new(clothing, player, textureChoices)
+        modal:initialise()
+        modal:addToUIManager()
+        modal:restoreWindowState()
+    end
 end
+
+function TexturePickerModal.Close()
+    if TexturePickerModal.instance then
+        TexturePickerModal.instance:close()
+    end
+end
+
+function TexturePickerModal.updateItemToTexture(player, clothing)
+	local isOpen = TexturePickerModal.instance and TexturePickerModal.instance:getIsVisible()
+	local isTransmogOpen = TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible()
+    if isOpen or isTransmogOpen then
+        local textureChoiceList = nil
+        local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
+        if transmogTo then
+            local tmogScriptItem = ScriptManager.instance:getItem(transmogTo)
+            if tmogScriptItem then
+                local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
+                textureChoiceList =   tmogClothingItemAsset:hasModel() and tmogClothingItemAsset:getTextureChoices() or
+                                      tmogClothingItemAsset:getBaseTextures()
+            end
+        end
+        TexturePickerModal.Open(clothing, player, textureChoiceList)
+    end
+end
+
+Events.TransmogClothingUpdate.Add(TexturePickerModal.updateItemToTexture);
 
 function TexturePickerModal:new(item, character, textureChoices)
     local width = 260

@@ -38,12 +38,15 @@ local function wearTransmogItems(player)
                 -- parent either does not exist anymore, or it's unequipped, or it was never set
                 -- in in these cases, mark item to remove
                 table.insert(toRemove, item)
+            else
+                TransmogDE.syncConditionVisualsForTmog(item)
             end
         end
     end
 
     for _, tmogItem in ipairs(toWear) do
         TransmogDE.setWornItemTmog(player, tmogItem)
+        TransmogDE.syncConditionVisualsForTmog(tmogItem)
     end
 
     for _, tmogItem in ipairs(toRemove) do
@@ -86,7 +89,7 @@ Events.SyncConditionVisuals.Add(syncAllVisuals);
 
 local function onClothingUpdated(player)
     TmogPrint("onClothingUpdated Fired")
-    TransmogDE.triggerUpdate()
+    TransmogDE.triggerUpdate(player)
 
     if TransmogListViewer.instance then
         TransmogListViewer.instance:initialise()

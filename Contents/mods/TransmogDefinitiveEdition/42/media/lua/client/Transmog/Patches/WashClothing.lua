@@ -12,7 +12,7 @@ function ISWashClothing:complete()
             player:resetModelNextFrame()
         end
     else
-        triggerEvent("SyncConditionVisuals", player)
+        -- triggerEvent("SyncConditionVisuals", player)
     end
 
     return result

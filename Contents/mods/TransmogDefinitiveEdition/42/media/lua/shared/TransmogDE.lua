@@ -73,14 +73,19 @@ TransmogDE.patchAllItemsFromModData = function(modData)
     end
 
     -- Must be triggered after items are patched
-    TransmogDE.triggerUpdate()
+    TransmogDE.triggerUpdate(getPlayer() or getSpecificPlayer(0))
 end
 
 TransmogDE.triggerUpdate = function(player)
-    local player = player or getPlayer()
-    TmogPrint('triggerUpdate')
-    triggerEvent("ApplyTransmogToPlayerItems", player)
-    triggerEvent("SyncConditionVisuals", player)
+    if not TransmogDE._triggerUpdateLock then
+        --TransmogDE._triggerUpdateLock = true
+        TmogPrint('triggerUpdate')
+        triggerEvent("ApplyTransmogToPlayerItems", player)
+        -- triggerEvent("SyncConditionVisuals", player)
+        --TransmogDE._triggerUpdateLock = false
+    else
+        TmogPrint('triggerUpdate - already in progress...')
+    end
 end
 
 TransmogDE.invalidBodyLocations = {
@@ -394,7 +399,7 @@ end
 -- Reset transmog mapping to this item's own script,
 -- but KEEP current tint/texture and do not touch carriers (except clearing stale childId).
 -- Used for style-variant swaps (ISClothingExtraAction) so colors survive equip/unequip.
-TransmogDE.setTransmogToSelfKeepVisuals = function(item)
+TransmogDE.setTransmogToSelfKeepVisuals = function(item, supressUpdates)
     local moddata = TransmogDE.getItemTransmogModData(item)
     local isHidden = TransmogDE.isClothingHidden(item)
     local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
@@ -734,7 +739,7 @@ TransmogDE.forceUpdateClothing = function(item)
     local moddata = TransmogDE.getItemTransmogModData(item)
     local container = item:getContainer()
     if not container then
-        print('ERROR: TransmogDE.forceUpdateClothing, container is nil')
+        TmogPrint('forceUpdateClothing container is nil')
         return
     end
     local childItem = container:getItemById(moddata.childId)
@@ -835,6 +840,7 @@ function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
     end
 
     carrierItem:synchWithVisual()
+    -- sourceItem:synchWithVisual()
     return true
 end
 

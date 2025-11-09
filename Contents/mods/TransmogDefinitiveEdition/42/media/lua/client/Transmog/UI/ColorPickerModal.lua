@@ -66,15 +66,42 @@ function ColorPickerModal:onMouseUpOutside(x, y)
     if moving or resizing then self:saveWindowState() end
 end
 
-function ColorPickerModal.Open(clothing, playerObj)
+function ColorPickerModal.Open(clothing, player)
 	if ColorPickerModal.instance then
 		ColorPickerModal.instance:close()
 	end
-	local modal = ColorPickerModal:new(clothing, playerObj)
+	local modal = ColorPickerModal:new(clothing, player)
 	modal:initialise()
 	modal:addToUIManager()
 	modal:restoreWindowState()
 end
+
+function ColorPickerModal.Close()
+	if ColorPickerModal.instance then
+		ColorPickerModal.instance:close()
+	end
+end
+
+function ColorPickerModal.updateItemToColor(player, clothing)
+	local isOpen = ColorPickerModal.instance and ColorPickerModal.instance:getIsVisible()
+	local isTransmogOpen = TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible()
+	if isOpen or isTransmogOpen then
+		local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
+		if transmogTo then
+			local tmogScriptItem = ScriptManager.instance:getItem(transmogTo)
+			if tmogScriptItem then
+				local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
+				if tmogClothingItemAsset:getAllowRandomTint() then
+					ColorPickerModal.Open(clothing, player)
+				else
+					ColorPickerModal.Close()
+				end
+			end
+		end
+	end
+end
+
+Events.TransmogClothingUpdate.Add(ColorPickerModal.updateItemToColor);
 
 function ColorPickerModal:new(item, character)
 	local width = 550
