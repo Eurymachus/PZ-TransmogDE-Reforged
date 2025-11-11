@@ -50,14 +50,14 @@ TransmogDE.patchAllItemsFromModData = function(modData)
                 local tmogClothingItemAsset = tmogItem:getClothingItemAsset()
                 tmogItem:setClothingItemAsset(originalClothingItemAsset)
 
-                if not SandboxVars.TransmogDE.DisableHeadGearFix and
+                --[[if not SandboxVars.TransmogDE.DisableHeadGearFix and
                     (originalClothingItemAsset:isHat() or originalClothingItemAsset:isMask()) then
                     -- Since we use the tmog item to check textureChoices and colorTint in Transmog\InventoryContextMenu.lua
                     -- using the backup will be handy to ensure we always select the original textureChoices and colorTint
                     TransmogDE.BackupClothingItemAsset[originalItemName] = originalClothingItemAsset
                     -- Hide hats to avoid having the hair being compressed if wearning an helmet or something similiar
                     ogItem:setClothingItemAsset(tmogClothingItemAsset)
-                end
+                end]]
 
                 -- If can be canBeEquipped but not getBodyLocation, then it's a backpack!
                 -- So, we force the backpacks to have a BodyLocation, so that it can be hidden by pz using the group:setHideModel!
@@ -191,7 +191,10 @@ TransmogDE.getClothingItemAsset = function(scriptItem)
         scriptItem = scriptItem:getScriptItem()
     end
     local fullName = scriptItem:getFullName()
-    local clothingItemAsset = TransmogDE.BackupClothingItemAsset[fullName] or scriptItem:getClothingItemAsset()
+
+    -- Temporarily disabling Headgear Fix
+    --local clothingItemAsset = TransmogDE.BackupClothingItemAsset[fullName] or scriptItem:getClothingItemAsset()
+    local clothingItemAsset = scriptItem:getClothingItemAsset()
 
     return clothingItemAsset
 end
