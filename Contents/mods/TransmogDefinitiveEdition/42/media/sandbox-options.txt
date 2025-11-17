@@ -6,13 +6,6 @@ option TransmogDE.ImmersiveModeToggle
 	page = TransmogDE, translation = TransmogDE_ImmersiveModeToggle,
 }
 
-# Legacy headgear fix toggle — deprecated in B42 version
-# option TransmogDE.DisableHeadGearFix
-# {
-#     type = boolean, default = false,
-#     page = TransmogDE, translation = TransmogDE_DisableHeadGearFix,
-# }
-
 option TransmogDE.LimitTransmogToSameBodyLocation
 {
 	type = boolean, default = true,

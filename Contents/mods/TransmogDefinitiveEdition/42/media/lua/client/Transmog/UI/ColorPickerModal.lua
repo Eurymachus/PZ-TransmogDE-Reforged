@@ -1,5 +1,5 @@
 require "ISUI/ISCollapsableWindowJoypad"
-local Prefs     = require("Transmog/Transmog_Prefs")
+local Prefs     = require("Transmog/Prefs")
 
 ColorPickerModal = ISCollapsableWindowJoypad:derive("ColorPickerModal")
 

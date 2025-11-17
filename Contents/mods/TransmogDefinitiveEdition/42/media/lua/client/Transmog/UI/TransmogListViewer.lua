@@ -1,6 +1,6 @@
 require "ISUI/AdminPanel/ISItemsListViewer"
 require "ISUI/ISLabel"
-local Prefs     = require("Transmog/Transmog_Prefs")
+local Prefs     = require("Transmog/Prefs")
 
 TransmogListViewer = ISItemsListViewer:derive("TransmogListViewer")
 

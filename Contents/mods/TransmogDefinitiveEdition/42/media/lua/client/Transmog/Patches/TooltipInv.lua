@@ -2,105 +2,112 @@ require "ISUI/ISToolTipInv"
 
 local BACKGROUND_ALPHA = 0.9
 
-local function getTransmogLine(item)
-    if not item or not TransmogDE or not TransmogDE.isTransmoggable(item) then
-        return nil
-    end
-    local md = TransmogDE.getItemTransmogModData(item)
-    if not md or not md.transmogTo then
-        return nil
-    end
-    return getText("IGUI_TransmogDE_Tooltip_TransmogTo", getItemNameFromFullType(md.transmogTo))
+---------------------------------------------------------
+-- If BCI is active, DON'T override ISToolTipInv here.
+-- BCI will call TransmogDE.getTooltipLines(item) itself.
+---------------------------------------------------------
+if _G.BCI_TooltipInv_Active then
+    return
 end
+
+---------------------------------------------------------
+-- No BCI present:
+--   TransmogDE owns ISToolTipInv.render and appends its
+--   lines underneath vanilla DoTooltip for relevant items.
+---------------------------------------------------------
 
 local old_render = ISToolTipInv.render
 
-function ISToolTipInv:render()
+local function RenderTooltip_Transmog(self)
     -- vanilla guard: don’t show if a context menu is up
     if ISContextMenu.instance and ISContextMenu.instance.visibleCheck then
         return
     end
 
-    local shouldAddLine = true
-    if not self.item or not TransmogDE.isTransmoggable(self.item) then
-        shouldAddLine = false
+    local item = self.item
+    local tt   = self.tooltip
+
+    if not item or not tt then
+        if old_render then
+            return old_render(self)
+        end
+        return
     end
 
-    local itemModData = nil
-    if shouldAddLine then
-        itemModData = TransmogDE.getItemTransmogModData(self.item)
+    -- Precompute transmog lines; if none, just fall back fully.
+    local tLines = TransmogDE.getTooltipLines(item)
+    if not tLines then
+        if old_render then
+            return old_render(self)
+        end
+        return
     end
-    if itemModData and itemModData.transmogTo == self.item:getScriptItem():getFullName() then
-        shouldAddLine = false
-    end
-    local addLine = nil
-    if shouldAddLine then
-        addLine = itemModData.transmogTo and
-                      getText("IGUI_TransmogDE_Tooltip_TransmogTo", getItemNameFromFullType(itemModData.transmogTo)) or
-                      getText("IGUI_TransmogDE_Tooltip_TransmogHidden")
-    end
-    -- ----- mouse anchoring (vanilla) -----
+
+    -- ----- mouse anchoring (vanilla-ish) -----
     local mx = getMouseX() + 24
     local my = getMouseY() + 24
     if not self.followMouse then
-        mx = self:getX();
+        mx = self:getX()
         my = self:getY()
         if self.anchorBottomLeft then
-            mx = self.anchorBottomLeft.x;
+            mx = self.anchorBottomLeft.x
             my = self.anchorBottomLeft.y
         end
     end
 
     local PADX = 0
-    local tt = self.tooltip
+    local TEXT_X = 12
 
     tt:setX(mx + PADX)
     tt:setY(my)
     tt:setWidth(50)
 
-    -- ----- MEASURE PASS (vanilla) -----
+    -- ----- MEASURE PASS: vanilla base -----
     tt:setMeasureOnly(true)
-    if self.item then
-        self.item:DoTooltip(tt)
-    end
+    item:DoTooltip(tt)
     tt:setMeasureOnly(false)
 
-    -- capture base size
     local baseW = tt:getWidth()
     local baseH = tt:getHeight()
 
-    -- ======= TransmogDE: compute extra line BEFORE clamping =======
-    local defaultH = 44
-    local extraH, extraW = 0, 0
-    if addLine then
+    -- ----- MEASURE PASS: transmog lines -----
+    local extraW, extraH = 0, 0
+    do
         local font = UIFont.Medium
         local tm = getTextManager()
-        extraW = tm:MeasureStringX(font, addLine) + 10 -- 5px pad on each side
-        -- We don’t have lineHeight from ObjectTooltip; use a safe value.
-        extraH = math.max(tt:getLineSpacing() or defaultH, defaultH)
+        local lineH = tt:getLineSpacing() or 18
+        local padLeft, padRight = 5, 5
+
+        for _, line in ipairs(tLines) do
+            local text = line.text or ""
+            if text ~= "" then
+                local w = tm:MeasureStringX(font, text) + padLeft + padRight
+                if w > extraW then
+                    extraW = w
+                end
+                extraH = extraH + lineH
+            end
+        end
+        extraH = extraH + 10
     end
 
-    local tw = math.max(baseW, extraW) -- widen if our line is longer
-    local th = baseH + extraH -- add our line height
+    local tw = math.max(baseW, extraW)
+    local th = baseH + extraH
 
-    -- ----- CLAMP (vanilla math, but using tw/th we computed) -----
+    -- ----- CLAMP -----
     local core = getCore()
     local maxX = core:getScreenWidth()
     local maxY = core:getScreenHeight()
 
     tt:setX(math.max(0, math.min(mx + PADX, maxX - tw - 1)))
-    if not self.followMouse and self.anchorBottomLeft then
-        tt:setY(math.max(0, math.min(my - th, maxY - th - 1)))
-    else
-        tt:setY(math.max(0, math.min(my, maxY - th - 1)))
-    end
+    tt:setY(math.max(0, math.min(my, maxY - th - 1)))
 
     self:setX(tt:getX() - PADX)
     self:setY(tt:getY())
     self:setWidth(tw + PADX)
     self:setHeight(th)
 
-    -- ----- avoid overlap (vanilla) -----
+    -- ----- overlap guard -----
     if self.followMouse then
         self:adjustPositionToAvoidOverlap({
             x = mx - 24 * 2,
@@ -110,21 +117,48 @@ function ISToolTipInv:render()
         })
     end
 
-    -- ----- draw bg + border (vanilla) -----
-    self:drawRect(0, 0, self.width, self.height, BACKGROUND_ALPHA, self.backgroundColor.r, self.backgroundColor.g,
-        self.backgroundColor.b)
-    self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
-        self.borderColor.b)
+    -- ----- draw bg + border -----
+    self:drawRect(
+        0, 0,
+        self.width, self.height,
+        BACKGROUND_ALPHA,
+        self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b
+    )
+    self:drawRectBorder(
+        0, 0,
+        self.width, self.height,
+        self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b
+    )
 
-    -- ----- DRAW PASS (vanilla) -----
-    if self.item then
-        self.item:DoTooltip(tt)
-    end
+    -- ----- DRAW PASS: vanilla base -----
+    item:DoTooltip(tt)
 
-    -- ======= TransmogDE: draw our final line INSIDE the new area =======
-    if addLine then
+    -- ----- DRAW PASS: transmog lines -----
+    do
         local font = UIFont.Medium
-        local y = baseH + 4 -- just below vanilla content
-        tt:DrawText(font, addLine, 10, y, 1, 0.6, 0, 1)
+        local y = baseH + 5
+        local lineH = tt:getLineSpacing() or 18
+
+        for _, line in ipairs(tLines) do
+            local text = line.text or ""
+            if text ~= "" then
+                local r = line.r or 1.0
+                local g = line.g or 0.6
+                local b = line.b or 0.0
+                tt:DrawText(font, text, TEXT_X, y, r, g, b, 1.0)
+                y = y + lineH
+            end
+        end
     end
+end
+
+function ISToolTipInv:render()
+    return RenderTooltip_Transmog(self)
+end
+
+local old_new = ISToolTipInv.new
+function ISToolTipInv:new(item)
+    local o = old_new(self, item)
+    o.backgroundColor.a = BACKGROUND_ALPHA
+    return o
 end

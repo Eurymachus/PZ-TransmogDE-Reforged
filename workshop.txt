@@ -37,8 +37,8 @@ description=[h2]Compatibility[/h2]
 description=[list]
 description=[*][b]Build:[/b] 42.*
 description=[*][b]UI mods:[/b] Generally compatible. Mods replacing vanilla Item Tooltips will likely intefere (depending on mod load order).
-description=[*][b][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3036830549]Better Clothing Info[/url][/b]
-description= - Directly compatible with BCIC tooltips
+description=[*][b][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3604080281]Better Clothing Info[/url][/b]
+description= - Directly compatible with BCI tooltips
 description=[*][b][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950902979]Equipment UI[/url][/b]
 description= - Directly compatible with the EUI Paperdoll
 description=[*][b]Clothing mods:[/b] In theory compatible; the Transmogable items should appear in the List Viewer.
