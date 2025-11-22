@@ -114,10 +114,16 @@ TransmogDE.isTransmoggableBodylocation = function(bodyLocation)
 end
 
 TransmogDE.isTransmoggable = function(scriptItem)
+    if not scriptItem then
+        return false
+    end
     if scriptItem.getScriptItem then
         scriptItem = scriptItem:getScriptItem()
     end
 
+    if not scriptItem.getTypeString then
+        return false
+    end
     local typeString = scriptItem:getTypeString()
     local isClothing = typeString == 'Clothing'
     local bodyLocation = scriptItem:getBodyLocation()
