@@ -238,11 +238,11 @@ TransmogDE.getItemTransmogModData = function(item)
     -- First-time initialization: capture how the item looks RIGHT NOW.
     local clothingItemAsset = TransmogDE.getClothingItemAsset(item:getScriptItem())
     local visual = item:getVisual()
+    local colorObj = visual and visual.getTint and visual:getTint() or nil
 
-    local colorObj = clothingItemAsset:getAllowRandomTint() and visual:getTint() or nil
-    local textureChoice = visual:getTextureChoice()
+    local textureChoice = visual and visual.getTextureChoice and visual:getTextureChoice() or nil
 
-    local originalColor = colorObj and {
+    local originalColor = colorObj and clothingItemAsset and clothingItemAsset.getAllowRandomTint and clothingItemAsset:getAllowRandomTint() and {
         r = colorObj:getRedFloat(),
         g = colorObj:getGreenFloat(),
         b = colorObj:getBlueFloat(),
