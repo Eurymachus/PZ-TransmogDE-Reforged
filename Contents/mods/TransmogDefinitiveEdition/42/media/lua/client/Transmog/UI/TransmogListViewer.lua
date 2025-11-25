@@ -233,7 +233,7 @@ function TransmogListViewer:onBatchAction(action)
 
     TransmogDE.triggerUpdate(self.player)
     local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or actionText .. " - Complete"
-    HaloTextHelper.addGoodText(player, haloText)
+    HaloTextHelper.addGoodText(self.player, haloText)
     triggerEvent("TransmogClothingUpdate", self.player, self.itemToTmog)
 end
 
@@ -250,12 +250,12 @@ function TransmogListViewer:onClickTransmog(button)
     if request == "SHOWITEM" then
         TransmogDE.setClothingShown(self.itemToTmog)
     end
-    
+
     TransmogDE.triggerUpdate(self.player)
-    self:initialise()
+    -- Refresh this window for the same item without recreating it
+    --self:updateItemToTmogData(self.player, self.itemToTmog)
     triggerEvent("TransmogClothingUpdate", self.player, self.itemToTmog)
 end
-
 function TransmogListViewer:close()
     TexturePickerModal.Close()
     ColorPickerModal.Close()
@@ -281,15 +281,34 @@ function TransmogListViewer.Open(player, itemToTmog)
     TexturePickerModal.updateItemToTexture(player, itemToTmog)
 end
 
+function TransmogListViewer:updateItemToTmogData(player, clothing)
+    -- Keep internal refs in sync (defensive; usually same objects)
+    if player and player ~= self.player then
+        self:setPlayer(player)
+    end
+    if clothing and clothing ~= self.itemToTmog then
+        self.itemToTmog = clothing
+    end
+
+    -- Update Hide / Show button visibility for this item
+    if self.hideItem and self.showItem and self.itemToTmog then
+        local isHidden = TransmogDE.isClothingHidden(self.itemToTmog)
+        self.hideItem:setVisible(not isHidden)
+        self.showItem:setVisible(isHidden)
+    end
+end
+
 local function updateItemToTmog(player, clothing)
-    if TransmogListViewer.instance then
+    if TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible() then
         if TransmogListViewer.instance.itemToTmog ~= clothing then
             TransmogListViewer.Open(player, clothing)
+        else
+            TransmogListViewer.instance:updateItemToTmogData(player, clothing)
         end
     end
 end
 
-Events.TransmogClothingUpdate.Add(updateItemToTmog);
+Events.TransmogClothingUpdate.Add(updateItemToTmog)
 
 function TransmogListViewer:initList()
     -- Hack to use as litte code as possible and keep backcompatibility

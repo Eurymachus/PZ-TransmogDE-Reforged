@@ -4,17 +4,21 @@ local function isSinglePlayer()
     return (not isClient() and not isServer())
 end
 
+-- Only fetch global mod data here
 Events.OnGameStart.Add(function()
     TransmogClient.requestTransmogModData()
-    if isSinglePlayer() then
-        local modData = TransmogDE.GenerateTransmogGlobalModData()
-        TransmogDE.patchAllItemsFromModData(modData)
-        TmogPrint('isSinglePlayer -> OnGameStart -> patchAllItemsFromModData')
-        return
-    end
-end);
+end)
 
-if isClient() then -- the second condition is for SP
+-- Run patching here once inventory + visuals exist
+Events.OnCreatePlayer.Add(function(playerIndex, player)
+    if not isSinglePlayer() then return end
+
+    local modData = TransmogDE.GenerateTransmogGlobalModData()
+    TransmogDE.patchAllItemsFromModData(modData)
+    TmogPrint("OnCreatePlayer -> patchAllItemsFromModData")
+end)
+
+if isClient() then
     Events.OnReceiveGlobalModData.Add(TransmogClient.onReceiveGlobalModData);
     TmogPrint('OnReceiveGlobalModData.Add')
 end

@@ -113,6 +113,11 @@ TransmogDE.isTransmoggableBodylocation = function(bodyLocation)
     return not TransmogDE.invalidBodyLocations[bodyLocation] and not string.find(bodyLocation, "MakeUp_")
 end
 
+local clothingTypes = {
+    Clothing = true,
+    AlarmClockClothing = true,
+}
+
 TransmogDE.isTransmoggable = function(scriptItem)
     if not scriptItem then
         return false
@@ -125,7 +130,7 @@ TransmogDE.isTransmoggable = function(scriptItem)
         return false
     end
     local typeString = scriptItem:getTypeString()
-    local isClothing = typeString == 'Clothing'
+    local isClothing = clothingTypes[typeString] == true
     local bodyLocation = scriptItem:getBodyLocation()
     local isBackpack = typeString == "Container" and (scriptItem:InstanceItem(nil):canBeEquipped() or bodyLocation)
     local isClothingItemAsset = scriptItem:getClothingItemAsset() ~= nil
