@@ -71,9 +71,6 @@ TransmogDE.patchAllItemsFromModData = function(modData)
             TransmogDE.TmogItemToOgItemBodylocation[tmogItemName] = ogItem:getBodyLocation()
         end
     end
-
-    -- Must be triggered after items are patched
-    TransmogDE.triggerUpdate(getPlayer() or getSpecificPlayer(0))
 end
 
 TransmogDE.triggerUpdate = function(player)
