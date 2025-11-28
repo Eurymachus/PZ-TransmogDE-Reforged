@@ -14,10 +14,6 @@ Events.OnGameStart.Add(function()
     TransmogDE.patchAllItemsFromModData(modData)
 end)
 
-Events.OnCreatePlayer.Add(function(playerIndex, player)
-    TransmogDE.triggerUpdate(player)
-end)
-
 if isClient() then
     Events.OnReceiveGlobalModData.Add(TransmogClient.onReceiveGlobalModData);
     TmogPrint('OnReceiveGlobalModData.Add')

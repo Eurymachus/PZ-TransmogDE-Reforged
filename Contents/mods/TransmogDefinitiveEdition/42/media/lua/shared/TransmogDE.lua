@@ -75,11 +75,11 @@ end
 
 TransmogDE.triggerUpdate = function(player)
     if not TransmogDE._triggerUpdateLock then
-        --TransmogDE._triggerUpdateLock = true
+        -- TransmogDE._triggerUpdateLock = true
         TmogPrint('triggerUpdate')
         triggerEvent("ApplyTransmogToPlayerItems", player)
         -- triggerEvent("SyncConditionVisuals", player)
-        --TransmogDE._triggerUpdateLock = false
+        -- TransmogDE._triggerUpdateLock = false
     else
         TmogPrint('triggerUpdate - already in progress...')
     end

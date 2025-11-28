@@ -1,5 +1,3 @@
-TransmogDE = TransmogDE or {}
-
 -- /////////////////////////////////////////////////////////////////////////////
 -- Visual masking rules
 -- Key: visual "covering" BodyLocation
@@ -12,19 +10,22 @@ TransmogDE = TransmogDE or {}
 --    (original bodyLocation vs transmog target bodyLocation).
 -- /////////////////////////////////////////////////////////////////////////////
 
+local FANNYPACK_BACK = "Bag_FannyPackBack"
+local FANNYPACK_FRONT = "Bag_FannyPackFront"
+
 TransmogDE.VisualMaskRules = {
     -- Jackets (leather, suit jackets, bombers, etc.)
     -- In vanilla behaviour, these visually cover fannypacks.
     Jacket = {
-        "FannyPackFront",
-        "FannyPackBack",
+        FANNYPACK_BACK,
+        FANNYPACK_FRONT,
     },
 
     -- Full-body suits / overalls which clearly cloak the waist area.
     -- You can adjust this once we look at specific items you care about.
-    FullSuit = {
-        "FannyPackFront",
-        "FannyPackBack",
+    Suit_Jacket = {
+        FANNYPACK_BACK,
+        FANNYPACK_FRONT,
         -- If we decide later that things like belt pouches / rigs
         -- should be hidden too, we can add:
         -- "BeltExtra",
