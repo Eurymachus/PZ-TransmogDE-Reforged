@@ -14,41 +14,6 @@ local function wearHideEverything(player)
     TmogPrint('wearHideEverything - Done')
 end
 
--- Return the *visual* BodyLocation for a given worn item.
--- This respects TransmogDE state:
---   * if the item is transmogged, we return the BodyLocation of the transmog target
---   * otherwise we return the item's own BodyLocation.
-local function getItemVisualBodyLocation(item)
-    if not item then
-        return nil
-    end
-
-    local scriptItem = item:getScriptItem()
-    if not scriptItem then
-        return nil
-    end
-
-    -- Default: use the item's own body location.
-    local bodyLoc = scriptItem:getBodyLocation() or item:getBodyLocation()
-
-    -- If the item is transmogged, prefer the BodyLocation of the transmog target.
-    if TransmogDE and TransmogDE.getItemTransmogModData and TransmogDE.isTransmoggable
-        and TransmogDE.isTransmoggable(item) then
-
-        local tmogData = TransmogDE.getItemTransmogModData(item)
-        if tmogData and tmogData.transmogTo then
-            local sm = getScriptManager()
-            if sm then
-                local targetScriptItem = sm:FindItem(tmogData.transmogTo)
-                if targetScriptItem then
-                    bodyLoc = targetScriptItem:getBodyLocation() or bodyLoc
-                end
-            end
-        end
-    end
-
-    return bodyLoc
-end
 local function wearTransmogItems(player)
     local wornItems = player:getWornItems()
     local playerInv = player:getInventory()
@@ -75,13 +40,10 @@ local function wearTransmogItems(player)
                 -- If this clothing is explicitly hidden by TransmogDE, it should
                 -- not act as a visual "covering" layer.
                 if not TransmogDE.isClothingHidden or not TransmogDE.isClothingHidden(item) then
-                    local visualLoc = getItemVisualBodyLocation(item)
-                    if visualLoc then
-                        local hiddenForThis = TransmogDE.getHiddenVisualSlotsForCovering(visualLoc)
-                        if hiddenForThis then
-                            for slot, _ in pairs(hiddenForThis) do
-                                hiddenVisualSlots[slot] = true
-                            end
+                    local hiddenForThis = TransmogDE.getHiddenVisualSlotsForCovering(item)
+                    if hiddenForThis then
+                        for slot, _ in pairs(hiddenForThis) do
+                            hiddenVisualSlots[slot] = true
                         end
                     end
                 end
@@ -94,17 +56,23 @@ local function wearTransmogItems(player)
     --         the hiddenVisualSlots set built above.
     -- //////////////////////////////////////////////////////////////
     for i = 0, wornItems:size() - 1 do
-        local item = wornItems:getItemByIndex(i);
-        -- TmogPrint("Worn item: " .. tostring(item:getScriptItem():getFullName()))
+        local item = wornItems:getItemByIndex(i)
+
+        ----------------------------------------------------------------
+        -- 1) REAL ITEMS: create carriers if transmoggable & not masked
+        ----------------------------------------------------------------
         if item and TransmogDE.isTransmoggable and TransmogDE.isTransmoggable(item)
             and not TransmogDE.getTransmogChild(item) then
 
-            -- If this item's *visual* slot is masked by the current outfit,
-            -- skip creating/wearing a carrier for it.
-            local visualLoc = getItemVisualBodyLocation(item)
-            if not (visualLoc and hiddenVisualSlots[visualLoc]) then
-                -- check if it has an existing tmogitem
-                -- if not create a new tmog item, and bind it using the parent item id
+            -- Determine the *visual* slot this REAL item represents.
+            local visualLoc = TransmogDE.getItemVisualBodyLocation(item)
+            local isMasked = visualLoc and hiddenVisualSlots[visualLoc] or false
+
+            TmogPrint(tostring(item) .. " (real) isMasked = " .. tostring(isMasked)
+                .. " | visualLoc=" .. tostring(visualLoc))
+
+            if not isMasked then
+                -- No existing child and not masked → create carrier.
                 local tmogItem = TransmogDE.createTransmogItem(item, player)
                 if tmogItem then
                     table.insert(toWear, tmogItem)
@@ -112,21 +80,42 @@ local function wearTransmogItems(player)
             end
         end
 
+        ----------------------------------------------------------------
+        -- 2) CARRIERS: remove if masked OR parent missing/unequipped
+        ----------------------------------------------------------------
         if item and TransmogDE.isTransmogItem and TransmogDE.isTransmogItem(item)
             and not item:hasTag("Hide_Everything") then
-            -- check if it still has a worn parent
+
             local tmogParentId = item:getModData()['TransmogParent']
             local parentItem = tmogParentId and playerInv:getItemById(tmogParentId)
-            -- use isEquipped, isWorn is only for clothing, does not include backpacks
+
+            -- If parent is missing or not equipped, we don't care about masking;
+            -- the carrier is stale and should go.
             if not tmogParentId or not parentItem or not parentItem:isEquipped() then
-                -- parent either does not exist anymore, or it's unequipped, or it was never set
-                -- in these cases, mark item to remove
                 table.insert(toRemove, item)
             else
-                TransmogDE.syncConditionVisualsForTmog(item)
+                -- Determine the *visual* slot this carrier represents via its parent.
+                local visualLoc = TransmogDE.getItemVisualBodyLocation(parentItem)
+                local isMasked = visualLoc and hiddenVisualSlots[visualLoc] or false
+
+                TmogPrint(tostring(item) .. " (carrier) isMasked = " .. tostring(isMasked)
+                    .. " | parent=" .. tostring(parentItem) ..
+                    " | visualLoc=" .. tostring(visualLoc))
+
+                if isMasked then
+                    -- Parent still equipped, but its visual slot is now masked by some other item.
+                    -- → Remove the carrier.
+                    TmogPrint("Carrier masked, removing: " .. tostring(item) ..
+                        " | VisualLoc: " .. tostring(visualLoc))
+                    table.insert(toRemove, item)
+                else
+                    -- Still valid and not masked → keep and sync visuals.
+                    TransmogDE.syncConditionVisualsForTmog(item)
+                end
             end
         end
     end
+
 
     for _, tmogItem in ipairs(toWear) do
         TransmogDE.setWornItemTmog(player, tmogItem)
@@ -171,24 +160,32 @@ LuaEventManager.AddEvent("SyncConditionVisuals");
 Events.ApplyTransmogToPlayerItems.Add(applyTransmogToPlayerItems);
 Events.SyncConditionVisuals.Add(syncAllVisuals);
 
-local function onClothingUpdated(player)
-    TmogPrint("onClothingUpdated Fired")
-    TransmogDE.triggerUpdate(player)
+-- Per-player dirty flags, keyed by playerNum
+TransmogDE._clothingDirty = TransmogDE._clothingDirty or {}
 
-    if TransmogListViewer.instance then
+local function onClothingUpdated(player)
+    if not player or not instanceof(player, "IsoPlayer") then
+        return
+    end
+
+    -- Only care about the local player in SP (B42 is SP only)
+    if not player:isLocalPlayer() then
+        return
+    end
+
+    local playerNum = player:getPlayerNum() or 0
+
+    -- Mark clothing dirty; OnPlayerUpdate will handle the heavy work.
+    TransmogDE._clothingDirty[playerNum] = true
+
+    TmogPrint("OnClothingUpdated -> mark clothing dirty for player " .. tostring(playerNum))
+
+    if TransmogListViewer and TransmogListViewer.instance then
         TransmogListViewer.instance:initialise()
     end
 end
 
 Events.OnClothingUpdated.Add(onClothingUpdated)
-
-
-Events.OnGameStart.Add(function()
-    local player = getPlayer() or getSpecificPlayer(0) or nil
-    if player then
-        syncAllVisuals(player)
-    end
-end)
 
 -- cache original function once
 if not TransmogDE._orig_ISWearClothing_complete then

@@ -10,25 +10,41 @@
 --    (original bodyLocation vs transmog target bodyLocation).
 -- /////////////////////////////////////////////////////////////////////////////
 
-local FANNYPACK_BACK = "Bag_FannyPackBack"
-local FANNYPACK_FRONT = "Bag_FannyPackFront"
+local LEFTWRIST = "LeftWrist"
+local RIGHTWRIST = "RightWrist"
+local FANNYPACK_BACK = "FannyPackBack"
+local FANNYPACK_FRONT = "FannyPackFront"
 
 TransmogDE.VisualMaskRules = {
-    -- Jackets (leather, suit jackets, bombers, etc.)
-    -- In vanilla behaviour, these visually cover fannypacks.
-    Jacket = {
+    -- Suit Jackets/Long Jackets
+    JacketSuit = {
+        LEFTWRIST,
+        RIGHTWRIST,
         FANNYPACK_BACK,
         FANNYPACK_FRONT,
     },
-
-    -- Full-body suits / overalls which clearly cloak the waist area.
-    -- You can adjust this once we look at specific items you care about.
-    Suit_Jacket = {
+    -- Jackets
+    Jacket = {
+        LEFTWRIST,
+        RIGHTWRIST,
         FANNYPACK_BACK,
         FANNYPACK_FRONT,
-        -- If we decide later that things like belt pouches / rigs
-        -- should be hidden too, we can add:
-        -- "BeltExtra",
+    },
+    -- Sweaters and Hoodies
+    Sweater = {
+        -- If we hide watches for Sweaters we hide them for Sweater Vests too
+        -- LEFTWRIST,
+        -- RIGHTWRIST,
+        FANNYPACK_BACK,
+        FANNYPACK_FRONT,
+    },
+    -- Hoodies with hood up
+    SweaterHat = {
+        -- Ignore hiding watches for all Sweater types, it doesnt look too horrible
+        -- LEFTWRIST,
+        -- RIGHTWRIST,
+        FANNYPACK_BACK,
+        FANNYPACK_FRONT,
     },
 }
 
@@ -51,17 +67,57 @@ function TransmogDE.addVisualMaskRule(coveringSlot, hiddenSlot)
     table.insert(rules[coveringSlot], hiddenSlot)
 end
 
+-- Return the *visual* BodyLocation for a given worn item.
+-- This respects TransmogDE state:
+--   * if the item is transmogged, we return the BodyLocation of the transmog target
+--   * otherwise we return the item's own BodyLocation.
+function TransmogDE.getItemVisualBodyLocation(item)
+    if not item then
+        return nil
+    end
+
+    local scriptItem = item:getScriptItem()
+    if not scriptItem then
+        return nil
+    end
+
+    -- Default: use the item's own body location.
+    local bodyLoc = scriptItem:getBodyLocation() or item:getBodyLocation()
+
+    -- If the item is transmogged, prefer the BodyLocation of the transmog target.
+    if TransmogDE and TransmogDE.getItemTransmogModData and TransmogDE.isTransmoggable
+        and TransmogDE.isTransmoggable(item) then
+
+        local tmogData = TransmogDE.getItemTransmogModData(item)
+        if tmogData and tmogData.transmogTo then
+            local sm = getScriptManager()
+            if sm then
+                local targetScriptItem = sm:FindItem(tmogData.transmogTo)
+                if targetScriptItem then
+                    bodyLoc = targetScriptItem:getBodyLocation() or bodyLoc
+                end
+            end
+        end
+    end
+
+    return bodyLoc
+end
+
 --- Get all visual slots that should be hidden when a given covering slot is visible.
 -- @param coveringSlot string BodyLocation of the covering visual slot.
 -- @return table<string, boolean>  Set-style table of hidden slots, e.g. { FannyPackFront = true, ... }
-function TransmogDE.getHiddenVisualSlotsForCovering(coveringSlot)
-    local out = {}
-    local rules = TransmogDE.VisualMaskRules[coveringSlot]
-    if not rules then return out end
+function TransmogDE.getHiddenVisualSlotsForCovering(item)
+    local coveringSlot = TransmogDE.getItemVisualBodyLocation(item)
+    if coveringSlot then
+        local out = {}
+        local rules = TransmogDE.VisualMaskRules[coveringSlot]
+        if not rules then return out end
 
-    for _, slot in ipairs(rules) do
-        out[slot] = true
+        for _, slot in ipairs(rules) do
+            out[slot] = true
+            TmogPrint(tostring(coveringSlot) .. " hides: " .. tostring(slot))
+        end
+
+        return out
     end
-
-    return out
 end

@@ -74,15 +74,13 @@ TransmogDE.patchAllItemsFromModData = function(modData)
 end
 
 TransmogDE.triggerUpdate = function(player)
-    if not TransmogDE._triggerUpdateLock then
-        -- TransmogDE._triggerUpdateLock = true
-        TmogPrint('triggerUpdate')
-        triggerEvent("ApplyTransmogToPlayerItems", player)
-        -- triggerEvent("SyncConditionVisuals", player)
-        -- TransmogDE._triggerUpdateLock = false
-    else
-        TmogPrint('triggerUpdate - already in progress...')
-    end
+    TmogPrint('triggerUpdate')
+    triggerEvent("ApplyTransmogToPlayerItems", player)
+end
+
+TransmogDE.triggerUpdateVisuals = function(player)
+    TmogPrint('triggerUpdateVisuals')
+    triggerEvent("SyncConditionVisuals", player)
 end
 
 TransmogDE.invalidBodyLocations = {
@@ -805,6 +803,7 @@ local function clearPatches(vDst)
 end
 
 function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
+    TmogPrint("syncConditionVisuals triggered for: " .. tostring(sourceItem))
     if not (carrierItem and sourceItem and carrierItem.getVisual and sourceItem.getVisual) then
         return false
     end
