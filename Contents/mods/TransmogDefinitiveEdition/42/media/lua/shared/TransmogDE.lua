@@ -97,7 +97,8 @@ TransmogDE.invalidBodyLocations = {
     LowerBody_Tattoo = true, -- Support for "elies tattoo"
     UpperBody_Tattoo = true, -- Support for "elies tattoo"
     RightArm_Tattoo = true, -- Support for "elies tattoo"
-    LeftArm_Tattoo = true -- Support for "elies tattoo"
+    LeftArm_Tattoo = true, -- Support for "elies tattoo"
+    Mask_Smoke = true, -- Support for "True Smoking" mod
 }
 
 TransmogDE.addBodyLocationToIgnore = function(bodyLocation)
@@ -281,6 +282,7 @@ TransmogDE.getTransmogChild = function(invItem)
     end
 
     local container = invItem:getContainer()
+    -- if not container then return end
     -- find the item by ID, ensure it exists, then return it
     return container:getItemById(itemTmogModData.childId)
 end
