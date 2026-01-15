@@ -1,0 +1,101 @@
+local iconTexture = getTexture("media/ui/TransmogIcon.png")
+local textMenu = getText("IGUI_TransmogDE_Context_Menu")
+local textTransmogrify = getText("IGUI_TransmogDE_Context_Transmogrify")
+local textHide = getText("IGUI_TransmogDE_Context_Hide")
+local textShow = getText("IGUI_TransmogDE_Context_Show")
+local textDefault = getText("IGUI_TransmogDE_Context_Default")
+local textRemoveTransmog = getText("IGUI_TransmogDE_Context_RemoveTransmog")
+local textColor = getText("IGUI_TransmogDE_Context_Color")
+local textTexture = getText("IGUI_TransmogDE_Context_Texture")
+
+local addEditTransmogItemOption = function(playerNum, context, items)
+    local player = getSpecificPlayer(playerNum)
+    local testItem = nil
+    local clothing = nil
+    for _, v in ipairs(items) do
+        testItem = v
+        if not instanceof(v, "InventoryItem") then
+            testItem = v.items[1]
+        end
+        if TransmogDE.isTransmoggable(testItem) then
+            clothing = testItem
+        end
+    end
+
+    if tostring(#items) == "1" and clothing then
+        local option = context:addOption(textMenu);
+        option.iconTexture = iconTexture
+        local menuContext = context:getNew(context);
+        context:addSubMenu(option, menuContext);
+
+        menuContext:addOption(textTransmogrify, clothing, function()
+            TransmogListViewer.Open(player, clothing)
+            --TransmogDE.triggerUpdate(player)
+        end)
+
+        if not TransmogDE.isClothingHidden(clothing) then
+            menuContext:addOption(textHide, clothing, function()
+                TransmogNet.requestHide(player, clothing)
+            end)
+        else
+            menuContext:addOption(textShow, clothing, function()
+                TransmogNet.requestShow(player, clothing)
+            end)
+        end
+
+        local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
+        if not transmogTo then
+            return
+        end
+
+        local tmogScriptItem = ScriptManager.instance:getItem(transmogTo)
+        if not tmogScriptItem then
+            return context
+        end
+
+        local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
+        if tmogClothingItemAsset:getAllowRandomTint() then
+            menuContext:addOption(textColor, clothing, function()
+                ColorPickerModal.Open(clothing, player)
+            end);
+        end
+
+        local textureChoices = tmogClothingItemAsset:hasModel() and tmogClothingItemAsset:getTextureChoices() or
+                                   tmogClothingItemAsset:getBaseTextures()
+
+        -- TmogPrint('clothing', clothing)
+        -- TmogPrint('clothing.getClothingItem', clothing:getClothingItem())
+        -- TmogPrint('transmogTo', transmogTo)
+        -- TmogPrint('tmogClothingItemAsset', tmogClothingItemAsset)
+        -- TmogPrint('hasModel()', tmogClothingItemAsset:hasModel())
+        -- TmogPrint('getTextureChoices()', tmogClothingItemAsset:getTextureChoices())
+        -- TmogPrint('getBaseTextures()', tmogClothingItemAsset:getBaseTextures())
+        if textureChoices and (textureChoices:size() > 1) then
+            menuContext:addOption(textTexture, clothing, function()
+                TexturePickerModal.Open(clothing, player, textureChoices)
+            end);
+        end
+
+        if TransmogDE.isTransmogged(clothing) then
+            local removeTransmog = menuContext:addOption(textRemoveTransmog, clothing, function()
+                TransmogNet.requestRemoveTransmog(player, clothing)
+                --TransmogDE.triggerUpdate(player)
+            end);
+            removeTransmog.goodColor = true
+        end
+
+        local setItemToDefault = menuContext:addOption(
+            textDefault,
+            clothing,
+            function()
+                TransmogNet.requestResetDefault(player, clothing)
+                --TransmogDE.triggerUpdate(player)
+            end
+        );
+        setItemToDefault.badColor = true
+    end
+
+    return context
+end
+
+Events.OnFillInventoryObjectContextMenu.Add(addEditTransmogItemOption)
