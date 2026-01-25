@@ -9,12 +9,11 @@ Events.OnGameStart.Add(function()
     if isClient() then
         TransmogClient.requestTransmogModData()
         return
-    else
-        -- Build/persist global transmog data
-        local modData = TransmogDE.GenerateTransmogGlobalModData()
-
-        TransmogDE.patchAllItemsFromModData(modData)
     end
+    -- Build/persist global transmog data
+    local modData = TransmogDE.GenerateTransmogGlobalModData()
+
+    TransmogDE.patchAllItemsFromModData(modData)
 end)
 
 if isClient() then

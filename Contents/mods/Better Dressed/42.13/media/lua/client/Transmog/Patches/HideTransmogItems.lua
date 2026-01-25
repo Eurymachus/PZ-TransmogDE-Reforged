@@ -39,17 +39,9 @@ local function hideTransmogs()
             -- Equipment UI restores to cachedItemList after draw; keep it coherent.
             self.cachedItemList = filteredItems
         end
-
-        -- If Equipment UI built a hideEquipped list, filter that, too
-        if self.hideEquippedItemsList then
-            local filteredHide = _filterList(self.hideEquippedItemsList)
-            if filteredHide ~= self.hideEquippedItemsList then
-                self.hideEquippedItemsList = filteredHide
-            end
-        end
     end
 
     DebugLog.log(DebugType.General, "[TransmogDE] Post-refresh filter installed (compatible with Equipment UI).")
 end
 
-Events.OnGameStart.Add(hideTransmogs)
+--Events.OnGameStart.Add(hideTransmogs)

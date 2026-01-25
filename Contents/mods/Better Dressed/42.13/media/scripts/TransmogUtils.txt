@@ -6,7 +6,7 @@ module TransmogDE {
         DisplayCategory = TransmogHide,
         ItemType = base:clothing,
         Cosmetic = TRUE,
-        Hidden = FALSE,
+        Hidden = TRUE,
         /* DisplayName = Tmog - Hide All Clothing, */
         Tags = TransmogDE:Hide_Everything,
         ClothingItem = Hide_Everything,

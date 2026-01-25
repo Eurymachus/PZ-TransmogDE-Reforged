@@ -136,18 +136,16 @@ TransmogDE.invalidBodyLocations = {
     ["base:wound"]                           = true,
     ["base:zeddmg"]                          = true,
 
-    -- These depend on the other mods’ registry IDs; we’ll also
-    -- support them by short-name (see normalisation below).
-    ["fur"]                 = true,
-    ["face_tattoo"]         = true,
-    ["back_tattoo"]         = true,
-    ["rightleg_tattoo"]     = true,
-    ["leftleg_tattoo"]      = true,
-    ["lowerbody_tattoo"]    = true,
-    ["upperbody_tattoo"]    = true,
-    ["rightarm_tattoo"]     = true,
-    ["leftarm_tattoo"]      = true,
-    ["mask_smoke"]          = true,
+    -- SPNCC (character customisation layers)
+    ["spncc:blank"]          = true,
+    ["spncc:bodyhair"]       = true,
+    ["spncc:muscle"]         = true,
+    ["spncc:face"]           = true,
+    ["spncc:bodydetail"]     = true,
+    ["spncc:stubblebeard"]   = true,
+    ["spncc:stubblehead"]    = true,
+    ["spncc:bodydetail2"]    = true,
+    ["spncc:face_model"]     = true,
 }
 
 TransmogDE.addBodyLocationToIgnore = function(bodyLocation)
@@ -175,7 +173,7 @@ TransmogDE.isTransmoggable = function(item)
     end
     if not scriptItem then return false end
 
-    local itemType = scriptItem:getItemType()
+    local itemType = scriptItem.getItemType and scriptItem:getItemType() or nil
     if not itemType then return false end
 
     -- Clothing types (registry-backed)
@@ -200,7 +198,10 @@ TransmogDE.isTransmoggable = function(item)
 
     -- Body location (ItemBodyLocation, 42.13)
     local bodyLocation = scriptItem:getBodyLocation()
-    if not TransmogDE.isTransmoggableBodylocation(bodyLocation) then return false end
+    if not TransmogDE.isTransmoggableBodylocation(bodyLocation) then
+        --TmogPrint("Bodylocation [" .. tostring(bodyLocation) .. "] not transmogable for " .. "item [" .. tostring(item:getDisplayName()) .. "]")
+        return false
+    end
 
     -- Final gates
     if scriptItem:getModuleName() == "TransmogDE" then return false end
