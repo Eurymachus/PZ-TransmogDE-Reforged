@@ -256,25 +256,6 @@ function TransmogListViewer:close()
     ISItemsListViewer.close(self)
 end
 
-function TransmogListViewer.Open(player, itemToTmog)
-    if not TransmogListViewer.instance then
-        local x = 50
-        local y = 200
-        local width = 1000
-        local height = 650
-        local modal = TransmogListViewer:new(x, y, width, height, itemToTmog)
-        modal:initialise()
-        modal:addToUIManager()
-        modal:restoreWindowState()
-        modal:removeChild(modal.playerSelect)
-        modal.instance:setPlayer(player)
-        modal.instance:setKeyboardFocus()
-    end
-    TransmogListViewer.instance:updateItemToTmogData(player, itemToTmog)
-    ColorPickerModal.updateItemToColor(player, itemToTmog)
-    TexturePickerModal.updateItemToTexture(player, itemToTmog)
-end
-
 function TransmogListViewer:updateItemToTmogData(player, clothing)
     -- Keep internal refs in sync (defensive; usually same objects)
     if player and player ~= self.player then
@@ -292,17 +273,41 @@ function TransmogListViewer:updateItemToTmogData(player, clothing)
     end
 end
 
-local function updateItemToTmog(player, clothing)
+local function updateItemToTmog(player, clothing, forceOpen)
     if TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible() then
         if TransmogListViewer.instance.itemToTmog ~= clothing then
-            TransmogListViewer.Open(player, clothing)
+            TransmogListViewer.OpenNew(player, clothing)
         else
             TransmogListViewer.instance:updateItemToTmogData(player, clothing)
         end
+        return
+    end
+    if forceOpen then
+        TransmogListViewer.OpenNew(player, clothing)
     end
 end
 
 Events.TransmogClothingUpdate.Add(updateItemToTmog)
+
+function TransmogListViewer.OpenNew(player, clothing)
+    local x = 50
+    local y = 200
+    local width = 1000
+    local height = 650
+    local modal = TransmogListViewer:new(x, y, width, height, clothing)
+    modal:initialise()
+    modal:addToUIManager()
+    modal:restoreWindowState()
+    modal:removeChild(modal.playerSelect)
+    modal:setPlayer(player)
+    modal:setKeyboardFocus()
+end
+
+function TransmogListViewer.Open(player, clothing)
+    updateItemToTmog(player, clothing, true)
+    ColorPickerModal.updateItemToColor(player, clothing)
+    TexturePickerModal.updateItemToTexture(player, clothing)
+end
 
 function TransmogListViewer:initList()
     -- Hack to use as litte code as possible and keep backcompatibility
