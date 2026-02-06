@@ -146,6 +146,15 @@ TransmogDE.invalidBodyLocations = {
     ["spncc:stubblehead"]    = true,
     ["spncc:bodydetail2"]    = true,
     ["spncc:face_model"]     = true,
+
+    -- AuthenticZ
+    ["AZ:HeadExtra"]         = true,
+    ["AZ:HeadExtraHair"]     = true,
+    ["AZ:HeadExtraPlus"]     = true,
+    ["AZ:NeckExtra"]         = true,
+    ["AZ:LegsExtra"]         = true,
+    ["AZ:TorsoRigPlus2"]     = true,
+    ["AZ:TorsoExtraPlus1"]   = true,
 }
 
 TransmogDE.addBodyLocationToIgnore = function(bodyLocation)
@@ -450,6 +459,29 @@ TransmogDE.getClothingColor = function(item)
                             ImmutableColor.new(
             Color.new(itemModData.color.r, itemModData.color.g, itemModData.color.b, itemModData.color.a))
     return parsedColor or item:getVisual():getTint()
+end
+
+-- Returns ColorInfo or nil
+TransmogDE.getClothingColorAsInfo = function(item)
+    if not item then return nil end
+
+    -- Prefer transmog modData if present
+    local md = TransmogDE.getItemTransmogModData(item)
+    local c  = md and md.color or nil
+
+    if c and c.r and c.g and c.b then
+        -- c.r/g/b/a are already floats 0..1 in your schema
+        local a = (c.a ~= nil) and c.a or 1
+        return ColorInfo.new(c.r, c.g, c.b, a)
+    end
+
+    -- Fallback to current visual tint (ImmutableColor)
+    local tint = item:getVisual() and item:getVisual():getTint() or nil
+    if tint then
+        return ColorInfo.new(tint:getR(), tint:getG(), tint:getB(), tint:getA())
+    end
+
+    return nil
 end
 
 TransmogDE.getClothingTexture = function(item)

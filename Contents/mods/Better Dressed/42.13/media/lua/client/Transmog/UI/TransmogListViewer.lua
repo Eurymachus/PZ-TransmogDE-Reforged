@@ -250,26 +250,27 @@ function TransmogListViewer:onClickTransmog(button)
 end
 
 function TransmogListViewer:close()
+    TransmogListViewer.instance = nil
     TexturePickerModal.Close()
     ColorPickerModal.Close()
     ISItemsListViewer.close(self)
 end
 
 function TransmogListViewer.Open(player, itemToTmog)
-    if TransmogListViewer.instance then
-        TransmogListViewer.instance:close()
+    if not TransmogListViewer.instance then
+        local x = 50
+        local y = 200
+        local width = 1000
+        local height = 650
+        local modal = TransmogListViewer:new(x, y, width, height, itemToTmog)
+        modal:initialise()
+        modal:addToUIManager()
+        modal:restoreWindowState()
+        modal:removeChild(modal.playerSelect)
+        modal.instance:setPlayer(player)
+        modal.instance:setKeyboardFocus()
     end
-    local x = 50
-    local y = 200
-    local width = 1000
-    local height = 650
-    local modal = TransmogListViewer:new(x, y, width, height, itemToTmog)
-    modal:initialise()
-    modal:addToUIManager()
-    modal:restoreWindowState()
-    modal:removeChild(modal.playerSelect)
-    modal.instance:setPlayer(player)
-    modal.instance:setKeyboardFocus()
+    TransmogListViewer.instance:updateItemToTmogData(player, itemToTmog)
     ColorPickerModal.updateItemToColor(player, itemToTmog)
     TexturePickerModal.updateItemToTexture(player, itemToTmog)
 end

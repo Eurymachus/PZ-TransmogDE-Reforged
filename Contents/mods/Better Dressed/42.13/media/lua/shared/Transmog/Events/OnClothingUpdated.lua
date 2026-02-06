@@ -140,17 +140,22 @@ local function wearTransmogItems(player)
 
             local tmogParentId = item:getModData()['TransmogParent']
             local parentItem = tmogParentId and playerInv:getItemById(tmogParentId)
-            local parentDisplayName = parentItem and parentItem:getDisplayName()
+            local parentDisplayName = parentItem and parentItem:getDisplayName() or "No Known Parent"
+            local parentUnequipped = parentItem and not parentItem:isEquipped()
+            local pmd = parentItem and parentItem:getModData()
 
             -- If parent is missing or not equipped, we don't care about masking;
             -- the carrier is stale and should go.
-            if not tmogParentId or not parentItem or not parentItem:isEquipped() then
+            if not tmogParentId or not parentItem or parentUnequipped then
                 TmogPrint("Item to remove: " .. tostring(itemDisplayName))
 
                 TmogPrint(tostring(item) .. " (carrier)"
                     .. " | tmogParentId = ".. tostring(tmogParentId)
                     .. " | parentItem = " .. tostring(parentDisplayName)
-                    .. " | parentEquipped = false")
+                    .. " | parentUnquipped = " .. tostring(parentUnequipped))
+                if pmd and pmd.Transmog and pmd.Transmog.childId == item:getID() then
+                    --pmd.Transmog.childId = nil
+                end
                 table.insert(toRemove, item)
             else
                 -- Determine the *visual* slot this carrier represents via its parent.
@@ -168,6 +173,9 @@ local function wearTransmogItems(player)
                     -- → Remove the carrier.
                     TmogPrint("Carrier masked, removing: " .. tostring(itemDisplayName) ..
                         " | VisualLoc: " .. visualLocString)
+                    if pmd and pmd.Transmog and pmd.Transmog.childId == item:getID() then
+                        --pmd.Transmog.childId = nil
+                    end
                     table.insert(toRemove, item)
                 else
                     -- Still valid and not masked → keep and sync visuals.

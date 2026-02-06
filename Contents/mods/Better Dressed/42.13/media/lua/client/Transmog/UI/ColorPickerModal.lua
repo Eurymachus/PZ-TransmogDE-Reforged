@@ -33,6 +33,11 @@ function ColorPickerModal:onColorSelected(color)
 end
 
 function ColorPickerModal:close()
+	-- Clear singleton so later clothing updates can't "revive" this UI
+	if ColorPickerModal.instance == self then
+		ColorPickerModal.instance = nil
+	end
+
 	self:removeFromUIManager()
 	if JoypadState.players[self.playerNum + 1] then
 		setJoypadFocus(self.playerNum, self.prevFocus)
@@ -64,14 +69,26 @@ function ColorPickerModal:onMouseUpOutside(x, y)
     if moving or resizing then self:saveWindowState() end
 end
 
-function ColorPickerModal.Open(clothing, player)
+function ColorPickerModal:setInitialFromItem()
+	local color = TransmogDE.getClothingColorAsInfo(self.item)
+	if not color then return end
+	self.colorPicker:setInitialColor(color)
+end
+
+function ColorPickerModal:updateTmogItemToColor(clothing)
+	self.item = clothing
+	self:setInitialFromItem()
+end
+
+function ColorPickerModal.Open(player, clothing)
 	if ColorPickerModal.instance then
 		ColorPickerModal.instance:close()
 	end
-	local modal = ColorPickerModal:new(clothing, player)
+	local modal = ColorPickerModal:new(player, clothing)
 	modal:initialise()
 	modal:addToUIManager()
 	modal:restoreWindowState()
+	modal:setInitialFromItem()
 end
 
 function ColorPickerModal.Close()
@@ -81,7 +98,8 @@ function ColorPickerModal.Close()
 end
 
 function ColorPickerModal.updateItemToColor(player, clothing)
-	local isOpen = ColorPickerModal.instance and ColorPickerModal.instance:getIsVisible()
+	local modal = ColorPickerModal.instance
+	local isOpen = modal and modal:getIsVisible()
 	local isTransmogOpen = TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible()
 	if isOpen or isTransmogOpen then
 		local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
@@ -90,7 +108,11 @@ function ColorPickerModal.updateItemToColor(player, clothing)
 			if tmogScriptItem then
 				local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
 				if tmogClothingItemAsset:getAllowRandomTint() then
-					ColorPickerModal.Open(clothing, player)
+					if isOpen then
+						modal:updateTmogItemToColor(clothing)
+					else
+						ColorPickerModal.Open(player, clothing)
+					end
 				else
 					ColorPickerModal.Close()
 				end
@@ -101,7 +123,7 @@ end
 
 Events.TransmogClothingUpdate.Add(ColorPickerModal.updateItemToColor);
 
-function ColorPickerModal:new(item, character)
+function ColorPickerModal:new(character, item)
 	local width = 550
 	local height = 200
 	local x = getCore():getScreenWidth() / 2 - (width / 2);

@@ -1,24 +1,28 @@
 TransmogDE = TransmogDE or {}
-TransmogDE.ItemBodyLocation = {
-    TransmogLocation = ItemBodyLocation.get(ResourceLocation.of("TransmogDE:Transmog_Location")), --ItemBodyLocation.register("TransmogDE:TransmogLocation"),
-    Hide_Everything = ItemBodyLocation.get(ResourceLocation.of("TransmogDE:Hide_Everything_Location")), --ItemBodyLocation.register("TransmogDE:Hide_Everything"),
-}
+TransmogDE.ItemBodyLocation = {}
+TransmogDE.ItemTag = {}
+TransmogDE.BodyLocations = {}
 
-TransmogDE.ItemTag = {
-    Hide_Everything = ItemTag.get(ResourceLocation.of("TransmogDE:Hide_Everything")), -- ItemTag.register("TransmogDE:Hide_Everything"),
-}
+local function updateTransmogBodyLocations()
+	TransmogDE.ItemBodyLocation = {
+		TransmogLocation = ItemBodyLocation.get(ResourceLocation.of("TransmogDE:Transmog_Location")),
+		--ItemBodyLocation.register("TransmogDE:TransmogLocation"),
+		Hide_Everything = ItemBodyLocation.get(ResourceLocation.of("TransmogDE:Hide_Everything_Location")),
+		--ItemBodyLocation.register("TransmogDE:Hide_Everything"),
+	}
+	TransmogDE.ItemTag = {
+		Hide_Everything = ItemTag.get(ResourceLocation.of("TransmogDE:Hide_Everything")),
+		-- ItemTag.register("TransmogDE:Hide_Everything"),
+	}
+	local locTransmog = TransmogDE.ItemBodyLocation.TransmogLocation
+	local locHide = TransmogDE.ItemBodyLocation.Hide_Everything
 
-local locTransmog = TransmogDE.ItemBodyLocation.TransmogLocation
-local locHide = TransmogDE.ItemBodyLocation.Hide_Everything
-
-local group = BodyLocations.getGroup("Human")
-TransmogDE.BodyLocations = {
-	TransmogLocation = group:getOrCreateLocation(locTransmog),
-	Hide_Everything = group:getOrCreateLocation(locHide),
-}
-group:setMultiItem(locTransmog, true)
-
-local function updateBodyLocations()
+	local group = BodyLocations.getGroup("Human")
+	TransmogDE.BodyLocations = {
+		TransmogLocation = group:getOrCreateLocation(locTransmog),
+		Hide_Everything = group:getOrCreateLocation(locHide),
+	}
+	group:setMultiItem(locTransmog, true)
 	local locations = group:getAllLocations();
 	local locationsSize = locations:size() - 1
 
@@ -31,4 +35,4 @@ local function updateBodyLocations()
 	end
 end
 
-Events.OnGameStart.Add(updateBodyLocations)
+Events.OnGameBoot.Add(updateTransmogBodyLocations)

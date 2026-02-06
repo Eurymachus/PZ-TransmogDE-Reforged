@@ -54,6 +54,11 @@ function TexturePickerModal:onTextureSelected(button)
 end
 
 function TexturePickerModal:close()
+    -- Clear singleton so later clothing updates can't "revive" this UI
+    if TexturePickerModal.instance == self then
+        TexturePickerModal.instance = nil
+    end
+
     self:removeFromUIManager()
     if JoypadState.players[self.playerNum + 1] then
         setJoypadFocus(self.playerNum, self.prevFocus)
@@ -117,13 +122,13 @@ function TexturePickerModal.updateItemToTexture(player, clothing)
                                       tmogClothingItemAsset:getBaseTextures()
             end
         end
-        TexturePickerModal.Open(clothing, player, textureChoiceList)
+        TexturePickerModal.Open(player, clothing, textureChoiceList)
     end
 end
 
 Events.TransmogClothingUpdate.Add(TexturePickerModal.updateItemToTexture);
 
-function TexturePickerModal:new(item, character, textureChoices)
+function TexturePickerModal:new(character, item, textureChoices)
     local width = 260
     local height = 180
     local x = getCore():getScreenWidth() / 2 - (width / 2);

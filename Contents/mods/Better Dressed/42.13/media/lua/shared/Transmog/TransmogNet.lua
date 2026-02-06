@@ -223,11 +223,11 @@ TransmogNet.notifyPlayer = function(player, result)
         if req and req.focus and req.ref then
             focusItem = resolveItemByRef(player, req.focus, req.ref)
             if not focusItem then
-                TmogPrint("Critical Error: Item ID" .. tostring(req.focus) .. " not found!")
+                TmogPrint("Warning: Item ID" .. tostring(req.focus) .. " not found.")
             else
                 tmogItem = TransmogDE.getTransmogChild(focusItem)
-                if not tmogItem then
-                    TmogPrint("Critical Error: Carrier for Item ID " .. tostring(req.focus) .. " not found!")
+                if not tmogItem and not TransmogDE.isClothingHidden(focusItem) then
+                    TmogPrint("Warning: Carrier for Item ID " .. tostring(req.focus) .. " not found.")
                 end
             end
         end

@@ -28,19 +28,27 @@ local addEditTransmogItemOption = function(playerNum, context, items)
         local menuContext = context:getNew(context);
         context:addSubMenu(option, menuContext);
 
-        menuContext:addOption(textTransmogrify, clothing, function()
-            TransmogListViewer.Open(player, clothing)
-            --TransmogDE.triggerUpdate(player)
-        end)
+        menuContext:addOption(
+            textTransmogrify,
+            player,
+            TransmogListViewer.Open,
+            clothing
+        )
 
         if not TransmogDE.isClothingHidden(clothing) then
-            menuContext:addOption(textHide, clothing, function()
-                TransmogNet.requestHide(player, clothing)
-            end)
+            menuContext:addOption(
+                textHide,
+                player,
+                TransmogNet.requestHide,
+                clothing
+            )
         else
-            menuContext:addOption(textShow, clothing, function()
-                TransmogNet.requestShow(player, clothing)
-            end)
+            menuContext:addOption(
+                    textShow,
+                player,
+                TransmogNet.requestShow,
+                clothing
+            )
         end
 
         local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
@@ -55,9 +63,12 @@ local addEditTransmogItemOption = function(playerNum, context, items)
 
         local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
         if tmogClothingItemAsset:getAllowRandomTint() then
-            menuContext:addOption(textColor, clothing, function()
-                ColorPickerModal.Open(clothing, player)
-            end);
+            menuContext:addOption(
+                textColor,
+                player,
+                ColorPickerModal.Open,
+                clothing
+            );
         end
 
         local textureChoices = tmogClothingItemAsset:hasModel() and tmogClothingItemAsset:getTextureChoices() or
@@ -71,26 +82,30 @@ local addEditTransmogItemOption = function(playerNum, context, items)
         -- TmogPrint('getTextureChoices()', tmogClothingItemAsset:getTextureChoices())
         -- TmogPrint('getBaseTextures()', tmogClothingItemAsset:getBaseTextures())
         if textureChoices and (textureChoices:size() > 1) then
-            menuContext:addOption(textTexture, clothing, function()
-                TexturePickerModal.Open(clothing, player, textureChoices)
-            end);
+            menuContext:addOption(
+                textTexture,
+                player,
+                TexturePickerModal.Open,
+                clothing,
+                textureChoices
+            );
         end
 
         if TransmogDE.isTransmogged(clothing) then
-            local removeTransmog = menuContext:addOption(textRemoveTransmog, clothing, function()
-                TransmogNet.requestRemoveTransmog(player, clothing)
-                --TransmogDE.triggerUpdate(player)
-            end);
+            local removeTransmog = menuContext:addOption(
+                textRemoveTransmog,
+                player,
+                TransmogNet.requestRemoveTransmog,
+                clothing
+            );
             removeTransmog.goodColor = true
         end
 
         local setItemToDefault = menuContext:addOption(
             textDefault,
-            clothing,
-            function()
-                TransmogNet.requestResetDefault(player, clothing)
-                --TransmogDE.triggerUpdate(player)
-            end
+            player,
+            TransmogNet.requestResetDefault,
+            clothing
         );
         setItemToDefault.badColor = true
     end
