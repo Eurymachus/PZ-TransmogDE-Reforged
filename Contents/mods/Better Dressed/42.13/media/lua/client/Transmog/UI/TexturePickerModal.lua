@@ -109,8 +109,13 @@ function TexturePickerModal.Close()
 end
 
 function TexturePickerModal.updateItemToTexture(player, clothing)
-	local isOpen = TexturePickerModal.instance and TexturePickerModal.instance:getIsVisible()
-	local isTransmogOpen = TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible()
+    local modal = TexturePickerModal.instance
+    local tmogModal = TransmogListViewer.instance
+	local isOpen = modal and modal:getIsVisible()
+	local isTransmogOpen = tmogModal and tmogModal:getIsVisible()
+
+	if clothing == nil then clothing = isOpen and modal.item or isTransmogOpen and tmogModal.item end
+
     if isOpen or isTransmogOpen then
         local textureChoiceList = nil
         local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
@@ -125,8 +130,6 @@ function TexturePickerModal.updateItemToTexture(player, clothing)
         TexturePickerModal.Open(player, clothing, textureChoiceList)
     end
 end
-
-Events.TransmogClothingUpdate.Add(TexturePickerModal.updateItemToTexture);
 
 function TexturePickerModal:new(character, item, textureChoices)
     local width = 260

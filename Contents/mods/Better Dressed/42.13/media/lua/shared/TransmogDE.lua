@@ -4,6 +4,46 @@ TransmogDE.ImmersiveModeMap = {}
 TransmogDE.BackupClothingItemAsset = {}
 TransmogDE.TmogItemToOgItemBodylocation = {}
 
+-- HELPERS
+
+
+
+local function _dbgTextureDump(tag, item)
+    if not isDebugEnabled() then return end
+    if not item then
+        TmogPrint(tag .. " item=nil")
+        return
+    end
+
+    local vis = item.getVisual and item:getVisual() or nil
+    local ci_item = item.getClothingItem and item:getClothingItem() or nil
+    local ci_vis = (vis and vis.getClothingItem) and vis:getClothingItem() or nil
+
+    local hasModel_item = (ci_item and ci_item.hasModel) and ci_item:hasModel() or nil
+    local hasModel_vis  = (ci_vis  and ci_vis.hasModel)  and ci_vis:hasModel()  or nil
+
+    local tc = (vis and vis.getTextureChoice) and vis:getTextureChoice() or nil
+    local bt = (vis and vis.getBaseTexture) and vis:getBaseTexture() or nil
+
+    local md = item.getModData and item:getModData() or nil
+    local tm = md and md.Transmog or nil
+    local mdTex = tm and tm.texture or nil
+    local mdOrig = tm and tm.originalTexture or nil
+
+    TmogPrint(tag
+        .. " type=" .. tostring(item.getFullType and item:getFullType() or item:getType())
+        .. " id=" .. tostring(item.getID and item:getID() or "nil")
+        .. " hasModel_item=" .. tostring(hasModel_item)
+        .. " hasModel_vis=" .. tostring(hasModel_vis)
+        .. " visTexChoice=" .. tostring(tc)
+        .. " visBaseTex=" .. tostring(bt)
+        .. " md.texture=" .. tostring(mdTex)
+        .. " md.originalTexture=" .. tostring(mdOrig)
+    )
+end
+
+-- HELPERS END
+
 TransmogDE.DestroyTransmogGlobalModData = function(regenerate)
     TmogPrint("Destroying TransmogModData")
 
@@ -43,9 +83,9 @@ TransmogDE.GenerateTransmogGlobalModData = function()
                 table.insert(transmogToItemMap, fullName)
                 itemToTransmogMap[fullName] = 'TransmogDE.TransmogItem_' .. #transmogToItemMap
             end
-            TmogPrint(fullName .. ' -> ' .. tostring(itemToTransmogMap[fullName]))
+            --TmogPrint(fullName .. ' -> ' .. tostring(itemToTransmogMap[fullName]))
         else
-            TmogPrint(fullName .. ' is not Transmoggable.')
+            --TmogPrint(fullName .. ' is not Transmoggable.')
         end
     end
 
@@ -96,14 +136,14 @@ TransmogDE.patchAllItemsFromModData = function(modData)
                 -- If can be canBeEquipped but not getBodyLocation, then it's a backpack!
                 -- So, we force the backpacks to have a BodyLocation, so that it can be hidden by pz using the group:setHideModel!
                 if ogItem:getItemType() == ItemType.CONTAINER then
-                    TmogPrint("Validating BodyLocation for ogItem [" .. tostring(originalItemName) .. "] as an ItemType.CONTAINER")
+                    --TmogPrint("Validating BodyLocation for ogItem [" .. tostring(originalItemName) .. "] as an ItemType.CONTAINER")
                     local inst = ogItem:InstanceItem(nil)
                     local equipLocation = inst:canBeEquipped()
-                    TmogPrint("equipLocation = " .. tostring(equipLocation))
+                    --TmogPrint("equipLocation = " .. tostring(equipLocation))
                     if equipLocation ~= "" then
                         local bodyLocation = ogItem:getBodyLocation()
                         if not bodyLocation then
-                            TmogPrint("Setting BodyLocation = " .. tostring(equipLocation))
+                            --TmogPrint("Setting BodyLocation = " .. tostring(equipLocation))
                             ogItem:DoParam("BodyLocation", tostring(equipLocation))
                         end
                     end
@@ -111,7 +151,7 @@ TransmogDE.patchAllItemsFromModData = function(modData)
             end
 
             local newBodyLocation = ogItem:getBodyLocation()
-            TmogPrint("New BodyLocation = " .. tostring(newBodyLocation))
+            --TmogPrint("New BodyLocation = " .. tostring(newBodyLocation))
             -- store this map for the wear tmog fix
             TransmogDE.TmogItemToOgItemBodylocation[tmogItemName] = newBodyLocation
         end
@@ -119,12 +159,12 @@ TransmogDE.patchAllItemsFromModData = function(modData)
 end
 
 TransmogDE.triggerUpdate = function(player)
-    TmogPrint('triggerUpdate')
+    --TmogPrint('triggerUpdate')
     triggerEvent("ApplyTransmogToPlayerItems", player)
 end
 
 TransmogDE.triggerUpdateVisuals = function(player)
-    TmogPrint('triggerUpdateVisuals')
+    --TmogPrint('triggerUpdateVisuals')
     triggerEvent("SyncConditionVisuals", player)
 end
 
@@ -238,8 +278,11 @@ TransmogDE.getTransmogModData = function()
 end
 
 TransmogDE.createTransmogItem = function(ogItem, player)
+    --_dbgTextureDump("createTransmogItem ENTER og", ogItem)
     local transmogModData = TransmogDE.getTransmogModData()
     local itemTmogModData = TransmogDE.getItemTransmogModData(ogItem)
+
+    --_dbgTextureDump("createTransmogItem AFTER getItemTransmogModData og", ogItem)
 
     local tmogItemName = transmogModData.itemToTransmogMap[itemTmogModData.transmogTo]
 
@@ -260,12 +303,18 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     tmogItem:setName('Tmog: ' .. ogItem:getName())
     tmogItem:setCustomName(true)
 
-    TransmogDE.setClothingColorModdata(ogItem, TransmogDE.getClothingColor(ogItem))
-    TransmogDE.setClothingTextureModdata(ogItem, TransmogDE.getClothingTexture(ogItem))
-    TransmogDE.setClothingColor(ogItem, TransmogDE.getClothingColor(ogItem))
-    TransmogDE.setClothingTexture(ogItem, TransmogDE.getClothingTexture(ogItem))
-    TransmogDE.setClothingColor(tmogItem, TransmogDE.getClothingColor(ogItem))
-    TransmogDE.setClothingTexture(tmogItem, TransmogDE.getClothingTexture(ogItem))
+    -- Cache once so we don't resample mid-apply
+    local ogColor = TransmogDE.getClothingColor(ogItem)
+    local ogTex   = TransmogDE.getClothingTexture(ogItem)
+
+    TransmogDE.setClothingColorModdata(ogItem, ogColor)
+    TransmogDE.setClothingTextureModdata(ogItem, ogTex)
+
+    TransmogDE.setClothingColor(ogItem, ogColor)
+    TransmogDE.setClothingTexture(ogItem, ogTex)
+
+    TransmogDE.setClothingColor(tmogItem, ogColor)
+    TransmogDE.setClothingTexture(tmogItem, ogTex)
 
     -- don't wear the new item yet
     -- player:setWornItem(tmogItem:getBodyLocation(), tmogItem)
@@ -304,18 +353,6 @@ TransmogDE.getItemTransmogModData = function(item)
 
     -- If already initialized, ensure original* fields exist for legacy saves.
     if tmog then
-        -- Legacy compatibility: if originalColor/Texture missing, seed them once.
-        if not tmog.originalColor and tmog.color then
-            tmog.originalColor = {
-                r = tmog.color.r,
-                g = tmog.color.g,
-                b = tmog.color.b,
-                a = tmog.color.a or 1.0,
-            }
-        end
-        if tmog.originalTexture == nil and tmog.texture ~= nil then
-            tmog.originalTexture = tmog.texture
-        end
         return tmog
     end
 
@@ -324,7 +361,11 @@ TransmogDE.getItemTransmogModData = function(item)
     local visual = item:getVisual()
     local colorObj = visual and visual.getTint and visual:getTint() or nil
 
+    local baseTexture   = visual and visual.getBaseTexture and visual:getBaseTexture() or nil
     local textureChoice = visual and visual.getTextureChoice and visual:getTextureChoice() or nil
+
+    -- Prefer baseTexture because getTextureChoice() is commonly -1 for "use base texture"
+    local initialTexture = (baseTexture ~= nil and baseTexture ~= -1) and baseTexture or textureChoice
 
     local originalColor = colorObj and clothingItemAsset and clothingItemAsset.getAllowRandomTint and clothingItemAsset:getAllowRandomTint() and {
         r = colorObj:getRedFloat(),
@@ -338,7 +379,7 @@ TransmogDE.getItemTransmogModData = function(item)
     tmog = {
         -- Original look at discovery/craft time
         originalColor = originalColor,
-        originalTexture = textureChoice,
+        originalTexture = initialTexture,
 
         -- Active/default look used by transmog logic (starts as original)
         color = originalColor and {
@@ -347,7 +388,7 @@ TransmogDE.getItemTransmogModData = function(item)
             b = originalColor.b,
             a = originalColor.a,
         } or nil,
-        texture = textureChoice,
+        texture = initialTexture,
 
         transmogTo = fullName,
         lastTransmogTo = fullName,
@@ -421,7 +462,7 @@ TransmogDE.setClothingColorModdata = function(item, color)
 end
 
 TransmogDE.setClothingTextureModdata = function(item, textureIdx)
-    if textureIdx == nil then
+    if textureIdx == nil or textureIdx < 0 then
         return
     end
 
@@ -440,7 +481,7 @@ TransmogDE.setClothingColor = function(item, color)
 end
 
 TransmogDE.setClothingTexture = function(item, textureIndex)
-    if textureIndex < 0 or textureIndex == nil then
+    if textureIndex == nil or textureIndex < 0 then
         return
     end
 
@@ -487,13 +528,24 @@ end
 TransmogDE.getClothingTexture = function(item)
     local itemModData = TransmogDE.getItemTransmogModData(item)
 
-    if itemModData.texture then
-        return itemModData.texture
+    -- In Lua, -1 is truthy, but for visuals it means "no explicit choice".
+    -- Treat negatives as unset and fall through to visual-derived texture.
+    local t = itemModData.texture
+    if t ~= nil and t >= 0 then
+        return t
     end
 
     -- Very similiar to what is done inside: media\lua\client\OptionScreens\CharacterCreationMain.lua
     local clothingItem = item:getVisual():getClothingItem()
-    local texture = clothingItem:hasModel() and item:getVisual():getTextureChoice() or item:getVisual():getBaseTexture()
+    local texture = clothingItem:hasModel()
+        and item:getVisual():getTextureChoice()
+        or  item:getVisual():getBaseTexture()
+
+    -- If hasModel() path returns -1 (no choice), fall back to baseTexture
+    if texture ~= nil and texture < 0 then
+        texture = item:getVisual():getBaseTexture()
+    end
+
     return texture
 end
 
@@ -512,7 +564,7 @@ end
 -- but KEEP current tint/texture and do not touch carriers (except clearing stale childId).
 -- Used for style-variant swaps (ISClothingExtraAction) so colors survive equip/unequip.
 TransmogDE.setTransmogToSelfKeepVisuals = function(item, supressUpdates)
-    TmogPrint("setTransmogToSelfKeepVisuals fired")
+    --TmogPrint("setTransmogToSelfKeepVisuals fired")
     local moddata = TransmogDE.getItemTransmogModData(item)
     local isHidden = TransmogDE.isClothingHidden(item)
     local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
@@ -796,14 +848,14 @@ end
 -- Converted from java\characters\WornItems\WornItems.java using chatgtp -> public void setItem(String var1, InventoryItem var2)
 -- This is needed to avoid item clipping!
 TransmogDE.setWornItemTmog = function(player, tmogItem)
-    TmogPrint("Attempting to set worn Item: " .. tostring(tmogItem))
+    --TmogPrint("Attempting to set worn Item: " .. tostring(tmogItem))
     local wornItems = player:getWornItems()
     local group = getClassFieldVal(wornItems, getClassField(wornItems, 0));
     local items = getClassFieldVal(wornItems, getClassField(wornItems, 1));
 
     local ogItemBodylocation = TransmogDE.TmogItemToOgItemBodylocation[tmogItem:getScriptItem():getFullName()]
     if not ogItemBodylocation then
-        TmogPrint("setWornItemTmog ogItemBodylocation is nil")
+        --TmogPrint("setWornItemTmog ogItemBodylocation is nil")
         return
     end
 
@@ -813,30 +865,33 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
     -- This ensures that for example, backpacks are on TOP of trousers
 
     local insertAt = items:size()
-    TmogPrint("setWornItemTmog insertAt [items:size]: " .. tostring(insertAt))
+    --TmogPrint("setWornItemTmog insertAt [items:size]: " .. tostring(insertAt))
     for i = 0, items:size() - 1 do
         local wornItem = items:get(i)
         local wornItemItem = wornItem:getItem()
         if TransmogDE.isTransmogItem(wornItemItem) and not wornItemItem:hasTag(TransmogDE.ItemTag.Hide_Everything) then
             local wornOgItemLocation = TransmogDE.TmogItemToOgItemBodylocation[wornItemItem:getScriptItem()
                 :getFullName()]
-            TmogPrint('wornOgitemLocation', wornOgItemLocation)
-            TmogPrint('ogItemBodylocation', ogItemBodylocation)
+            --TmogPrint('wornOgitemLocation', wornOgItemLocation)
+            --TmogPrint('ogItemBodylocation', ogItemBodylocation)
             if group:indexOf(wornOgItemLocation) > group:indexOf(ogItemBodylocation) then
                 insertAt = i
                 break
             end
         end
     end
-    TmogPrint("setWornItemTmog finally insertAt: " .. tostring(insertAt))
+    --TmogPrint("setWornItemTmog finally insertAt: " .. tostring(insertAt))
     local newWornItem = WornItem.new(TransmogDE.ItemBodyLocation.TransmogLocation, tmogItem)
     items:add(insertAt, newWornItem)
-    TmogPrint("setWornItemTmog final items:size: " .. tostring(items:size()))
+    --TmogPrint("setWornItemTmog final items:size: " .. tostring(items:size()))
 end
 
 -- Usefull for forcing the item to be removed and re-added after changing color, texture, and tmog
 TransmogDE.forceUpdateClothing = function(item)
     TmogPrint("Attempting to forceUpdateClothing")
+
+    --_dbgTextureDump("forceUpdateClothing ENTER", item)
+
     local moddata = TransmogDE.getItemTransmogModData(item)
     local container = item:getContainer()
     if not container then
@@ -883,6 +938,7 @@ TransmogDE.forceUpdateClothing = function(item)
     sendItemStats(tmogItem)
 
     TransmogDE.setWornItemTmog(player, tmogItem)
+    _dbgTextureDump("forceUpdateClothing EXIT", item)
 end
 
 local function clearHoles(vDst)
@@ -902,7 +958,7 @@ local function clearPatches(vDst)
 end
 
 function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
-    TmogPrint("syncConditionVisuals triggered for: " .. tostring(sourceItem))
+    --TmogPrint("syncConditionVisuals triggered for: " .. tostring(sourceItem))
     if not (carrierItem and sourceItem and carrierItem.getVisual and sourceItem.getVisual) then
         return false
     end

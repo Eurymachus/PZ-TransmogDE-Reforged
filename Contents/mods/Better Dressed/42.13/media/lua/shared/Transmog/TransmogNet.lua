@@ -197,10 +197,8 @@ local function _refreshPlayerAndVisuals(player, focusItem)
     end
 
     -- Refresh Transmog UI (ListViewer listens to this)
-    if focusItem then
-        TmogPrint("trigger TransmogClothingUpdate")
-        triggerEvent("TransmogClothingUpdate", player, focusItem)
-    end
+    TmogPrint("trigger TransmogClothingUpdate ")
+    triggerEvent("TransmogClothingUpdate", player, focusItem)
 end
 
 -- Client-only: unified post-apply notification + refresh

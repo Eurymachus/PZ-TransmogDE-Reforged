@@ -50,7 +50,22 @@ function TransmogListViewer:initialise()
         self.reset:setTooltip(getText("IGUI_TransmogDE_ListViewer_Reset_tooltip"))
         self:addChild(self.reset)
 
-        local hideShowX = self.reset.x - (UI_BORDER_SPACING + 1) - btnWid
+        local resetX = self.reset.x - (UI_BORDER_SPACING + 1) - btnWid
+        local resetY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
+        self.remove = ISButton:new(resetX, resetY, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Remove"), self,
+            TransmogListViewer.onClickTransmog)
+        self.remove.internal = "REMOVE"
+        self.remove.anchorTop = false
+        self.remove.anchorLeft = false
+        self.remove.anchorBottom = true
+        self.remove.anchorRight = true
+        self.remove:initialise()
+        self.remove:instantiate()
+        self.remove:enableAcceptColor()
+        self.remove:setTooltip(getText("IGUI_TransmogDE_ListViewer_Remove_tooltip"))
+        self:addChild(self.remove)
+
+        local hideShowX = self.remove.x - (UI_BORDER_SPACING + 1) - btnWid
         local hideShowY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
         self.hideItem = ISButton:new(hideShowX, hideShowY, btnWid, BUTTON_HGT,
             getText("IGUI_TransmogDE_ListViewer_Hide"), self, TransmogListViewer.onClickTransmog)
@@ -78,7 +93,7 @@ function TransmogListViewer:initialise()
         self.showItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Show_tooltip"))
         self:addChild(self.showItem)
     end
-    local isHidden = TransmogDE.isClothingHidden(self.itemToTmog)
+    local isHidden = TransmogDE.isClothingHidden(self.item)
     self.hideItem:setVisible(not isHidden)
     self.showItem:setVisible(isHidden)
 end
@@ -106,7 +121,7 @@ function TransmogListViewer:new(x, y, width, height, itemToTmog)
     o.height = height
     o.moveWithMouse = true
     -- These two must be set before init, so it's passed to the ISItemsListTable
-    o.itemToTmog = itemToTmog
+    o.item = itemToTmog
     o.isTransmogListViewer = true
     TransmogListViewer.instance = o
     return o
@@ -219,32 +234,36 @@ function TransmogListViewer:onBatchAction(action)
     -- All-batch ops: route via TransmogNet (server-authoritative in MP).
     -- focus item is passed only so notifyPlayer can refresh this UI selection.
     if action == "HIDE_ALL" then
-        TransmogNet.requestHideAll(self.player, self.itemToTmog)
+        TransmogNet.requestHideAll(self.player, self.item)
     elseif action == "SHOW_ALL" then
-        TransmogNet.requestShowAll(self.player, self.itemToTmog)
+        TransmogNet.requestShowAll(self.player, self.item)
     elseif action == "REMOVE_ALL" then
-        TransmogNet.requestRemoveTransmogAll(self.player, self.itemToTmog)
+        TransmogNet.requestRemoveTransmogAll(self.player, self.item)
     elseif action == "RESET_ALL" then
-        TransmogNet.requestResetDefaultAll(self.player, self.itemToTmog)
+        TransmogNet.requestResetDefaultAll(self.player, self.item)
     end
 end
 
 function TransmogListViewer:onClickTransmog(button)
     local request = button.internal
 
+    if request == "REMOVE" then
+        TransmogNet.requestRemoveTransmog(self.player, self.item)
+        return
+    end
+
     if request == "RESET" then
-        -- Keep existing behaviour: RESET button removes transmog from this item
-        TransmogNet.requestRemoveTransmog(self.player, self.itemToTmog)
+        TransmogNet.requestResetDefault(self.player, self.item)
         return
     end
 
     if request == "HIDEITEM" then
-        TransmogNet.requestHide(self.player, self.itemToTmog)
+        TransmogNet.requestHide(self.player, self.item)
         return
     end
 
     if request == "SHOWITEM" then
-        TransmogNet.requestShow(self.player, self.itemToTmog)
+        TransmogNet.requestShow(self.player, self.item)
         return
     end
 end
@@ -261,29 +280,34 @@ function TransmogListViewer:updateItemToTmogData(player, clothing)
     if player and player ~= self.player then
         self:setPlayer(player)
     end
-    if clothing and clothing ~= self.itemToTmog then
-        self.itemToTmog = clothing
+    if clothing and clothing ~= self.item then
+        self.item = clothing
     end
 
     -- Update Hide / Show button visibility for this item
-    if self.hideItem and self.showItem and self.itemToTmog then
-        local isHidden = TransmogDE.isClothingHidden(self.itemToTmog)
+    if self.hideItem and self.showItem and self.item then
+        local isHidden = TransmogDE.isClothingHidden(self.item)
         self.hideItem:setVisible(not isHidden)
         self.showItem:setVisible(isHidden)
     end
 end
 
 local function updateItemToTmog(player, clothing, forceOpen)
-    if TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible() then
-        if TransmogListViewer.instance.itemToTmog ~= clothing then
-            TransmogListViewer.OpenNew(player, clothing)
+    local modal = TransmogListViewer.instance
+    if modal and modal:getIsVisible() then
+        if clothing and forceOpen then
+            modal:updateItemToTmogData(player, clothing)
+            ColorPickerModal.updateItemToColor(player, clothing)
+            TexturePickerModal.updateItemToTexture(player, clothing)
         else
-            TransmogListViewer.instance:updateItemToTmogData(player, clothing)
+            modal:updateItemToTmogData(player, modal.item)
+            ColorPickerModal.updateItemToColor(player, modal.item)
+            TexturePickerModal.updateItemToTexture(player, modal.item)
         end
-        return
-    end
-    if forceOpen then
+    elseif forceOpen then
         TransmogListViewer.OpenNew(player, clothing)
+        ColorPickerModal.updateItemToColor(player, clothing)
+        TexturePickerModal.updateItemToTexture(player, clothing)
     end
 end
 
@@ -305,8 +329,6 @@ end
 
 function TransmogListViewer.Open(player, clothing)
     updateItemToTmog(player, clothing, true)
-    ColorPickerModal.updateItemToColor(player, clothing)
-    TexturePickerModal.updateItemToTexture(player, clothing)
 end
 
 function TransmogListViewer:initList()
@@ -319,7 +341,7 @@ function TransmogListViewer:initList()
         for i = 0, allItems:size() - 1 do
             local item = allItems:get(i)
             if TransmogDE.isTransmoggable(item) and (TransmogDE.immersiveModeItemCheck(item) or (getCore():getDebug() or isAdmin())) then
-                local isSameBodyLocation = item:getBodyLocation() == self.itemToTmog:getBodyLocation()
+                local isSameBodyLocation = item:getBodyLocation() == self.item:getBodyLocation()
                 if (getCore():getDebug() or isAdmin()) or (not SandboxVars.TransmogDE.LimitTransmogToSameBodyLocation) then
                     filteredItems:add(item)
                 else
@@ -344,7 +366,7 @@ function TransmogListViewer:prerender()
         self.backgroundColor.b)
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
         self.borderColor.b)
-    local fullItemName = getItemNameFromFullType(self.itemToTmog:getScriptItem():getFullName())
+    local fullItemName = getItemNameFromFullType(self.item:getScriptItem():getFullName())
     local textBuilder = "Transmog (Standard) - " .. fullItemName
     local text = getTextOrNull("IGUI_TransmogDE_ListViewer_Standard_Item", fullItemName)
     self:drawText(text, self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, text) / 2), z, 1, 1, 1, 1,
@@ -364,7 +386,7 @@ function ISItemsListTable:render()
     self:drawText(getText("IGUI_TransmogDE_Info"), 0, y + BUTTON_HGT, 1, 1, 1, 1, UIFont.Small)
 
     -- Show/Hide Prompt
-    local isHidden = TransmogDE.isClothingHidden(self.viewer.itemToTmog)
+    local isHidden = TransmogDE.isClothingHidden(self.viewer.item)
     local showOrHide = isHidden and "IGUI_TransmogDE_Info_Show" or "IGUI_TransmogDE_Info_Hide"
     self:drawText(getText(showOrHide), 0, y + BUTTON_HGT * 2, 1, 1, 1, 1, UIFont.Small)
 
@@ -479,7 +501,7 @@ function ISItemsListTable:createChildren()
 end
 
 function ISItemsListTable:sendItemToTransmog(scriptItem)
-    TransmogNet.requestTransmog(self.viewer.player, self.viewer.itemToTmog, scriptItem:getFullName())
+    TransmogNet.requestTransmog(self.viewer.player, self.viewer.item, scriptItem:getFullName())
 end
 
 local old_ISItemsListTable_drawDatas = ISItemsListTable.drawDatas

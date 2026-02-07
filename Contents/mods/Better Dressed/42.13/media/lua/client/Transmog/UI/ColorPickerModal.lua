@@ -99,8 +99,12 @@ end
 
 function ColorPickerModal.updateItemToColor(player, clothing)
 	local modal = ColorPickerModal.instance
+	local tmogModal = TransmogListViewer.instance
 	local isOpen = modal and modal:getIsVisible()
-	local isTransmogOpen = TransmogListViewer.instance and TransmogListViewer.instance:getIsVisible()
+	local isTransmogOpen = tmogModal and tmogModal:getIsVisible()
+
+	if clothing == nil then clothing = isOpen and modal.item or isTransmogOpen and tmogModal.item end
+
 	if isOpen or isTransmogOpen then
 		local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
 		if transmogTo then
@@ -120,8 +124,6 @@ function ColorPickerModal.updateItemToColor(player, clothing)
 		end
 	end
 end
-
-Events.TransmogClothingUpdate.Add(ColorPickerModal.updateItemToColor);
 
 function ColorPickerModal:new(character, item)
 	local width = 550
