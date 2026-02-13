@@ -3,7 +3,6 @@ function ISClothingExtraAction:perform()
     local result = old_ISClothingExtraAction_perform(self)
 
     TmogPrint('ISClothingExtraAction:perform()')
-    --TransmogDE.triggerUpdate(self.character)
 
     return result
 end
@@ -86,6 +85,7 @@ function ISClothingExtraAction:complete()
                 -- keeps its visuals, and has no stale carrier link.
                 TmogPrint('[TransmogDE] ISClothingExtraAction:createItem() normalize non-transmog variant')
                 TransmogDE.setTransmogToSelfKeepVisuals(item, true)
+                TransmogNet.triggerUpdate(self.character, item)
             end
         end
     end

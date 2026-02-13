@@ -286,20 +286,20 @@ TransmogNet.notifyPlayer = function(player, result)
         local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
         HaloTextHelper.addGoodText(player, haloText)
     elseif cmd == TransmogNet.Commands.SET_COLOR then
-        if focusItem and result.data then
-            local color = result.data
-            local immutableColor = ImmutableColor.new(Color.new(color.r, color.g, color.b, 1))
-            TransmogDE.setClothingColor(focusItem, immutableColor)
+        if focusItem then
+            local color = TransmogDE.getClothingColor(focusItem)
+            --local immutableColor = ImmutableColor.new(Color.new(color.r, color.g, color.b, 1))
+            TransmogDE.setClothingColor(focusItem, color)
             if tmogItem then
-                TransmogDE.setClothingColor(tmogItem, immutableColor)
+                TransmogDE.setClothingColor(tmogItem, color)
             end
         end
     elseif cmd == TransmogNet.Commands.SET_TEXTURE then
-        if focusItem and result.data then
-            local texture = result.data
+        if focusItem then
+            local texture = TransmogDE.getClothingTexture(focusItem)
             TransmogDE.setClothingTexture(focusItem, texture)
             if tmogItem then
-                TransmogDE.setClothingTexture(TransmogDE.getTransmogChild(focusItem), texture)
+                TransmogDE.setClothingTexture(tmogItem, texture)
             end
         end
     end
@@ -427,8 +427,8 @@ TransmogNet.requestTransmogRecieved = function(player, args)
     local toType    = args.data
     local ref       = args.ref
 
-    local itemToTmog = resolveItemByRef(player, itemId, ref)
-    if not itemToTmog then
+    local item = resolveItemByRef(player, itemId, ref)
+    if not item then
         TmogPrint("Transmog [" .. tostring(requestID) .. "] failed: could not resolve itemId [" .. tostring(itemId) .. "] kind [" .. tostring(ref.kind) .. "]")
         notifyClient(player, requestID, TransmogNet.Commands.REQUEST_TRANSMOG, false, 0)
         return
@@ -442,16 +442,19 @@ TransmogNet.requestTransmogRecieved = function(player, args)
     end
 
     -- Optional safety gate (recommended)
-    if TransmogDE.isTransmoggable and not TransmogDE.isTransmoggable(itemToTmog) then
+    if TransmogDE.isTransmoggable and not TransmogDE.isTransmoggable(item) then
         TmogPrint("Transmog [" .. tostring(requestID) .. "] failed: item not transmoggable")
         notifyClient(player, requestID, TransmogNet.Commands.REQUEST_TRANSMOG, false, 0)
         return
     end
 
-    TransmogDE.setItemTransmog(itemToTmog, toItem)
-    TransmogDE.forceUpdateClothing(itemToTmog)
-    TransmogDE.triggerUpdate(player)
+    TransmogDE.setItemTransmog(item, toItem)
 
+    TransmogDE.forceUpdateClothing(item)
+
+    TransmogNet.updateItem(player, item)
+
+    TransmogDE.triggerUpdate(player)
     notifyClient(player, requestID, TransmogNet.Commands.REQUEST_TRANSMOG, true, 1)
 end
 
@@ -462,7 +465,11 @@ TransmogNet.requestHideRecieved = function(player, args)
         notifyClient(player, args.requestID, TransmogNet.Commands.HIDE, false, 0)
         return
     end
+
     TransmogDE.setClothingHidden(item)
+
+    TransmogNet.updateItem(player, item)
+
     TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.HIDE, true, 1)
 end
@@ -474,7 +481,11 @@ TransmogNet.requestShowRecieved = function(player, args)
         notifyClient(player, args.requestID, TransmogNet.Commands.SHOW, false, 0)
         return
     end
+
     TransmogDE.setClothingShown(item)
+
+    TransmogNet.updateItem(player, item)
+
     TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.SHOW, true, 1)
 end
@@ -486,7 +497,11 @@ TransmogNet.requestRemoveTransmogRecieved = function(player, args)
         notifyClient(player, args.requestID, TransmogNet.Commands.REMOVE_TRANSMOG, false, 0)
         return
     end
+
     TransmogDE.removeTransmog(item)
+
+    TransmogNet.updateItem(player, item)
+
     TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.REMOVE_TRANSMOG, true, 1)
 end
@@ -498,7 +513,11 @@ TransmogNet.requestResetDefaultRecieved = function(player, args)
         notifyClient(player, args.requestID, TransmogNet.Commands.RESET_DEFAULT, false, 0)
         return
     end
+
     TransmogDE.setItemToDefault(item)
+
+    TransmogNet.updateItem(player, item)
+
     TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.RESET_DEFAULT, true, 1)
 end
@@ -514,9 +533,12 @@ TransmogNet.requestSetColorRecieved = function(player, args)
     local color = args.data
 	local immutableColor = ImmutableColor.new(Color.new(color.r, color.g, color.b, 1))
 	TransmogDE.setClothingColorModdata(item, immutableColor)
-	TransmogDE.forceUpdateClothing(item)
-    TransmogDE.triggerUpdate(player)
 
+	TransmogDE.forceUpdateClothing(item)
+
+    TransmogNet.updateItem(player, item)
+
+    --TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.SET_COLOR, true, 1, color)
 end
 
@@ -527,13 +549,26 @@ TransmogNet.requestSetTextureRecieved = function(player, args)
         notifyClient(player, args.requestID, TransmogNet.Commands.SET_TEXTURE, false, 0)
         return
     end
-    
+
     local texture = args.data
 	TransmogDE.setClothingTextureModdata(item, texture)
+
 	TransmogDE.forceUpdateClothing(item)
-    TransmogDE.triggerUpdate(player)
-    
+
+    TransmogNet.updateItem(player, item)
+
+    --TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.SET_TEXTURE, true, 1, texture)
+end
+
+TransmogNet.updateItem = function(player, item)
+    syncItemModData(player, item)
+    local tmogItem = TransmogDE.getTransmogChild(item)
+    if tmogItem then
+        syncItemModData(player, tmogItem)
+        syncItemFields(player, tmogItem)
+        sendItemStats(tmogItem)
+    end
 end
 
 -- ====================================
@@ -719,7 +754,7 @@ TransmogNet.hello = function(player)
     _refreshPlayerAndVisuals(player)
     TransmogNet._playerInitDone[playerNum] = true
 end
- 
+
 TransmogNet.requestUpdate = function(player)
     local playerNum = player:getPlayerNum()
     if isClient() then

@@ -2,7 +2,7 @@ require "ISUI/AdminPanel/ISItemsListViewer"
 require "ISUI/ISLabel"
 local Prefs     = require("Transmog/Prefs")
 
-TransmogListViewer = ISItemsListViewer:derive("TransmogListViewer")
+TransmogListViewer = ISPanel:derive("TransmogListViewer")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
@@ -12,87 +12,114 @@ local LABEL_HGT = FONT_HGT_MEDIUM + 6
 
 -- local old_ISItemsListViewer_initialise = ISItemsListViewer.initialise
 function TransmogListViewer:initialise()
-    if not self._initialised then
-        self._initialised = true
-        ISItemsListViewer.initialise(self)
-        local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1") + 50
+    ISPanel.initialise(self);
+    local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1") + 50
 
-        local arrowLabel = ""
-        local arrowBtnW = 20
+    self.playerSelect = ISComboBox:new(self.width - UI_BORDER_SPACING - btnWid - 1, UI_BORDER_SPACING + 1, btnWid, BUTTON_HGT, self, self.onSelectPlayer)
+    self.playerSelect:initialise()
+    self.playerSelect:addOption("Player 1")
+    self.playerSelect:addOption("Player 2")
+    self.playerSelect:addOption("Player 3")
+    self.playerSelect:addOption("Player 4")
+    self:addChild(self.playerSelect)
 
-        local arrowX = self:getWidth() - (UI_BORDER_SPACING + 1) - arrowBtnW -- self.reset.x - arrowBtnW - UI_BORDER_SPACING
-        local arrowY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
-        local tex = getTexture("media/ui/arrow_down.png")
-        self.moreBtn = ISButton:new(arrowX, arrowY, arrowBtnW, BUTTON_HGT, arrowLabel, self,
-            TransmogListViewer.onClickTransmogMenu)
-        self.moreBtn:setImage(tex)
-        self.moreBtn.anchorTop = false
-        self.moreBtn.anchorLeft = false
-        self.moreBtn.anchorBottom = true
-        self.moreBtn.anchorRight = true
-        self.moreBtn:initialise()
-        self.moreBtn:instantiate()
-        self.moreBtn.tooltip = getTextOrNull("IGUI_TransmogDE_Tooltip_BatchActions") or "Batch Actions"
-        self:addChild(self.moreBtn)
+    self.ok = ISButton:new(UI_BORDER_SPACING+1, self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1, btnWid, BUTTON_HGT, getText("IGUI_CraftUI_Close"), self, ISItemsListViewer.onClick);
+    self.ok.internal = "CLOSE";
+    self.ok.anchorTop = false
+    self.ok.anchorBottom = true
+    self.ok:initialise();
+    self.ok:instantiate();
+    self.ok:enableCancelColor()
+    self:addChild(self.ok);
 
-        local resetX = self.moreBtn.x - (UI_BORDER_SPACING + 1) - btnWid
-        local resetY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
-        self.reset = ISButton:new(resetX, resetY, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self,
-            TransmogListViewer.onClickTransmog)
-        self.reset.internal = "RESET"
-        self.reset.anchorTop = false
-        self.reset.anchorLeft = false
-        self.reset.anchorBottom = true
-        self.reset.anchorRight = true
-        self.reset:initialise()
-        self.reset:instantiate()
-        self.reset:enableCancelColor()
-        self.reset:setTooltip(getText("IGUI_TransmogDE_ListViewer_Reset_tooltip"))
-        self:addChild(self.reset)
+    local top = UI_BORDER_SPACING*2 + FONT_HGT_MEDIUM+1
+    self.panel = ISTabPanel:new(UI_BORDER_SPACING+1, top, self.width - (UI_BORDER_SPACING+1)*2, self.ok.y - UI_BORDER_SPACING - top);
+    self.panel:initialise();
+    self.panel.borderColor = { r = 0, g = 0, b = 0, a = 0};
+    self.panel.target = self;
+    self.panel.equalTabWidth = false
+    self:addChild(self.panel);
 
-        local resetX = self.reset.x - (UI_BORDER_SPACING + 1) - btnWid
-        local resetY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
-        self.remove = ISButton:new(resetX, resetY, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Remove"), self,
-            TransmogListViewer.onClickTransmog)
-        self.remove.internal = "REMOVE"
-        self.remove.anchorTop = false
-        self.remove.anchorLeft = false
-        self.remove.anchorBottom = true
-        self.remove.anchorRight = true
-        self.remove:initialise()
-        self.remove:instantiate()
-        self.remove:enableAcceptColor()
-        self.remove:setTooltip(getText("IGUI_TransmogDE_ListViewer_Remove_tooltip"))
-        self:addChild(self.remove)
+    self:initList();
 
-        local hideShowX = self.remove.x - (UI_BORDER_SPACING + 1) - btnWid
-        local hideShowY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
-        self.hideItem = ISButton:new(hideShowX, hideShowY, btnWid, BUTTON_HGT,
-            getText("IGUI_TransmogDE_ListViewer_Hide"), self, TransmogListViewer.onClickTransmog)
-        self.hideItem.internal = "HIDEITEM"
-        self.hideItem.anchorTop = false
-        self.hideItem.anchorLeft = false
-        self.hideItem.anchorBottom = true
-        self.hideItem.anchorRight = true
-        self.hideItem:initialise()
-        self.hideItem:instantiate()
-        self.hideItem:enableCancelColor()
-        self.hideItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Hide_tooltip"))
-        self:addChild(self.hideItem)
+    local btnWid = getTextManager():MeasureStringX(UIFont.Small, "Player 1") + 50
 
-        self.showItem = ISButton:new(hideShowX, hideShowY, btnWid, BUTTON_HGT,
-            getText("IGUI_TransmogDE_ListViewer_Show"), self, TransmogListViewer.onClickTransmog)
-        self.showItem.internal = "SHOWITEM"
-        self.showItem.anchorTop = false
-        self.showItem.anchorLeft = false
-        self.showItem.anchorBottom = true
-        self.showItem.anchorRight = true
-        self.showItem:initialise()
-        self.showItem:instantiate()
-        self.showItem:enableAcceptColor()
-        self.showItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Show_tooltip"))
-        self:addChild(self.showItem)
-    end
+    local arrowLabel = ""
+    local arrowBtnW = 20
+
+    local arrowX = self:getWidth() - (UI_BORDER_SPACING + 1) - arrowBtnW -- self.reset.x - arrowBtnW - UI_BORDER_SPACING
+    local arrowY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
+    local tex = getTexture("media/ui/arrow_down.png")
+    self.moreBtn = ISButton:new(arrowX, arrowY, arrowBtnW, BUTTON_HGT, arrowLabel, self,
+        TransmogListViewer.onClickTransmogMenu)
+    self.moreBtn:setImage(tex)
+    self.moreBtn.anchorTop = false
+    self.moreBtn.anchorLeft = false
+    self.moreBtn.anchorBottom = true
+    self.moreBtn.anchorRight = true
+    self.moreBtn:initialise()
+    self.moreBtn:instantiate()
+    self.moreBtn.tooltip = getTextOrNull("IGUI_TransmogDE_Tooltip_BatchActions") or "Batch Actions"
+    self:addChild(self.moreBtn)
+
+    local resetX = self.moreBtn.x - (UI_BORDER_SPACING + 1) - btnWid
+    local resetY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
+    self.reset = ISButton:new(resetX, resetY, btnWid, BUTTON_HGT, getText("IGUI_WorldMapEditor_Reset"), self,
+        TransmogListViewer.onClickTransmog)
+    self.reset.internal = "RESET"
+    self.reset.anchorTop = false
+    self.reset.anchorLeft = false
+    self.reset.anchorBottom = true
+    self.reset.anchorRight = true
+    self.reset:initialise()
+    self.reset:instantiate()
+    self.reset:enableCancelColor()
+    self.reset:setTooltip(getText("IGUI_TransmogDE_ListViewer_Reset_tooltip"))
+    self:addChild(self.reset)
+
+    local resetX = self.reset.x - (UI_BORDER_SPACING + 1) - btnWid
+    local resetY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
+    self.remove = ISButton:new(resetX, resetY, btnWid, BUTTON_HGT, getText("IGUI_TransmogDE_ListViewer_Remove"), self,
+        TransmogListViewer.onClickTransmog)
+    self.remove.internal = "REMOVE"
+    self.remove.anchorTop = false
+    self.remove.anchorLeft = false
+    self.remove.anchorBottom = true
+    self.remove.anchorRight = true
+    self.remove:initialise()
+    self.remove:instantiate()
+    self.remove:enableAcceptColor()
+    self.remove:setTooltip(getText("IGUI_TransmogDE_ListViewer_Remove_tooltip"))
+    self:addChild(self.remove)
+
+    local hideShowX = self.remove.x - (UI_BORDER_SPACING + 1) - btnWid
+    local hideShowY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
+    self.hideItem = ISButton:new(hideShowX, hideShowY, btnWid, BUTTON_HGT,
+        getText("IGUI_TransmogDE_ListViewer_Hide"), self, TransmogListViewer.onClickTransmog)
+    self.hideItem.internal = "HIDEITEM"
+    self.hideItem.anchorTop = false
+    self.hideItem.anchorLeft = false
+    self.hideItem.anchorBottom = true
+    self.hideItem.anchorRight = true
+    self.hideItem:initialise()
+    self.hideItem:instantiate()
+    self.hideItem:enableCancelColor()
+    self.hideItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Hide_tooltip"))
+    self:addChild(self.hideItem)
+
+    self.showItem = ISButton:new(hideShowX, hideShowY, btnWid, BUTTON_HGT,
+        getText("IGUI_TransmogDE_ListViewer_Show"), self, TransmogListViewer.onClickTransmog)
+    self.showItem.internal = "SHOWITEM"
+    self.showItem.anchorTop = false
+    self.showItem.anchorLeft = false
+    self.showItem.anchorBottom = true
+    self.showItem.anchorRight = true
+    self.showItem:initialise()
+    self.showItem:instantiate()
+    self.showItem:enableAcceptColor()
+    self.showItem:setTooltip(getText("IGUI_TransmogDE_ListViewer_Show_tooltip"))
+    self:addChild(self.showItem)
+
     local isHidden = TransmogDE.isClothingHidden(self.item)
     self.hideItem:setVisible(not isHidden)
     self.showItem:setVisible(isHidden)
@@ -127,10 +154,40 @@ function TransmogListViewer:new(x, y, width, height, itemToTmog)
     return o
 end
 
+function TransmogListViewer:rebuildTabPanel()
+    -- Remove old panel cleanly
+    if self.panel then
+        self.panel:setVisible(false)
+        self:removeChild(self.panel)
+        self.panel = nil
+    end
+
+    -- Recreate with the same geometry as initialise()
+    local top = UI_BORDER_SPACING * 2 + FONT_HGT_MEDIUM + 1
+    local x = UI_BORDER_SPACING + 1
+    local y = top
+    local w = self.width - (UI_BORDER_SPACING + 1) * 2
+    local h = self.ok.y - UI_BORDER_SPACING - top
+
+    local panel = ISTabPanel:new(x, y, w, h)
+    panel:initialise()
+    panel.borderColor = { r = 0, g = 0, b = 0, a = 0 }
+    panel.target = self
+    panel.equalTabWidth = false
+
+    self.panel = panel
+    self:addChild(self.panel)
+
+    self:initList()
+end
+
 function TransmogListViewer:setPlayer(player)
     if player then
         self.player = player
     end
+end
+
+function ISItemsListViewer:onSelectPlayer()
 end
 
 function TransmogListViewer:saveWindowState()
@@ -272,7 +329,24 @@ function TransmogListViewer:close()
     TransmogListViewer.instance = nil
     TexturePickerModal.Close()
     ColorPickerModal.Close()
-    ISItemsListViewer.close(self)
+    
+    self:setVisible(false);
+    self:removeFromUIManager();
+end
+
+function TransmogListViewer:syncUIState()
+    if not (self and self.item and self.hideItem and self.showItem) then return end
+
+    local isHidden = TransmogDE.isClothingHidden(self.item)
+
+    if self._lastHidden == nil or self._lastHidden ~= isHidden then
+        TmogPrint("Updating Transmog UI")
+        self._lastHidden = isHidden
+        self.hideItem:setVisible(not isHidden)
+        self.showItem:setVisible(isHidden)
+        ColorPickerModal.updateItemToColor(self.player, self.item)
+        TexturePickerModal.updateItemToTexture(self.player, self.item)
+    end
 end
 
 function TransmogListViewer:updateItemToTmogData(player, clothing)
@@ -283,29 +357,24 @@ function TransmogListViewer:updateItemToTmogData(player, clothing)
     if clothing and clothing ~= self.item then
         self.item = clothing
     end
-
-    -- Update Hide / Show button visibility for this item
-    if self.hideItem and self.showItem and self.item then
-        local isHidden = TransmogDE.isClothingHidden(self.item)
-        self.hideItem:setVisible(not isHidden)
-        self.showItem:setVisible(isHidden)
-    end
 end
 
 local function updateItemToTmog(player, clothing, forceOpen)
     local modal = TransmogListViewer.instance
+    local item = clothing or modal and modal.item or nil
+    if not item then return end
     if modal and modal:getIsVisible() then
-        if clothing and forceOpen then
-            modal:updateItemToTmogData(player, clothing)
-            ColorPickerModal.updateItemToColor(player, clothing)
-            TexturePickerModal.updateItemToTexture(player, clothing)
-        else
-            modal:updateItemToTmogData(player, modal.item)
-            ColorPickerModal.updateItemToColor(player, modal.item)
-            TexturePickerModal.updateItemToTexture(player, modal.item)
+        if not (clothing and forceOpen) then
+            item = modal.item
         end
+        if forceOpen then
+            modal:rebuildTabPanel()
+        end
+        ColorPickerModal.updateItemToColor(player, item)
+        TexturePickerModal.updateItemToTexture(player, item)
     elseif forceOpen then
         TransmogListViewer.OpenNew(player, clothing)
+
         ColorPickerModal.updateItemToColor(player, clothing)
         TexturePickerModal.updateItemToTexture(player, clothing)
     end
@@ -332,53 +401,73 @@ function TransmogListViewer.Open(player, clothing)
 end
 
 function TransmogListViewer:initList()
-    -- Hack to use as litte code as possible and keep backcompatibility
-    -- getAllItems is used inside the original function (ISItemsListViewer.initList)
-    local backupGetAllItems = getAllItems
-    getAllItems = function()
-        local filteredItems = ArrayList:new()
-        local allItems = backupGetAllItems()
-        for i = 0, allItems:size() - 1 do
-            local item = allItems:get(i)
-            if TransmogDE.isTransmoggable(item) and (TransmogDE.immersiveModeItemCheck(item) or (getCore():getDebug() or isAdmin())) then
+    self.items = self.items or getAllItems();
+
+    self.module = {};
+    local moduleNames = {}
+    local allItems = {}
+    for i=0,self.items:size()-1 do
+        local item = self.items:get(i);
+        if not item:getObsolete() and not item:isHidden() then
+            local isTransmogItem = TransmogDE.isTransmoggable(item) and (TransmogDE.immersiveModeItemCheck(item) or (getCore():getDebug() or isAdmin()))
+            if isTransmogItem then
+                local isLocationUnrestricted = (getCore():getDebug() or isAdmin()) or (not SandboxVars.TransmogDE.LimitTransmogToSameBodyLocation)
                 local isSameBodyLocation = item:getBodyLocation() == self.item:getBodyLocation()
-                if (getCore():getDebug() or isAdmin()) or (not SandboxVars.TransmogDE.LimitTransmogToSameBodyLocation) then
-                    filteredItems:add(item)
-                else
-                    if isSameBodyLocation then
-                        filteredItems:add(item)
+                local locationAllowed = isLocationUnrestricted or isSameBodyLocation
+                if locationAllowed then
+                    if not self.module[item:getModuleName()] then
+                        self.module[item:getModuleName()] = {}
+                        table.insert(moduleNames, item:getModuleName())
                     end
+                    table.insert(self.module[item:getModuleName()], item);
+                    table.insert(allItems, item)
                 end
             end
         end
-        return filteredItems
     end
 
-    ISItemsListViewer.initList(self)
+    table.sort(moduleNames, function(a,b) return not string.sort(a, b) end)
 
-    -- put the original function back in it's place
-    getAllItems = backupGetAllItems
+    local listBox = TransmogItemsListTable:new(0, 0, self.panel.width, self.panel.height - self.panel.tabHeight, self);
+    listBox:initialise();
+    self.panel:addView("All", listBox);
+    listBox:initList(allItems)
+
+    for _,moduleName in ipairs(moduleNames) do
+        if moduleName ~= "Moveables" then
+            local cat1 = TransmogItemsListTable:new(0, 0, self.panel.width, self.panel.height - self.panel.tabHeight, self);
+            cat1:initialise();
+            self.panel:addView(moduleName, cat1);
+            cat1:initList(self.module[moduleName])
+        end
+    end
+    self.panel:activateView("All");
 end
 
 function TransmogListViewer:prerender()
-    local z = 20
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g,
         self.backgroundColor.b)
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
         self.borderColor.b)
+
+    local z = 20
     local fullItemName = getItemNameFromFullType(self.item:getScriptItem():getFullName())
-    local textBuilder = "Transmog (Standard) - " .. fullItemName
     local text = getTextOrNull("IGUI_TransmogDE_ListViewer_Standard_Item", fullItemName)
-    self:drawText(text, self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, text) / 2), z, 1, 1, 1, 1,
-        UIFont.Medium)
+    local textSize = self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, text) / 2)
+    self:drawText(text, textSize, z, 1, 1, 1, 1, UIFont.Medium)
+
+    self:syncUIState()
 end
 
-local old_ISItemsListTable_render = ISItemsListTable.render
-function ISItemsListTable:render()
-    if not self.viewer.isTransmogListViewer then
-        old_ISItemsListTable_render(self)
-        return
-    end
+function TransmogListViewer:setKeyboardFocus()
+    local view = self.panel:getActiveView()
+    if not view then return end
+    Core.UnfocusActiveTextEntryBox()
+    view.filterWidgetMap.Type:focus()
+end
+
+TransmogItemsListTable = ISItemsListTable:derive("TransmogItemsListTable")
+function TransmogItemsListTable:render()
     ISPanel.render(self)
 
     local y = self.datas.y + self.datas.height + UI_BORDER_SPACING + 3
@@ -463,52 +552,45 @@ local function _removeColumnByName(self, columnName)
     return removed
 end
 
-local old_ISItemsListTable_createChildren = ISItemsListTable.createChildren
-function ISItemsListTable:createChildren()
-    local result = old_ISItemsListTable_createChildren(self)
+function TransmogItemsListTable:createChildren()
+    local result = ISItemsListTable.createChildren(self)
 
-    if self.viewer.isTransmogListViewer then
-        _removeColumnByName(self, "#spawn")
-        _removeColumnByName(self, "Loot")
-        _removeColumnByName(self, "Forage")
-        _removeColumnByName(self, "Craft")
-        _removeColumnByName(self, "LootCategory")
-        -- Expand the last remaining combo (DisplayCategory) to reach the right edge
-        local lastCol = self.filterWidgetMap and self.filterWidgetMap.DisplayCategory
-        if lastCol and lastCol.setWidth then
-            -- rightEdge = full width of the table panel, minus 1px border line
-            local rightEdge = self:getWidth()
+    _removeColumnByName(self, "#spawn")
+    _removeColumnByName(self, "Loot")
+    _removeColumnByName(self, "Forage")
+    _removeColumnByName(self, "Craft")
+    _removeColumnByName(self, "LootCategory")
+    -- Expand the last remaining combo (DisplayCategory) to reach the right edge
+    local lastCol = self.filterWidgetMap and self.filterWidgetMap.DisplayCategory
+    if lastCol and lastCol.setWidth then
+        -- rightEdge = full width of the table panel, minus 1px border line
+        local rightEdge = self:getWidth()
 
-            -- desired width = distance from current X to that right edge
-            local desiredW = rightEdge - lastCol:getX()
+        -- desired width = distance from current X to that right edge
+        local desiredW = rightEdge - lastCol:getX()
 
-            if desiredW > lastCol:getWidth() then
-                lastCol:setWidth(desiredW)
-            end
+        if desiredW > lastCol:getWidth() then
+            lastCol:setWidth(desiredW)
         end
-
-        self:removeChild(self.buttonAdd1)
-        self:removeChild(self.buttonAdd2)
-        self:removeChild(self.buttonAdd5)
-        self:removeChild(self.buttonAddMultiple)
-        -- self:removeChild(self.filters)
-
-        -- keep our double-click behavior
-        self.datas:setOnMouseDoubleClick(self, self.sendItemToTransmog)
     end
+
+    self:removeChild(self.buttonAdd1)
+    self:removeChild(self.buttonAdd2)
+    self:removeChild(self.buttonAdd5)
+    self:removeChild(self.buttonAddMultiple)
+    -- self:removeChild(self.filters)
+
+    -- keep our double-click behavior
+    self.datas:setOnMouseDoubleClick(self, self.sendItemToTransmog)
 
     return result
 end
 
-function ISItemsListTable:sendItemToTransmog(scriptItem)
+function TransmogItemsListTable:sendItemToTransmog(scriptItem)
     TransmogNet.requestTransmog(self.viewer.player, self.viewer.item, scriptItem:getFullName())
 end
 
-local old_ISItemsListTable_drawDatas = ISItemsListTable.drawDatas
-function ISItemsListTable:drawDatas(y, item, alt)
-    if #self.columns >= 5 then
-        return old_ISItemsListTable_drawDatas(self, y, item, alt)
-    end
+function TransmogItemsListTable:drawDatas(y, item, alt)
     if y + self:getYScroll() + self.itemheight < 0 or y + self:getYScroll() >= self.height then
         return y + self.itemheight
     end
@@ -577,21 +659,15 @@ function ISItemsListTable:drawDatas(y, item, alt)
     return y + self.itemheight
 end
 
-local old_ISItemsListTable_initList = ISItemsListTable.initList
-function ISItemsListTable:initList(module)
+function TransmogItemsListTable:initList(module)
     if self.filterWidgetMap.LootCategory ~= nil then
-        DebugLog.log(DebugType.General, "[TransmogDE] Default Init List")
-        return old_ISItemsListTable_initList(self, module)
+        return ISItemsListTable.initList(self, module)
     end
-    DebugLog.log(DebugType.General, "[TransmogDE] Transmog Init List")
     self.totalResult = 0
     local categoryNames = {}
     local displayCategoryNames = {}
-    local lootCategoryNames = {}
     local categoryMap = {}
     local displayCategoryMap = {}
-    local lootCategoryMap = {}
-    local spawnNumMap = {}
     for x, v in ipairs(module) do
         self.datas:addItem(v:getDisplayName(), v)
         local it = v:getItemType()
@@ -605,32 +681,28 @@ function ISItemsListTable:initList(module)
             displayCategoryMap[v:getDisplayCategory()] = true
             table.insert(displayCategoryNames, v:getDisplayCategory())
         end
---[[         if not lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] then
-            lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] = true
-            table.insert(lootCategoryNames, getText("Sandbox_" .. v:getLootType() .. "LootNew"))
-        end ]]
         self.totalResult = self.totalResult + 1
     end
     table.sort(self.datas.items, function(a, b)
         return not string.sort(a.item:getDisplayName(), b.item:getDisplayName())
     end)
 
-    local combo = self.filterWidgetMap.Category
+    local categoryCombo = self.filterWidgetMap.Category
     table.sort(categoryNames, function(a, b)
         return not string.sort(a, b)
     end)
-    combo:addOption("<Any>")
+    categoryCombo:addOption("<Any>")
     for _, categoryName in ipairs(categoryNames) do
-        combo:addOption(categoryName)
+        categoryCombo:addOption(categoryName)
     end
 
-    local combo = self.filterWidgetMap.DisplayCategory
+    local displayCombo = self.filterWidgetMap.DisplayCategory
     table.sort(displayCategoryNames, function(a, b)
         return not string.sort(a, b)
     end)
-    combo:addOption("<Any>")
-    combo:addOption("<No category set>")
+    displayCombo:addOption("<Any>")
+    displayCombo:addOption("<No category set>")
     for _, displayCategoryName in ipairs(displayCategoryNames) do
-        combo:addOption(displayCategoryName)
+        displayCombo:addOption(displayCategoryName)
     end
 end

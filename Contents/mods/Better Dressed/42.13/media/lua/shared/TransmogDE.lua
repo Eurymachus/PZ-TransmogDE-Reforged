@@ -462,6 +462,7 @@ TransmogDE.setClothingColorModdata = function(item, color)
 end
 
 TransmogDE.setClothingTextureModdata = function(item, textureIdx)
+    TmogPrint("Attempt: Item[".. item:getDisplayName() .. "] to TextureIndex[" .. tostring(textureIdx) .. "]")
     if textureIdx == nil or textureIdx < 0 then
         return
     end
@@ -564,27 +565,23 @@ end
 -- but KEEP current tint/texture and do not touch carriers (except clearing stale childId).
 -- Used for style-variant swaps (ISClothingExtraAction) so colors survive equip/unequip.
 TransmogDE.setTransmogToSelfKeepVisuals = function(item, supressUpdates)
-    --TmogPrint("setTransmogToSelfKeepVisuals fired")
     local moddata = TransmogDE.getItemTransmogModData(item)
     local isHidden = TransmogDE.isClothingHidden(item)
-    local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
+    --local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
 
     moddata.transmogTo = item:getScriptItem():getFullName()
     moddata.lastTransmogTo = item:getScriptItem():getFullName()
 
-    --[[
-    local toName = getItemNameFromFullType(moddata.transmogTo)
-    local text = nil
-    if fromName and fromName ~= toName or isHidden then
-        text = getText("IGUI_TransmogDE_Text_WasReset", toName)
+    -- Variant swaps can copy modData across, so never keep an old carrier link.
+    moddata.childId = nil
+
+    -- Only rebuild the carrier if we actually have one already.
+    -- (When wearing a variant from inventory via ISClothingExtraAction there is no carrier yet.)
+    local container = item:getContainer()
+    local childId = tonumber(moddata.childId)
+    if container and childId and container:getItemById(childId) then
+        TransmogDE.forceUpdateClothing(item)
     end
-    if not supressUpdates then
-        if text then
-            HaloTextHelper.addGoodText(getPlayer(), text)
-        end
-    end
-    ]]
-    TransmogDE.forceUpdateClothing(item)
 end
 
 -- ==========================================================
@@ -789,6 +786,7 @@ TransmogDE.removeAllWornTransmogs = function(player)
         local item = wornItems:getItemByIndex(i);
         if item and TransmogDE.isTransmoggable(item) then
             TransmogDE.removeTransmog(item, true)
+            TransmogNet.updateItem(player, item)
         end
     end
     -- triggerEvent("OnClothingUpdated", player)
@@ -806,6 +804,7 @@ TransmogDE.resetDefaultAllWornTransmogs = function(player)
         local item = wornItems:getItemByIndex(i);
         if item and TransmogDE.isTransmoggable(item) then
             TransmogDE.setItemToDefault(item, true)
+            TransmogNet.updateItem(player, item)
         end
     end
     -- triggerEvent("OnClothingUpdated", player)
@@ -823,6 +822,7 @@ TransmogDE.hideAllWornTransmogs = function(player)
         local item = wornItems:getItemByIndex(i);
         if item and TransmogDE.isTransmoggable(item) and (not TransmogDE.isClothingHidden(item)) then
             TransmogDE.setClothingHidden(item, true)
+            TransmogNet.updateItem(player, item)
         end
     end
     -- triggerEvent("OnClothingUpdated", player)
@@ -840,6 +840,7 @@ TransmogDE.showAllWornTransmogs = function(player)
         local item = wornItems:getItemByIndex(i);
         if item and TransmogDE.isTransmoggable(item) and TransmogDE.isClothingHidden(item) then
             TransmogDE.setClothingShown(item, true)
+            TransmogNet.updateItem(player, item)
         end
     end
     -- triggerEvent("OnClothingUpdated", player)
@@ -898,20 +899,21 @@ TransmogDE.forceUpdateClothing = function(item)
         TmogPrint('forceUpdateClothing container is nil')
         return
     end
-    local childId = tonumber(moddata.childId)
-    if not childId then
-        TmogPrint("forceUpdateClothing childId not numeric")
-        return
-    end
-    local childItem = container:getItemById(childId)
-    local player = instanceof(container:getParent(), "IsoGameCharacter") and container:getParent()
 
+    local player = instanceof(container:getParent(), "IsoGameCharacter") and container:getParent()
     if not player then
         TmogPrint("forceUpdateClothing player missing!")
         return
     end
 
+    local childId = tonumber(moddata.childId)
+    if not childId then
+        TmogPrint("forceUpdateClothing childId not numeric")
+        return
+    end
+
     -- find the item by ID, ensure it exists, then remove it from container and player
+    local childItem = container:getItemById(childId)
     if not childItem then
         TmogPrint("forceUpdateClothing childItem missing!")
         return
@@ -933,12 +935,8 @@ TransmogDE.forceUpdateClothing = function(item)
         TmogPrint("forceUpdateClothing tmogItem visuals not synced")
     end
 
-    syncItemModData(player, item)
-    syncItemFields(player, tmogItem)
-    sendItemStats(tmogItem)
-
     TransmogDE.setWornItemTmog(player, tmogItem)
-    _dbgTextureDump("forceUpdateClothing EXIT", item)
+    --_dbgTextureDump("forceUpdateClothing EXIT", item)
 end
 
 local function clearHoles(vDst)
