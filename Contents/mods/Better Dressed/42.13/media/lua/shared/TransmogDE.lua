@@ -477,7 +477,7 @@ TransmogDE.setClothingColor = function(item, color)
     end
 
     item:getVisual():setTint(color)
-    
+
     item:synchWithVisual();
 end
 
@@ -497,10 +497,15 @@ end
 
 TransmogDE.getClothingColor = function(item)
     local itemModData = TransmogDE.getItemTransmogModData(item)
-    local parsedColor = itemModData.color and
-                            ImmutableColor.new(
-            Color.new(itemModData.color.r, itemModData.color.g, itemModData.color.b, itemModData.color.a))
-    return parsedColor or item:getVisual():getTint()
+    local parsedColor = nil
+    local color = itemModData.color or itemModData.originalColor or nil
+    if color then
+        parsedColor = ImmutableColor.new(
+                Color.new(color.r, color.g, color.b, color.a))
+    else
+        parsedColor = item:getVisual():getTint()
+    end
+    return parsedColor
 end
 
 -- Returns ColorInfo or nil
@@ -531,7 +536,7 @@ TransmogDE.getClothingTexture = function(item)
 
     -- In Lua, -1 is truthy, but for visuals it means "no explicit choice".
     -- Treat negatives as unset and fall through to visual-derived texture.
-    local t = itemModData.texture
+    local t = itemModData.texture or itemModData.originalTexture
     if t ~= nil and t >= 0 then
         return t
     end
@@ -566,12 +571,14 @@ end
 -- Used for style-variant swaps (ISClothingExtraAction) so colors survive equip/unequip.
 TransmogDE.setTransmogToSelfKeepVisuals = function(item, supressUpdates)
     local moddata = TransmogDE.getItemTransmogModData(item)
-    local isHidden = TransmogDE.isClothingHidden(item)
+    if not moddata then return end
+    --local isHidden = TransmogDE.isClothingHidden(item)
     --local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
 
     moddata.transmogTo = item:getScriptItem():getFullName()
     moddata.lastTransmogTo = item:getScriptItem():getFullName()
 
+    --[[
     -- Variant swaps can copy modData across, so never keep an old carrier link.
     moddata.childId = nil
 
@@ -582,6 +589,9 @@ TransmogDE.setTransmogToSelfKeepVisuals = function(item, supressUpdates)
     if container and childId and container:getItemById(childId) then
         TransmogDE.forceUpdateClothing(item)
     end
+    ]]
+
+    TransmogDE.forceUpdateClothing(item)
 end
 
 -- ==========================================================
@@ -648,11 +658,6 @@ end
 --
 TransmogDE.removeTransmog = function(item)
     if not item then
-        return
-    end
-
-    local moddata = TransmogDE.getItemTransmogModData(item)
-    if not moddata then
         return
     end
 
@@ -766,7 +771,7 @@ TransmogDE.setClothingShown = function(item)
     if moddata.lastTransmogTo ~= nil then
         moddata.transmogTo = moddata.lastTransmogTo
     else
-        item:getScriptItem():getFullName()
+        moddata.transmogTo = item:getScriptItem():getFullName()
     end
 
     -- UI feedback is handled by TransmogNet.notifyPlayer
@@ -915,14 +920,18 @@ TransmogDE.forceUpdateClothing = function(item)
     -- find the item by ID, ensure it exists, then remove it from container and player
     local childItem = container:getItemById(childId)
     if not childItem then
-        TmogPrint("forceUpdateClothing childItem missing!")
-        return
+        TmogPrint("forceUpdateClothing childItem missing, rebuild it.")
+    else
+        -- Remove the old tmog item
+        player:getWornItems():remove(childItem)
+        container:Remove(childItem);
+        sendRemoveItemFromContainer(container, childItem)
     end
 
-    -- Remove the old tmog item
-    player:getWornItems():remove(childItem)
-    container:Remove(childItem);
-    sendRemoveItemFromContainer(container, childItem)
+    if not item:isWorn() then
+        TmogPrint("forceUpdateClothing og item not worn, skipping rebuild")
+        return
+    end
 
     -- Create and wear new tmog item
     local tmogItem = TransmogDE.createTransmogItem(item, player)

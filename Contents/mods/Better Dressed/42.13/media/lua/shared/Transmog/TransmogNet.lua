@@ -189,7 +189,44 @@ end
 
 -- END --
 
-local function _refreshPlayerAndVisuals(player, focusItem)
+local function _reapplyVisuals(focusItem, tmogItem)
+    if not focusItem then return end
+    tmogItem = tmogItem or TransmogDE.getTransmogChild(focusItem)
+
+    -- Apply Color
+    local color = TransmogDE.getClothingColor(focusItem)
+    TransmogDE.setClothingColor(focusItem, color)
+    if tmogItem then
+        TransmogDE.setClothingColor(tmogItem, color)
+    end
+
+    -- Apply Texture
+    local texture = TransmogDE.getClothingTexture(focusItem)
+    TransmogDE.setClothingTexture(focusItem, texture)
+    if tmogItem then
+        TransmogDE.setClothingTexture(tmogItem, texture)
+    end
+end
+
+local function _reapplyVisualsForAllWorn(player)
+    if not player then
+        return
+    end
+
+    local wornItems = player:getWornItems()
+    if not wornItems then
+        return
+    end
+
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i)
+        if item and TransmogDE.isTransmoggable(item) then
+            _reapplyVisuals(item)
+        end
+    end
+end
+
+local function _refreshPlayerAndSyncUI(player, focusItem)
     -- One visual refresh per completed operation
     player:resetModelNextFrame()
     if instanceof(player, "IsoPlayer") and player:isLocalPlayer() and getPlayerInfoPanel(player:getPlayerNum()) then
@@ -244,6 +281,7 @@ TransmogNet.notifyPlayer = function(player, result)
             local toName = getItemNameFromFullType(req.to)
             local text = getText("IGUI_TransmogDE_Text_WasTransmoggedTo", fromName, toName)
             HaloTextHelper.addGoodText(player, text)
+            _reapplyVisuals(focusItem, tmogItem)
         end
     elseif cmd == TransmogNet.Commands.HIDE then
         if focusItem then
@@ -256,55 +294,59 @@ TransmogNet.notifyPlayer = function(player, result)
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
             local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
             HaloTextHelper.addGoodText(player, text)
+            _reapplyVisuals(focusItem, tmogItem)
         end
     elseif cmd == TransmogNet.Commands.REMOVE_TRANSMOG then
         if focusItem then
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
             local text = getTextOrNull("IGUI_TransmogDE_Text_WasRemoved", fromName) or ("Removed transmog: " .. tostring(fromName))
             HaloTextHelper.addGoodText(player, text)
+            _reapplyVisuals(focusItem, tmogItem)
         end
     elseif cmd == TransmogNet.Commands.RESET_DEFAULT then
         if focusItem then
             local toName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
             local text = getText("IGUI_TransmogDE_Text_WasReset", toName)
             HaloTextHelper.addGoodText(player, text)
+            _reapplyVisuals(focusItem, tmogItem)
         end
     elseif cmd == TransmogNet.Commands.HIDE_ALL then
         local actionText = getText("IGUI_TransmogDE_Text_BatchActionHide")
         local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
         HaloTextHelper.addGoodText(player, haloText)
+        _reapplyVisualsForAllWorn(player)
     elseif cmd == TransmogNet.Commands.SHOW_ALL then
         local actionText = getText("IGUI_TransmogDE_Text_BatchActionShow")
         local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
         HaloTextHelper.addGoodText(player, haloText)
+        _reapplyVisualsForAllWorn(player)
     elseif cmd == TransmogNet.Commands.REMOVE_TRANSMOG_ALL then
         local actionText = getText("IGUI_TransmogDE_Text_BatchActionRemove")
         local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
         HaloTextHelper.addGoodText(player, haloText)
+        _reapplyVisualsForAllWorn(player)
     elseif cmd == TransmogNet.Commands.RESET_DEFAULT_ALL then
         local actionText = getText("IGUI_TransmogDE_Text_BatchActionReset")
         local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
         HaloTextHelper.addGoodText(player, haloText)
+        _reapplyVisualsForAllWorn(player)
     elseif cmd == TransmogNet.Commands.SET_COLOR then
         if focusItem then
-            local color = TransmogDE.getClothingColor(focusItem)
-            --local immutableColor = ImmutableColor.new(Color.new(color.r, color.g, color.b, 1))
-            TransmogDE.setClothingColor(focusItem, color)
-            if tmogItem then
-                TransmogDE.setClothingColor(tmogItem, color)
-            end
+            local actionText = "Set Color"
+            local haloText = actionText .. " - Complete"
+            HaloTextHelper.addGoodText(player, haloText)
+            _reapplyVisuals(focusItem, tmogItem)
         end
     elseif cmd == TransmogNet.Commands.SET_TEXTURE then
         if focusItem then
-            local texture = TransmogDE.getClothingTexture(focusItem)
-            TransmogDE.setClothingTexture(focusItem, texture)
-            if tmogItem then
-                TransmogDE.setClothingTexture(tmogItem, texture)
-            end
+            local actionText = "Set Texture"
+            local haloText = actionText .. " - Complete"
+            HaloTextHelper.addGoodText(player, haloText)
+            _reapplyVisuals(focusItem, tmogItem)
         end
     end
 
-    _refreshPlayerAndVisuals(player, focusItem)
+    _refreshPlayerAndSyncUI(player, focusItem)
 
     if requestID then
         TransmogNet.REQUESTS[requestID] = nil
@@ -325,7 +367,7 @@ TransmogNet.updatePlayer = function(player, args)
     if (args and args.itemId) then
         item = resolveItemByRef(player, args.itemId, args.ref)
     end
-    _refreshPlayerAndVisuals(player, item)
+    _refreshPlayerAndSyncUI(player, item)
     TransmogDE._clothingDirty[player:getPlayerNum()] = nil
 end
 
@@ -340,7 +382,7 @@ TransmogNet.wearTransmogItems = function(player, args)
             TransmogDE.setWornItemTmog(player, tmogItem)
         end
     end
-    _refreshPlayerAndVisuals(player)
+    _refreshPlayerAndSyncUI(player)
 end
 
 local serverCommandReceivers = {
@@ -538,7 +580,7 @@ TransmogNet.requestSetColorRecieved = function(player, args)
 
     TransmogNet.updateItem(player, item)
 
-    --TransmogDE.triggerUpdate(player)
+    TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.SET_COLOR, true, 1, color)
 end
 
@@ -557,7 +599,7 @@ TransmogNet.requestSetTextureRecieved = function(player, args)
 
     TransmogNet.updateItem(player, item)
 
-    --TransmogDE.triggerUpdate(player)
+    TransmogDE.triggerUpdate(player)
     notifyClient(player, args.requestID, TransmogNet.Commands.SET_TEXTURE, true, 1, texture)
 end
 
@@ -566,8 +608,8 @@ TransmogNet.updateItem = function(player, item)
     local tmogItem = TransmogDE.getTransmogChild(item)
     if tmogItem then
         syncItemModData(player, tmogItem)
-        syncItemFields(player, tmogItem)
-        sendItemStats(tmogItem)
+        --syncItemFields(player, tmogItem)
+        --sendItemStats(tmogItem)
     end
 end
 
@@ -751,7 +793,7 @@ TransmogNet.hello = function(player)
         return true
     end
     TransmogDE.triggerUpdate(player)
-    _refreshPlayerAndVisuals(player)
+    _refreshPlayerAndSyncUI(player)
     TransmogNet._playerInitDone[playerNum] = true
 end
 
@@ -763,7 +805,7 @@ TransmogNet.requestUpdate = function(player)
         return
     end
     TransmogDE.triggerUpdate(player)
-    _refreshPlayerAndVisuals(player)
+    _refreshPlayerAndSyncUI(player)
 end
 
 -- =========================================================

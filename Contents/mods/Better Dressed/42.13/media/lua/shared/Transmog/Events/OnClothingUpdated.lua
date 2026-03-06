@@ -270,7 +270,7 @@ local function onClothingUpdated(player)
     TmogPrint("OnClothingUpdated -> mark clothing dirty for player " .. tostring(playerNum))
 
     if TransmogListViewer and TransmogListViewer.instance then
-        TransmogListViewer.instance:initialise()
+        TransmogListViewer.instance:syncUIState()
     end
 end
 

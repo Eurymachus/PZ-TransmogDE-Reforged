@@ -367,6 +367,7 @@ local function updateItemToTmog(player, clothing, forceOpen)
         if not (clothing and forceOpen) then
             item = modal.item
         end
+        modal.item = item
         if forceOpen then
             modal:rebuildTabPanel()
         end
