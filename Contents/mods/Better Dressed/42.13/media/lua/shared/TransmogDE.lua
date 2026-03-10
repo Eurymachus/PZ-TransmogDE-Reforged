@@ -291,8 +291,6 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     end
 
     local tmogItem = player:getInventory():AddItem(tmogItemName);
-    -- MP: server must transmit the new inventory item to clients
-    sendAddItemToContainer(player:getInventory(), tmogItem)
 
     -- set tmogItem as child of ogItem
     itemTmogModData.childId = tmogItem:getID()
@@ -315,6 +313,12 @@ TransmogDE.createTransmogItem = function(ogItem, player)
 
     TransmogDE.setClothingColor(tmogItem, ogColor)
     TransmogDE.setClothingTexture(tmogItem, ogTex)
+
+    TransmogDE.syncConditionVisuals(tmogItem, ogItem)
+
+    -- MP: server must transmit the new inventory item to clients
+    -- We send after applying
+    sendAddItemToContainer(player:getInventory(), tmogItem)
 
     -- don't wear the new item yet
     -- player:setWornItem(tmogItem:getBodyLocation(), tmogItem)
@@ -976,12 +980,70 @@ function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
         return false
     end
 
-    local OPS = TransmogDE.Options or {}
+    -- Blood
+    vDst:copyBlood(vSrc)
+
+    -- Dirt
+    vDst:copyDirt(vSrc)
+
+    -- Holes
+    vDst:copyHoles(vSrc)
+
+    -- Patches
+    vDst:copyPatches(vSrc)
+
+    carrierItem:synchWithVisual()
+
+    return true
+end
+
+TransmogDE.syncConditionVisualsToTmog = function(ogItem)
+    local tmogItem = TransmogDE.getTransmogChild(ogItem)
+    if not tmogItem then return false end
+    return TransmogDE.syncConditionVisuals(tmogItem, ogItem)
+end
+
+TransmogDE.syncConditionVisualsForTmog = function(tmogItem)
+    if tmogItem:hasTag(TransmogDE.ItemTag.Hide_Everything) then return false end
+    local ogItem = TransmogDE.getTransmogParent(tmogItem)
+    if not ogItem then return false end
+    return TransmogDE.syncConditionVisuals(tmogItem, ogItem)
+end
+
+TransmogDE.refreshPlayerAndSyncUI = function(player, focusItem)
+    -- One visual refresh per completed operation
+    player:resetModelNextFrame()
+    if instanceof(player, "IsoPlayer") and player:isLocalPlayer() and getPlayerInfoPanel(player:getPlayerNum()) then
+        getPlayerInfoPanel(player:getPlayerNum()).charScreen.refreshNeeded = true
+    end
+
+    -- Refresh Transmog UI (ListViewer listens to this)
+    TmogPrint("trigger TransmogClothingUpdate ")
+    triggerEvent("TransmogClothingUpdate", player, focusItem)
+end
+
+local OPS = require("Transmog/Options")
+
+TransmogDE.updateConditionVisuals = function(carrierItem)
+    TmogPrint("updateConditionVisuals fired")
+    if not carrierItem then return end
+
+    local sourceItem = TransmogDE.getTransmogParent(carrierItem)
+    if not sourceItem then return end
+
+    local OPS = require("Transmog/Options")
+    if not OPS then return end
 
     local hideBlood   = OPS.shouldHideBlood   and OPS.shouldHideBlood()   or false
     local hideDirt    = OPS.shouldHideDirt    and OPS.shouldHideDirt()    or false
     local hideHoles   = OPS.shouldHideHoles   and OPS.shouldHideHoles()   or false
     local hidePatches = OPS.shouldHidePatches and OPS.shouldHidePatches() or false
+
+    local vDst = carrierItem:getVisual()
+    local vSrc = sourceItem:getVisual()
+    if not (vDst and vSrc) then
+        return
+    end
 
     -- Blood
     if hideBlood then
@@ -1012,21 +1074,64 @@ function TransmogDE.syncConditionVisuals(carrierItem, sourceItem)
     end
 
     carrierItem:synchWithVisual()
-    -- sourceItem:synchWithVisual()
-    return true
 end
 
-function TransmogDE.syncConditionVisualsToTmog(ogItem)
-    local tmogItem = TransmogDE.getTransmogChild(ogItem)
-    if not tmogItem then return false end
-    return TransmogDE.syncConditionVisuals(tmogItem, ogItem)
+TransmogDE.updateAllConditionVisuals = function(player)
+    TmogPrint("updateAllConditionVisuals fired")
+    if not player then return end
+
+    local wornItems = player:getWornItems()
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i)
+
+        -- Only interested in carrier items.
+        if item
+            and not item:hasTag(TransmogDE.ItemTag.Hide_Everything)
+            and TransmogDE.isTransmogItem(item) then
+            TmogPrint("updateConditionVisuals for item id: " .. tostring(item:getID()))
+            TransmogDE.updateConditionVisuals(item)
+        end
+    end
 end
 
-function TransmogDE.syncConditionVisualsForTmog(tmogItem)
-    if tmogItem:hasTag(TransmogDE.ItemTag.Hide_Everything) then return false end
-    local ogItem = TransmogDE.getTransmogParent(tmogItem)
-    if not ogItem then return false end
-    return TransmogDE.syncConditionVisuals(tmogItem, ogItem)
+TransmogDE.reapplyVisuals = function(focusItem, tmogItem)
+    if not focusItem then return end
+    tmogItem = tmogItem or TransmogDE.getTransmogChild(focusItem)
+
+    -- Apply Color
+    local color = TransmogDE.getClothingColor(focusItem)
+    TransmogDE.setClothingColor(focusItem, color)
+    if tmogItem then
+        TransmogDE.setClothingColor(tmogItem, color)
+    end
+
+    -- Apply Texture
+    local texture = TransmogDE.getClothingTexture(focusItem)
+    TransmogDE.setClothingTexture(focusItem, texture)
+    if tmogItem then
+        TransmogDE.setClothingTexture(tmogItem, texture)
+    end
+
+    -- Update local visuals
+    --TransmogDE.updateConditionVisuals(tmogItem)
+end
+
+TransmogDE.reapplyVisualsForAllWorn = function(player)
+    if not player then
+        return
+    end
+
+    local wornItems = player:getWornItems()
+    if not wornItems then
+        return
+    end
+
+    for i = 0, wornItems:size() - 1 do
+        local item = wornItems:getItemByIndex(i)
+        if item and TransmogDE.isTransmoggable(item) then
+            TransmogDE.reapplyVisuals(item)
+        end
+    end
 end
 
 -- Immersive mode code

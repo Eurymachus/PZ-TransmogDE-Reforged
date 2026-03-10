@@ -188,23 +188,27 @@ local function wearTransmogItems(player)
     end
 
     local toWearIDs = {}
+    local toRemoveIDs = {}
 
     for _, tmogItem in ipairs(toWear) do
-        TransmogDE.syncConditionVisualsForTmog(tmogItem)
+        toWearIDs[#toWearIDs+1] = tmogItem:getID()
+
+        --TransmogDE.syncConditionVisualsForTmog(tmogItem)
         syncItemFields(player, tmogItem)
         sendItemStats(tmogItem)
         TransmogDE.setWornItemTmog(player, tmogItem)
-        toWearIDs[#toWearIDs+1] = tmogItem:getID()
     end
 
     for _, tmogItem in ipairs(toRemove) do
-        wornItems:remove(tmogItem);
-        playerInv:Remove(tmogItem);
+        toRemoveIDs[#toRemoveIDs+1] = tmogItem:getID()
+
+        wornItems:remove(tmogItem)
+        playerInv:Remove(tmogItem)
         sendRemoveItemFromContainer(playerInv, tmogItem)
     end
 
     TmogPrint('wearTransmogItems, to wear:', #toWear, ' to remove:', #toRemove)
-    return toWearIDs
+    return toWearIDs, toRemoveIDs
 end
 
 local function applyTransmogToPlayerItems(player)
@@ -217,10 +221,13 @@ local function applyTransmogToPlayerItems(player)
         return
     end
     wearHideEverything(player);
-    local toWearTmogIDs = wearTransmogItems(player)
+    local toWearTmogIDs, toRemoveTmogIDs = wearTransmogItems(player)
     sendClothing(player, nil, nil)
     if #toWearTmogIDs > 0 then
         TransmogNet.sendTransmogClothing(player, toWearTmogIDs)
+    end
+    if #toRemoveTmogIDs > 0 then
+        syncVisuals(player)
     end
 end
 
@@ -253,25 +260,12 @@ local function onClothingUpdated(player)
         return
     end
 
-    if not isClient() then
-        TransmogNet.triggerUpdate(player)
-        return
-    end
-
-    if not player:isLocalPlayer() then
-        return
-    end
-
     local playerNum = player:getPlayerNum() or 0
 
     -- Mark clothing dirty; OnPlayerUpdate will handle the heavy work.
-    --TransmogDE._clothingDirty[playerNum] = true
+    TransmogDE._clothingDirty[playerNum] = true
 
     TmogPrint("OnClothingUpdated -> mark clothing dirty for player " .. tostring(playerNum))
-
-    if TransmogListViewer and TransmogListViewer.instance then
-        TransmogListViewer.instance:syncUIState()
-    end
 end
 
 Events.OnClothingUpdated.Add(onClothingUpdated)

@@ -1,66 +1,65 @@
-local Tmog = rawget(_G, "TransmogDE")
-if not Tmog then
-    Tmog = {}
-    _G.TransmogDE = Tmog
-end
+local Options = {}
 
-Tmog.Options = Tmog.Options or {}
-local OPS = Tmog.Options
+local panel = PZAPI.ModOptions:create("EURY_TRANSMOG", "Better Dressed - Transmog")
 
-local options = PZAPI.ModOptions:create("EURY_TRANSMOG", "Transmog [Reforged]")
-
-OPS.hideDirt = options:addTickBox(
+Options.hideDirt = panel:addTickBox(
     "hideDirt",
     "Hide Dirt",
     false,
     "Toggles visibility of Dirt on Clothing"
 )
-OPS.hideBlood = options:addTickBox(
+Options.hideBlood = panel:addTickBox(
     "hideBlood",
     "Hide Blood",
     false,
     "Toggles visibility of Blood on Clothing."
 )
-OPS.hideHoles = options:addTickBox(
+Options.hideHoles = panel:addTickBox(
     "hideHoles",
     "Hide Holes",
     false,
     "Toggles visibility of Holes on Clothing"
 )
-OPS.hidePatches = options:addTickBox(
+Options.hidePatches = panel:addTickBox(
     "hidePatches",
     "Hide Patches",
     false,
     "Toggles visibility of Patches on Clothing"
 )
 
-function options:apply()
-    if Tmog.triggerUpdate and getPlayer() then
-        Tmog.triggerUpdate(getPlayer())
+function panel:apply()
+	for i=0, getNumActivePlayers() -1 do
+        local player = getSpecificPlayer(i)
+        if player then
+            TransmogDE.reapplyVisualsForAllWorn(player)
+            TransmogDE.refreshPlayerAndSyncUI(player)
+        end
     end
 end
 
 -- Helpers: treat getValue() as boolean; guard against nil
-function OPS.shouldHideDirt()
-    local result = OPS.hideDirt and OPS.hideDirt:getValue() == true
-    -- TmogPrint("shouldHideDirt: " .. tostring(result))
+Options.shouldHideDirt = function()
+    local result = Options.hideDirt and Options.hideDirt:getValue() == true
+    TmogPrint("shouldHideDirt: " .. tostring(result))
     return result
 end
 
-function OPS.shouldHideBlood()
-    local result = OPS.hideBlood and OPS.hideBlood:getValue() == true
-    -- TmogPrint("shouldHideBlood: " .. tostring(result))
+Options.shouldHideBlood = function()
+    local result = Options.hideBlood and Options.hideBlood:getValue() == true
+    TmogPrint("shouldHideBlood: " .. tostring(result))
     return result
 end
 
-function OPS.shouldHideHoles()
-    local result = OPS.hideHoles and OPS.hideHoles:getValue() == true
-    -- TmogPrint("shouldHideHoles: " .. tostring(result))
+Options.shouldHideHoles = function()
+    local result = Options.hideHoles and Options.hideHoles:getValue() == true
+    TmogPrint("shouldHideHoles: " .. tostring(result))
     return result
 end
 
-function OPS.shouldHidePatches()
-    local result = OPS.hidePatches and OPS.hidePatches:getValue() == true
-    -- TmogPrint("shouldHidePatches: " .. tostring(result))
+Options.shouldHidePatches = function()
+    local result = Options.hidePatches and Options.hidePatches:getValue() == true
+    TmogPrint("shouldHidePatches: " .. tostring(result))
     return result
 end
+
+return Options

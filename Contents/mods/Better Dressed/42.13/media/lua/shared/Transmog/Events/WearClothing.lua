@@ -3,9 +3,11 @@ function ISWearClothing:complete()
     -- run the original behavior first
     local result = _orig_ISWearClothing_complete(self)
 
-    -- After vanilla equips the item, defer our sync one tick.
-    if self.character then
-        TransmogNet.triggerUpdate(self.character, self.item)
+    local player = self.character
+    local item = self.item
+    if player and item then
+        TmogPrint('ISWearClothing:complete()')
+        TransmogNet.triggerUpdate(player, item)
     end
 
     return result

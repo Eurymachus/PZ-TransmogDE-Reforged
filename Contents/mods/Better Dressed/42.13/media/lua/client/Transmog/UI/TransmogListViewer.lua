@@ -361,12 +361,13 @@ end
 
 local function updateItemToTmog(player, clothing, forceOpen)
     local modal = TransmogListViewer.instance
+    if modal and not (clothing and forceOpen) then
+        modal:syncUIState()
+        return
+    end
     local item = clothing or modal and modal.item or nil
     if not item then return end
     if modal and modal:getIsVisible() then
-        if not (clothing and forceOpen) then
-            item = modal.item
-        end
         modal.item = item
         if forceOpen then
             modal:rebuildTabPanel()
