@@ -431,6 +431,7 @@ TransmogNet.updatePlayer = function(player, args)
     if (args and args.itemId) then
         item = resolveItemByRef(player, args.itemId, args.ref)
     end
+    TransmogDE.updateAllConditionVisuals(player)
     TransmogDE.refreshPlayerAndSyncUI(player, item)
     TransmogDE._clothingDirty[player:getPlayerNum()] = nil
 end
@@ -444,10 +445,6 @@ TransmogNet.wearTransmogItems = function(player, args)
         local tmogItem = resolveItemByRef(player, tmogItemIDs[i], { kind = "player" })
         if tmogItem then
             TransmogDE.setWornItemTmog(player, tmogItem)
-            local ogItem = TransmogDE.getTransmogParent(tmogItem)
-            if ogItem then
-                TransmogDE.reapplyVisuals(ogItem, tmogItem)
-            end
         end
     end
     TransmogDE.refreshPlayerAndSyncUI(player)
@@ -1050,6 +1047,7 @@ TransmogNet.hello = function(player)
         return true
     end
     TransmogDE.triggerUpdate(player)
+    TransmogDE.updateAllConditionVisuals(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
     TransmogNet._playerInitDone[playerNum] = true
 end
@@ -1063,6 +1061,7 @@ TransmogNet.requestUpdate = function(player)
         return
     end
     TransmogDE.triggerUpdate(player)
+    TransmogDE.updateAllConditionVisuals(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
 end
 
