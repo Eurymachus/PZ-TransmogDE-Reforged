@@ -2,17 +2,15 @@ if not TransmogDE then
     TransmogDE = {}
 end
 
--- Clothing dirty flags are shared with OnClothingUpdated.lua
-TransmogDE._clothingDirty   = TransmogDE._clothingDirty   or {}
+TransmogClient = require("Transmog/TransmogClient")
 
-local DRJ_Initialised = false
+TransmogDE._updateInFlight = TransmogDE._updateInFlight or {}
 
 local function nowMs()
     return (getTimestampMs and getTimestampMs()) or (os.time() * 1000)
 end
 
 local lastInitRequest = 0
-local lastDirtyRequest = 0
 
 local function onPlayerUpdate(player)
     if not player or not instanceof(player, "IsoPlayer") then
@@ -29,6 +27,12 @@ local function onPlayerUpdate(player)
             TransmogNet.hello(player)
             return
         end
+    end
+
+    -- 2) Mod Data Init
+    if TransmogNet._playerInitDone[playerNum]
+    and not TransmogClient._modDataRequestDone[playerNum] then
+        TransmogClient.requestTransmogDataNew(player, playerNum)
     end
 
     -- 2) Subsequent updates: request server apply when dirty

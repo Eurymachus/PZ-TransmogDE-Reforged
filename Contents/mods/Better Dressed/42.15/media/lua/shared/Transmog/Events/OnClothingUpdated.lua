@@ -263,9 +263,11 @@ local function onClothingUpdated(player)
     local playerNum = player:getPlayerNum() or 0
 
     -- Mark clothing dirty; OnPlayerUpdate will handle the heavy work.
-    TransmogDE._clothingDirty[playerNum] = true
+    if not TransmogDE.rebuildingWornItems[playerNum] then
+        TmogPrint("OnClothingUpdated -> mark clothing dirty for player " .. tostring(playerNum))
+        TransmogDE._clothingDirty[playerNum] = true
+    end
 
-    TmogPrint("OnClothingUpdated -> mark clothing dirty for player " .. tostring(playerNum))
 end
 
 Events.OnClothingUpdated.Add(onClothingUpdated)

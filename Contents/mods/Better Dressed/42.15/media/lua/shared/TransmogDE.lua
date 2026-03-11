@@ -94,7 +94,7 @@ TransmogDE.GenerateTransmogGlobalModData = function()
     end
 
     ModData.add("TransmogModData", transmogModData)
-    ModData.transmit("TransmogModData")
+    --ModData.transmit("TransmogModData")
 
     TmogPrint('Transmogged items count: ' .. tostring(serverTransmoggedItemCount))
 
@@ -535,6 +535,27 @@ TransmogDE.getClothingColorAsInfo = function(item)
     return nil
 end
 
+TransmogDE.getClothingColorAsRaw = function(item)
+    if not item then return nil end
+
+    local md = TransmogDE.getItemTransmogModData(item)
+    if md and md.color then
+        return md.color
+    end
+
+    local tint = item:getVisual() and item:getVisual():getTint()
+    if tint then
+        return {
+            r = tint:getR(),
+            g = tint:getG(),
+            b = tint:getB(),
+            a = tint:getA()
+        }
+    end
+
+    return nil
+end
+
 TransmogDE.getClothingTexture = function(item)
     local itemModData = TransmogDE.getItemTransmogModData(item)
 
@@ -855,6 +876,8 @@ TransmogDE.showAllWornTransmogs = function(player)
     -- triggerEvent("OnClothingUpdated", player)
 end
 
+TransmogDE.rebuildingWornItems = {}
+
 TransmogDE.setWornItemTmog = function(player, tmogItem)
     if not (player and tmogItem) then return false end
 
@@ -915,6 +938,8 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
         return a.orderIndex < b.orderIndex
     end)
 
+    TransmogDE.rebuildingWornItems[player:getPlayerNum()] = true
+
     -- Remove current bucket contents only
     for i = 0, wornItems:size() - 1 do
         local wornItem = wornItems:get(i)
@@ -930,6 +955,8 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
     for i = 1, #entries do
         player:setWornItem(transmogLocation, entries[i].item)
     end
+
+    TransmogDE.rebuildingWornItems[player:getPlayerNum()] = nil
 
     return true
 end
@@ -1060,8 +1087,6 @@ TransmogDE.refreshPlayerAndSyncUI = function(player, focusItem)
     triggerEvent("TransmogClothingUpdate", player, focusItem)
 end
 
-local OPS = require("Transmog/Options")
-
 TransmogDE.updateConditionVisuals = function(carrierItem)
     TmogPrint("updateConditionVisuals fired")
     if not carrierItem then return end
@@ -1132,26 +1157,26 @@ TransmogDE.updateAllConditionVisuals = function(player)
     end
 end
 
-TransmogDE.reapplyVisuals = function(focusItem, tmogItem)
-    if not focusItem then return end
-    tmogItem = tmogItem or TransmogDE.getTransmogChild(focusItem)
+TransmogDE.reapplyVisuals = function(ogItem, tmogItem)
+    if not ogItem then return end
+    tmogItem = tmogItem or TransmogDE.getTransmogChild(ogItem)
 
     -- Apply Color
-    local color = TransmogDE.getClothingColor(focusItem)
-    TransmogDE.setClothingColor(focusItem, color)
+    local color = TransmogDE.getClothingColor(ogItem)
+    TransmogDE.setClothingColor(ogItem, color)
     if tmogItem then
         TransmogDE.setClothingColor(tmogItem, color)
     end
 
     -- Apply Texture
-    local texture = TransmogDE.getClothingTexture(focusItem)
-    TransmogDE.setClothingTexture(focusItem, texture)
+    local texture = TransmogDE.getClothingTexture(ogItem)
+    TransmogDE.setClothingTexture(ogItem, texture)
     if tmogItem then
         TransmogDE.setClothingTexture(tmogItem, texture)
     end
 
     -- Update local visuals
-    --TransmogDE.updateConditionVisuals(tmogItem)
+    TransmogDE.updateConditionVisuals(tmogItem)
 end
 
 TransmogDE.reapplyVisualsForAllWorn = function(player)

@@ -28,7 +28,16 @@ function ColorPickerModal:createChildren()
 	self:addChild(self.colorPicker)
 end
 
+local function sameColor(a, b)
+    if not (a and b) then return false end
+    return math.abs(a.r - b.r) < 0.001
+       and math.abs(a.g - b.g) < 0.001
+       and math.abs(a.b - b.b) < 0.001
+end
+
 function ColorPickerModal:onColorSelected(color)
+	local oldColor = TransmogDE.getClothingColorAsRaw(self.item)
+	if sameColor(oldColor, color) then return end
 	TransmogNet.requestSetColor(self.character, self.item, color)
 end
 

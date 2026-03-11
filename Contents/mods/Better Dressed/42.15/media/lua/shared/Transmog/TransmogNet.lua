@@ -2,27 +2,33 @@ TransmogNet = TransmogNet or {}
 
 TransmogNet.MODULE_ID = "EURY_TRANSMOG"
 TransmogNet.Commands = {
-    REQUEST_TRANSMOG = "REQUEST_TRANSMOG",
-    INIT_PLAYER      = "INIT_PLAYER",
-    REQUEST_UPDATE   = "REQUEST_UPDATE",
+    REQUEST_MODDATA     = "REQUEST_MODDATA",
+    REQUEST_TRANSMOG    = "REQUEST_TRANSMOG",
+    INIT_PLAYER         = "INIT_PLAYER",
+    REQUEST_UPDATE      = "REQUEST_UPDATE",
+
+    -- Server -> client moddata sync
+    MODDATA_BEGIN       = "MODDATA_BEGIN",
+    MODDATA_CHUNK       = "MODDATA_CHUNK",
+    MODDATA_END         = "MODDATA_END",
 
     -- Single-item ops
-    HIDE             = "HIDE",
-    SHOW             = "SHOW",
-    REMOVE_TRANSMOG  = "REMOVE_TRANSMOG",
-    RESET_DEFAULT    = "RESET_DEFAULT",
-    SET_COLOR        = "SET_COLOR",
-    SET_TEXTURE      = "SET_TEXTURE",
+    HIDE                = "HIDE",
+    SHOW                = "SHOW",
+    REMOVE_TRANSMOG     = "REMOVE_TRANSMOG",
+    RESET_DEFAULT       = "RESET_DEFAULT",
+    SET_COLOR           = "SET_COLOR",
+    SET_TEXTURE         = "SET_TEXTURE",
 
     -- Worn-items batch ops
-    HIDE_ALL             = "HIDE_ALL",
-    SHOW_ALL             = "SHOW_ALL",
-    REMOVE_TRANSMOG_ALL  = "REMOVE_TRANSMOG_ALL",
-    RESET_DEFAULT_ALL    = "RESET_DEFAULT_ALL",
+    HIDE_ALL            = "HIDE_ALL",
+    SHOW_ALL            = "SHOW_ALL",
+    REMOVE_TRANSMOG_ALL = "REMOVE_TRANSMOG_ALL",
+    RESET_DEFAULT_ALL   = "RESET_DEFAULT_ALL",
 
     -- Server -> client completion/feedback
-    NOTIFY           = "NOTIFY",
-    WEAR_ORDER       = "WEAR_ORDER"
+    NOTIFY              = "NOTIFY",
+    WEAR_ORDER          = "WEAR_ORDER"
 }
 
 -- One-time init per playerNum
@@ -61,6 +67,24 @@ TransmogNet.updateRequestItemRef = function(requestID, ref)
         return true
     end
     return false
+end
+
+-- MOD DATA SYNC
+
+TransmogNet.MODDATA_SYNC = TransmogNet.MODDATA_SYNC or {
+    activeSyncId = nil,
+    pending = nil,
+    totalChunks = 0,
+    receivedChunks = 0,
+    totalEntries = 0,
+}
+
+TransmogNet.MODDATA_CHUNK_SIZE = TransmogNet.MODDATA_CHUNK_SIZE or 50
+TransmogNet.NEXT_MODDATA_SYNC_ID = TransmogNet.NEXT_MODDATA_SYNC_ID or 0
+
+TransmogNet.nextModDataSyncId = function()
+    TransmogNet.NEXT_MODDATA_SYNC_ID = TransmogNet.NEXT_MODDATA_SYNC_ID + 1
+    return TransmogNet.NEXT_MODDATA_SYNC_ID
 end
 
 -- INVENTORY HELPERS
@@ -304,6 +328,95 @@ TransmogNet.notifyPlayer = function(player, result)
     end
 end
 
+-- CLIENT RECIEVER
+TransmogNet.updateModDataBegin = function(player, args)
+    if not args then return end
+
+    local syncId = args.syncId
+    if not syncId then return end
+
+    TransmogNet.MODDATA_SYNC.activeSyncId = syncId
+    TransmogNet.MODDATA_SYNC.pending = {
+        itemToTransmogMap = {},
+        transmogToItemMap = {},
+    }
+    TransmogNet.MODDATA_SYNC.totalChunks = args.totalChunks or 0
+    TransmogNet.MODDATA_SYNC.receivedChunks = 0
+    TransmogNet.MODDATA_SYNC.totalEntries = args.totalEntries or 0
+
+    TmogPrint("ModData sync begin syncId=" .. tostring(syncId)
+        .. " totalChunks=" .. tostring(TransmogNet.MODDATA_SYNC.totalChunks)
+        .. " totalEntries=" .. tostring(TransmogNet.MODDATA_SYNC.totalEntries))
+end
+
+TransmogNet.updateModDataChunk = function(player, args)
+    if not args then return end
+
+    local syncId = args.syncId
+    local mapName = args.mapName
+    local data = args.data
+
+    if not syncId or not mapName or not data then
+        return
+    end
+
+    if TransmogNet.MODDATA_SYNC.activeSyncId ~= syncId then
+        TmogPrint("Ignored ModData chunk for stale syncId=" .. tostring(syncId))
+        return
+    end
+
+    local pending = TransmogNet.MODDATA_SYNC.pending
+    if not pending then
+        return
+    end
+
+    pending[mapName] = pending[mapName] or {}
+
+    for k, v in pairs(data) do
+        pending[mapName][k] = v
+    end
+
+    TransmogNet.MODDATA_SYNC.receivedChunks = TransmogNet.MODDATA_SYNC.receivedChunks + 1
+
+    --[[
+    TmogPrint("ModData chunk syncId=" .. tostring(syncId)
+        .. " mapName=" .. tostring(mapName)
+        .. " chunkIndex=" .. tostring(args.chunkIndex)
+        .. "/" .. tostring(args.totalChunks)
+        .. " received=" .. tostring(TransmogNet.MODDATA_SYNC.receivedChunks))
+    ]]
+end
+
+TransmogNet.updateModDataEnd = function(player, args)
+    if not args then return end
+
+    local syncId = args.syncId
+    if not syncId then return end
+
+    if TransmogNet.MODDATA_SYNC.activeSyncId ~= syncId then
+        TmogPrint("Ignored ModData end for stale syncId=" .. tostring(syncId))
+        return
+    end
+
+    local pending = TransmogNet.MODDATA_SYNC.pending
+    if not pending then
+        return
+    end
+
+    ModData.add("TransmogModData", pending)
+    TransmogDE.patchAllItemsFromModData(pending)
+
+    TmogPrint("ModData sync complete syncId=" .. tostring(syncId)
+        .. " receivedChunks=" .. tostring(TransmogNet.MODDATA_SYNC.receivedChunks)
+        .. "/" .. tostring(TransmogNet.MODDATA_SYNC.totalChunks))
+
+    TransmogNet.MODDATA_SYNC.activeSyncId = nil
+    TransmogNet.MODDATA_SYNC.pending = nil
+    TransmogNet.MODDATA_SYNC.totalChunks = 0
+    TransmogNet.MODDATA_SYNC.receivedChunks = 0
+    TransmogNet.MODDATA_SYNC.totalEntries = 0
+end
+
 TransmogNet.initPlayerComplete = function(player, args)
     if not (args and args.ok) then
         TmogPrint("Failed to init player")
@@ -331,12 +444,20 @@ TransmogNet.wearTransmogItems = function(player, args)
         local tmogItem = resolveItemByRef(player, tmogItemIDs[i], { kind = "player" })
         if tmogItem then
             TransmogDE.setWornItemTmog(player, tmogItem)
+            local ogItem = TransmogDE.getTransmogParent(tmogItem)
+            if ogItem then
+                TransmogDE.reapplyVisuals(ogItem, tmogItem)
+            end
         end
     end
     TransmogDE.refreshPlayerAndSyncUI(player)
 end
 
+-- Recieving FROM Server on Client
 local serverCommandReceivers = {
+    MODDATA_BEGIN   = TransmogNet.updateModDataBegin,
+    MODDATA_CHUNK   = TransmogNet.updateModDataChunk,
+    MODDATA_END     = TransmogNet.updateModDataEnd,
     INIT_PLAYER     = TransmogNet.initPlayerComplete,
     REQUEST_UPDATE  = TransmogNet.updatePlayer,
     NOTIFY          = TransmogNet.notifyPlayer,
@@ -390,14 +511,197 @@ end
 
 TransmogNet.sendTransmogClothing = function(player, toWearIDs)
     TmogPrint("sendTransmogClothing fired")
-    if not isServer() then return end
     if not toWearIDs or #toWearIDs <= 0 then return end
-    sendServerCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.WEAR_ORDER, { toWearIDs = toWearIDs })
+
+    local args = {
+        toWearIDs = toWearIDs
+    }
+
+    if isServer() then
+        sendServerCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.WEAR_ORDER, args)
+        return
+    end
+
+    --TransmogNet.wearTransmogItems(player, args)
 end
 
 -- ====================================
 -- Server receives client init/update/transmog/hide/show/remove/reset
 -- ====================================
+
+local function encodeForCommand(value)
+    local t = type(value)
+
+    if t == "string" or t == "number" or t == "boolean" then
+        return value
+    end
+
+    if t ~= "table" then
+        return nil
+    end
+
+    local out = {}
+    for k, v in pairs(value) do
+        local kt = type(k)
+        if kt == "string" or kt == "number" then
+            local ev = encodeForCommand(v)
+            if ev ~= nil then
+                out[k] = ev
+            end
+        end
+    end
+
+    return out
+end
+
+local function getSortedTopLevelKeys(tbl)
+    local keys = {}
+    for k, _ in pairs(tbl) do
+        keys[#keys + 1] = k
+    end
+    table.sort(keys, function(a, b)
+        return tostring(a) < tostring(b)
+    end)
+    return keys
+end
+
+local function countTopLevelEntries(tbl)
+    local n = 0
+    for _, _ in pairs(tbl) do
+        n = n + 1
+    end
+    return n
+end
+
+-- SERVER RECIEVER
+local function sendModDataBegin(player, syncId, totalChunks, totalEntries)
+    sendServerCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.MODDATA_BEGIN, {
+        syncId = syncId,
+        totalChunks = totalChunks,
+        totalEntries = totalEntries,
+    })
+end
+
+local function sendModDataChunk(player, syncId, mapName, chunkIndex, totalChunks, chunkData)
+    sendServerCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.MODDATA_CHUNK, {
+        syncId = syncId,
+        mapName = mapName,
+        chunkIndex = chunkIndex,
+        totalChunks = totalChunks,
+        data = chunkData,
+    })
+end
+
+local function sendModDataEnd(player, syncId)
+    sendServerCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.MODDATA_END, {
+        syncId = syncId,
+    })
+end
+
+local function countEntries(tbl)
+    local n = 0
+    if not tbl then return 0 end
+    for _, _ in pairs(tbl) do
+        n = n + 1
+    end
+    return n
+end
+
+local function buildChunkPlan(encoded, chunkSize)
+    local plan = {}
+
+    local itemToTransmogMap = encoded and encoded.itemToTransmogMap or nil
+    local transmogToItemMap = encoded and encoded.transmogToItemMap or nil
+
+    if itemToTransmogMap then
+        plan[#plan + 1] = {
+            mapName = "itemToTransmogMap",
+            data = itemToTransmogMap,
+            keys = getSortedTopLevelKeys(itemToTransmogMap),
+        }
+    end
+
+    if transmogToItemMap then
+        plan[#plan + 1] = {
+            mapName = "transmogToItemMap",
+            data = transmogToItemMap,
+            keys = getSortedTopLevelKeys(transmogToItemMap),
+        }
+    end
+
+    local totalEntries = 0
+    local totalChunks = 0
+
+    for i = 1, #plan do
+        local keyCount = #plan[i].keys
+        totalEntries = totalEntries + keyCount
+        if keyCount > 0 then
+            totalChunks = totalChunks + math.ceil(keyCount / chunkSize)
+        end
+    end
+
+    return plan, totalEntries, totalChunks
+end
+
+local function sendModDataInChunks(player, encoded)
+    local chunkSize = TransmogNet.MODDATA_CHUNK_SIZE or 50
+    local syncId = TransmogNet.nextModDataSyncId()
+
+    local plan, totalEntries, totalChunks = buildChunkPlan(encoded, chunkSize)
+
+    --[[
+    TmogPrint("Sending TransmogModData syncId=" .. tostring(syncId)
+        .. " entries=" .. tostring(totalEntries)
+        .. " chunkSize=" .. tostring(chunkSize)
+        .. " totalChunks=" .. tostring(totalChunks))
+    ]]
+
+    sendModDataBegin(player, syncId, totalChunks, totalEntries)
+
+    local chunkIndex = 0
+
+    for i = 1, #plan do
+        local mapName = plan[i].mapName
+        local data = plan[i].data
+        local keys = plan[i].keys
+        local keyCount = #keys
+
+        local startIndex = 1
+        while startIndex <= keyCount do
+            local chunkData = {}
+            local lastIndex = math.min(startIndex + chunkSize - 1, keyCount)
+
+            for j = startIndex, lastIndex do
+                local key = keys[j]
+                chunkData[key] = data[key]
+            end
+
+            chunkIndex = chunkIndex + 1
+            sendModDataChunk(player, syncId, mapName, chunkIndex, totalChunks, chunkData)
+
+            startIndex = lastIndex + 1
+        end
+    end
+
+    sendModDataEnd(player, syncId)
+end
+
+TransmogNet.requestModDataRecieved = function(player, args)
+    local md = ModData.get("TransmogModData")
+    if not md then
+        local syncId = TransmogNet.nextModDataSyncId()
+        sendModDataBegin(player, syncId, 0, 0)
+        sendModDataEnd(player, syncId)
+        return
+    end
+
+    local encoded = encodeForCommand(md) or {}
+
+    encoded.itemToTransmogMap = encoded.itemToTransmogMap or {}
+    encoded.transmogToItemMap = encoded.transmogToItemMap or {}
+
+    sendModDataInChunks(player, encoded)
+end
 
 TransmogNet.initPlayerRecieved = function(player, args)
     TmogPrint("Server recv INIT_PLAYER from " .. tostring(player and player:getUsername() or "nil"))
@@ -601,6 +905,7 @@ TransmogNet.requestResetDefaultAllRecieved = function(player, args)
 end
 
 local clientCommandReceivers = {
+    REQUEST_MODDATA     = TransmogNet.requestModDataRecieved,
     REQUEST_TRANSMOG    = TransmogNet.requestTransmogRecieved,
     INIT_PLAYER         = TransmogNet.initPlayerRecieved,
     REQUEST_UPDATE      = TransmogNet.requestUpdateRecieved,
@@ -617,6 +922,7 @@ local clientCommandReceivers = {
     RESET_DEFAULT_ALL   = TransmogNet.requestResetDefaultAllRecieved,
 }
 
+-- Recieving FROM Client on Server
 local clientCommandRecieved = function(module, command, player, args)
     if module ~= TransmogNet.MODULE_ID then return end
     local fn = clientCommandReceivers[command]

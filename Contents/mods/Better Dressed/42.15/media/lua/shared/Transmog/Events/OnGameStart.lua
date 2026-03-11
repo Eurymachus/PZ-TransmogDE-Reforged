@@ -5,6 +5,7 @@ local function isSinglePlayer()
 end
 
 Events.OnGameStart.Add(function()
+    --[[
     -- Request global moddata
     if isClient() then
         TransmogClient.requestTransmogModData()
@@ -14,6 +15,7 @@ Events.OnGameStart.Add(function()
     local modData = TransmogDE.GenerateTransmogGlobalModData()
 
     TransmogDE.patchAllItemsFromModData(modData)
+    ]]
 end)
 
 if isClient() then
