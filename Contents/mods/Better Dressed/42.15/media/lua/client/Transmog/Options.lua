@@ -31,7 +31,7 @@ function panel:apply()
 	for i=0, getNumActivePlayers() -1 do
         local player = getSpecificPlayer(i)
         if player then
-            TransmogDE.reapplyVisualsForAllWorn(player)
+            TransmogDE.updateAllConditionVisuals(player)
             TransmogDE.refreshPlayerAndSyncUI(player)
         end
     end

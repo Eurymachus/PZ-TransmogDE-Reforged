@@ -447,6 +447,7 @@ TransmogNet.wearTransmogItems = function(player, args)
             TransmogDE.setWornItemTmog(player, tmogItem)
         end
     end
+    TransmogDE.updateAllConditionVisuals(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
 end
 
