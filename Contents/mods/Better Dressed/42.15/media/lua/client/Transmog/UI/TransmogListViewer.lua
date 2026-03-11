@@ -49,7 +49,7 @@ function TransmogListViewer:initialise()
 
     local arrowX = self:getWidth() - (UI_BORDER_SPACING + 1) - arrowBtnW -- self.reset.x - arrowBtnW - UI_BORDER_SPACING
     local arrowY = self:getHeight() - UI_BORDER_SPACING - BUTTON_HGT - 1
-    local tex = getTexture("media/ui/arrow_down.png")
+    local tex = getTexture("media/ui/ArrowDown.png")
     self.moreBtn = ISButton:new(arrowX, arrowY, arrowBtnW, BUTTON_HGT, arrowLabel, self,
         TransmogListViewer.onClickTransmogMenu)
     self.moreBtn:setImage(tex)
@@ -339,14 +339,10 @@ function TransmogListViewer:syncUIState()
 
     local isHidden = TransmogDE.isClothingHidden(self.item)
 
-    if self._lastHidden == nil or self._lastHidden ~= isHidden then
-        TmogPrint("Updating Transmog UI")
-        self._lastHidden = isHidden
-        self.hideItem:setVisible(not isHidden)
-        self.showItem:setVisible(isHidden)
-        ColorPickerModal.updateItemToColor(self.player, self.item)
-        TexturePickerModal.updateItemToTexture(self.player, self.item)
-    end
+    self.hideItem:setVisible(not isHidden)
+    self.showItem:setVisible(isHidden)
+    ColorPickerModal.updateItemToColor(self.player, self.item)
+    TexturePickerModal.updateItemToTexture(self.player, self.item)
 end
 
 function TransmogListViewer:updateItemToTmogData(player, clothing)
@@ -361,24 +357,32 @@ end
 
 local function updateItemToTmog(player, clothing, forceOpen)
     local modal = TransmogListViewer.instance
-    if modal and not (clothing and forceOpen) then
+
+    if modal and not forceOpen then
+        if clothing then
+            modal:updateItemToTmogData(player, clothing)
+        elseif player and player ~= modal.player then
+            modal:setPlayer(player)
+        end
         modal:syncUIState()
         return
     end
+
     local item = clothing or modal and modal.item or nil
     if not item then return end
+
     if modal and modal:getIsVisible() then
-        modal.item = item
+        modal:updateItemToTmogData(player, item)
         if forceOpen then
             modal:rebuildTabPanel()
         end
-        ColorPickerModal.updateItemToColor(player, item)
-        TexturePickerModal.updateItemToTexture(player, item)
+        modal:syncUIState()
     elseif forceOpen then
         TransmogListViewer.OpenNew(player, clothing)
-
-        ColorPickerModal.updateItemToColor(player, clothing)
-        TexturePickerModal.updateItemToTexture(player, clothing)
+        modal = TransmogListViewer.instance
+        if modal then
+            modal:syncUIState()
+        end
     end
 end
 
@@ -457,8 +461,6 @@ function TransmogListViewer:prerender()
     local text = getTextOrNull("IGUI_TransmogDE_ListViewer_Standard_Item", fullItemName)
     local textSize = self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, text) / 2)
     self:drawText(text, textSize, z, 1, 1, 1, 1, UIFont.Medium)
-
-    self:syncUIState()
 end
 
 function TransmogListViewer:setKeyboardFocus()

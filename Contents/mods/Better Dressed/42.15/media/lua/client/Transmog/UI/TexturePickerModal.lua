@@ -90,12 +90,12 @@ function TexturePickerModal:onMouseUpOutside(x, y)
     if moving or resizing then self:saveWindowState() end
 end
 
-function TexturePickerModal.Open(clothing, player, textureChoices)
+function TexturePickerModal.Open(player, clothing, textureChoices)
     if TexturePickerModal.instance then
         TexturePickerModal.instance:close()
     end
     if textureChoices and (textureChoices:size() > 1) then
-        local modal = TexturePickerModal:new(clothing, player, textureChoices)
+        local modal = TexturePickerModal:new(player, clothing, textureChoices)
         modal:initialise()
         modal:addToUIManager()
         modal:restoreWindowState()
@@ -108,26 +108,62 @@ function TexturePickerModal.Close()
     end
 end
 
+function TexturePickerModal:updateTmogItemToTexture(clothing, textureChoices)
+    if self.item ~= clothing then
+        self.item = clothing
+    end
+    if self.textureChoices ~= textureChoices then
+        self.textureChoices = textureChoices
+
+        if self.scrollView then
+            self:removeChild(self.scrollView)
+            self.scrollView = nil
+        end
+
+        self:createChildren()
+    end
+end
+
 function TexturePickerModal.updateItemToTexture(player, clothing)
     local modal = TexturePickerModal.instance
     local tmogModal = TransmogListViewer.instance
-	local isOpen = modal and modal:getIsVisible()
-	local isTransmogOpen = tmogModal and tmogModal:getIsVisible()
+    local isOpen = modal and modal:getIsVisible()
+    local isTransmogOpen = tmogModal and tmogModal:getIsVisible()
 
-	if clothing == nil then clothing = isOpen and modal.item or isTransmogOpen and tmogModal.item end
+    if clothing == nil then
+        clothing = (isOpen and modal.item) or (isTransmogOpen and tmogModal.item) or nil
+    end
+
+    if not clothing then
+        return
+    end
 
     if isOpen or isTransmogOpen then
         local textureChoiceList = nil
-        local transmogTo = TransmogDE.getItemTransmogModData(clothing).transmogTo
+        local md = TransmogDE.getItemTransmogModData(clothing)
+        local transmogTo = md and md.transmogTo or nil
+
         if transmogTo then
             local tmogScriptItem = ScriptManager.instance:getItem(transmogTo)
             if tmogScriptItem then
                 local tmogClothingItemAsset = TransmogDE.getClothingItemAsset(tmogScriptItem)
-                textureChoiceList =   tmogClothingItemAsset:hasModel() and tmogClothingItemAsset:getTextureChoices() or
-                                      tmogClothingItemAsset:getBaseTextures()
+                if tmogClothingItemAsset then
+                    textureChoiceList = tmogClothingItemAsset:hasModel()
+                        and tmogClothingItemAsset:getTextureChoices()
+                        or tmogClothingItemAsset:getBaseTextures()
+                end
             end
         end
-        TexturePickerModal.Open(player, clothing, textureChoiceList)
+
+        if textureChoiceList and (textureChoiceList:size() > 1) then
+            if isOpen then
+                modal:updateTmogItemToTexture(clothing, textureChoiceList)
+            else
+                TexturePickerModal.Open(player, clothing, textureChoiceList)
+            end
+        else
+            TexturePickerModal.Close()
+        end
     end
 end
 
