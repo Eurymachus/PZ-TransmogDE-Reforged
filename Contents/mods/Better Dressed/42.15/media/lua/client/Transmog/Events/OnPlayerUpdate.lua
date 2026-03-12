@@ -30,10 +30,12 @@ local function onPlayerUpdate(player)
     end
 
     -- 2) Mod Data Init
+    --[[
     if TransmogNet._playerInitDone[playerNum]
     and not TransmogClient._modDataRequestDone[playerNum] then
         TransmogClient.requestTransmogDataNew(player, playerNum)
     end
+    ]]
 
     -- 2) Subsequent updates: request server apply when dirty
     if TransmogDE._clothingDirty[playerNum] then

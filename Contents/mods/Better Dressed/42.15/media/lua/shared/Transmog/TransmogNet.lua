@@ -245,82 +245,68 @@ TransmogNet.notifyPlayer = function(player, result)
 
     if not ok then
         local failText = getTextOrNull("IGUI_TransmogDE_Text_RequestFailed") or "Transmog Request failed!"
-        HaloTextHelper.addGoodText(player, failText)
+        HaloTextHelper.addBadText(player, failText)
         return
     end
+
+    local haloText = nil
 
     -- Success feedback
     if cmd == TransmogNet.Commands.REQUEST_TRANSMOG then
         if req and focusItem and req.to then
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
             local toName = getItemNameFromFullType(req.to)
-            local text = getText("IGUI_TransmogDE_Text_WasTransmoggedTo", fromName, toName)
-            HaloTextHelper.addGoodText(player, text)
-            TransmogDE.reapplyVisuals(focusItem, tmogItem)
+            haloText = getText("IGUI_TransmogDE_Text_WasTransmoggedTo", fromName, toName)
         end
     elseif cmd == TransmogNet.Commands.HIDE then
         if focusItem then
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
-            local text = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
-            HaloTextHelper.addGoodText(player, text)
+            haloText = getText("IGUI_TransmogDE_Text_WasHidden", fromName)
         end
     elseif cmd == TransmogNet.Commands.SHOW then
         if focusItem then
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
-            local text = getText("IGUI_TransmogDE_Text_WasShown", fromName)
-            HaloTextHelper.addGoodText(player, text)
-            TransmogDE.reapplyVisuals(focusItem, tmogItem)
+            haloText = getText("IGUI_TransmogDE_Text_WasShown", fromName)
         end
     elseif cmd == TransmogNet.Commands.REMOVE_TRANSMOG then
         if focusItem then
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
-            local text = getTextOrNull("IGUI_TransmogDE_Text_WasRemoved", fromName) or ("Removed transmog: " .. tostring(fromName))
-            HaloTextHelper.addGoodText(player, text)
-            TransmogDE.reapplyVisuals(focusItem, tmogItem)
+            haloText = getTextOrNull("IGUI_TransmogDE_Text_WasRemoved", fromName) or ("Removed transmog: " .. tostring(fromName))
         end
     elseif cmd == TransmogNet.Commands.RESET_DEFAULT then
         if focusItem then
             local toName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
-            local text = getText("IGUI_TransmogDE_Text_WasReset", toName)
-            HaloTextHelper.addGoodText(player, text)
-            TransmogDE.reapplyVisuals(focusItem, tmogItem)
+            haloText = getText("IGUI_TransmogDE_Text_WasReset", toName)
         end
-    elseif cmd == TransmogNet.Commands.HIDE_ALL then
-        local actionText = getText("IGUI_TransmogDE_Text_BatchActionHide")
-        local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
-        HaloTextHelper.addGoodText(player, haloText)
-        TransmogDE.reapplyVisualsForAllWorn(player)
-    elseif cmd == TransmogNet.Commands.SHOW_ALL then
-        local actionText = getText("IGUI_TransmogDE_Text_BatchActionShow")
-        local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
-        HaloTextHelper.addGoodText(player, haloText)
-        TransmogDE.reapplyVisualsForAllWorn(player)
-    elseif cmd == TransmogNet.Commands.REMOVE_TRANSMOG_ALL then
-        local actionText = getText("IGUI_TransmogDE_Text_BatchActionRemove")
-        local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
-        HaloTextHelper.addGoodText(player, haloText)
-        TransmogDE.reapplyVisualsForAllWorn(player)
-    elseif cmd == TransmogNet.Commands.RESET_DEFAULT_ALL then
-        local actionText = getText("IGUI_TransmogDE_Text_BatchActionReset")
-        local haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
-        HaloTextHelper.addGoodText(player, haloText)
-        TransmogDE.reapplyVisualsForAllWorn(player)
     elseif cmd == TransmogNet.Commands.SET_COLOR then
         if focusItem then
             local actionText = "Set Color"
-            local haloText = actionText .. " - Complete"
-            HaloTextHelper.addGoodText(player, haloText)
-            TransmogDE.reapplyVisuals(focusItem, tmogItem)
+            haloText = actionText .. " - Complete"
         end
     elseif cmd == TransmogNet.Commands.SET_TEXTURE then
         if focusItem then
             local actionText = "Set Texture"
-            local haloText = actionText .. " - Complete"
-            HaloTextHelper.addGoodText(player, haloText)
-            TransmogDE.reapplyVisuals(focusItem, tmogItem)
+            haloText = actionText .. " - Complete"
         end
+    elseif cmd == TransmogNet.Commands.HIDE_ALL then
+        local actionText = getText("IGUI_TransmogDE_Text_BatchActionHide")
+        haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
+    elseif cmd == TransmogNet.Commands.SHOW_ALL then
+        local actionText = getText("IGUI_TransmogDE_Text_BatchActionShow")
+        haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
+    elseif cmd == TransmogNet.Commands.REMOVE_TRANSMOG_ALL then
+        local actionText = getText("IGUI_TransmogDE_Text_BatchActionRemove")
+        haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
+    elseif cmd == TransmogNet.Commands.RESET_DEFAULT_ALL then
+        local actionText = getText("IGUI_TransmogDE_Text_BatchActionReset")
+        haloText = getTextOrNull("IGUI_TransmogDE_Text_BatchActionDone", actionText) or (actionText .. " - Complete")
     end
 
+    if haloText then
+        HaloTextHelper.addGoodText(player, haloText)
+    end
+
+    TransmogDE.reapplyVisualsForAllWorn(player)
     TransmogDE.refreshPlayerAndSyncUI(player, focusItem)
 
     if requestID then
@@ -405,6 +391,8 @@ TransmogNet.updateModDataEnd = function(player, args)
 
     ModData.add("TransmogModData", pending)
     TransmogDE.patchAllItemsFromModData(pending)
+    TransmogDE.reapplyVisualsForAllWorn(player)
+    TransmogDE.refreshPlayerAndSyncUI(player)
 
     TmogPrint("ModData sync complete syncId=" .. tostring(syncId)
         .. " receivedChunks=" .. tostring(TransmogNet.MODDATA_SYNC.receivedChunks)
@@ -447,7 +435,7 @@ TransmogNet.wearTransmogItems = function(player, args)
             TransmogDE.setWornItemTmog(player, tmogItem)
         end
     end
-    TransmogDE.updateAllConditionVisuals(player)
+    TransmogDE.reapplyVisualsForAllWorn(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
 end
 
@@ -1048,7 +1036,7 @@ TransmogNet.hello = function(player)
         return true
     end
     TransmogDE.triggerUpdate(player)
-    TransmogDE.updateAllConditionVisuals(player)
+    TransmogDE.reapplyVisualsForAllWorn(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
     TransmogNet._playerInitDone[playerNum] = true
 end
@@ -1062,7 +1050,7 @@ TransmogNet.requestUpdate = function(player)
         return
     end
     TransmogDE.triggerUpdate(player)
-    TransmogDE.updateAllConditionVisuals(player)
+    TransmogDE.reapplyVisualsForAllWorn(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
 end
 

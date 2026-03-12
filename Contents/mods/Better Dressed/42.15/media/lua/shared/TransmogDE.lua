@@ -290,29 +290,38 @@ TransmogDE.createTransmogItem = function(ogItem, player)
         return
     end
 
-    local tmogItem = player:getInventory():AddItem(tmogItemName);
+    local tmogItem = player:getInventory():AddItem(tmogItemName)
 
     -- set tmogItem as child of ogItem
     itemTmogModData.childId = tmogItem:getID()
     -- set ogItem as parent of tmogItem
-    tmogItem:getModData()['TransmogParent'] = ogItem:getID()
+    tmogItem:getModData()["TransmogParent"] = ogItem:getID()
 
     -- For debug purpose
-    tmogItem:setName('Tmog: ' .. ogItem:getName())
+    tmogItem:setName("Tmog: " .. ogItem:getName())
     tmogItem:setCustomName(true)
 
-    -- Cache once so we don't resample mid-apply
-    local ogColor = TransmogDE.getClothingColor(ogItem)
-    local ogTex   = TransmogDE.getClothingTexture(ogItem)
+    -- Use the initialized transmog state as the source of truth for whether this item
+    -- should participate in color/texture tracking. This avoids backfilling fallback
+    -- visual values into modData for items that do not actually support those states.
+    local supportsColor = itemTmogModData.originalColor ~= nil
+    local supportsTexture = itemTmogModData.originalTexture ~= nil and itemTmogModData.originalTexture >= 0
 
-    TransmogDE.setClothingColorModdata(ogItem, ogColor)
-    TransmogDE.setClothingTextureModdata(ogItem, ogTex)
+    -- Cache once so we do not resample mid-apply.
+    local ogColor = supportsColor and TransmogDE.getClothingColor(ogItem) or nil
+    local ogTex   = supportsTexture and TransmogDE.getClothingTexture(ogItem) or nil
 
-    TransmogDE.setClothingColor(ogItem, ogColor)
-    TransmogDE.setClothingTexture(ogItem, ogTex)
+    if supportsColor then
+        TransmogDE.setClothingColorModdata(ogItem, ogColor)
+        TransmogDE.setClothingColor(ogItem, ogColor)
+        TransmogDE.setClothingColor(tmogItem, ogColor)
+    end
 
-    TransmogDE.setClothingColor(tmogItem, ogColor)
-    TransmogDE.setClothingTexture(tmogItem, ogTex)
+    if supportsTexture then
+        TransmogDE.setClothingTextureModdata(ogItem, ogTex)
+        TransmogDE.setClothingTexture(ogItem, ogTex)
+        TransmogDE.setClothingTexture(tmogItem, ogTex)
+    end
 
     TransmogDE.syncConditionVisuals(tmogItem, ogItem)
 
@@ -323,7 +332,13 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     -- don't wear the new item yet
     -- player:setWornItem(tmogItem:getBodyLocation(), tmogItem)
 
-    TmogPrint("createTransmogItem for " .. tostring(ogItem:getName()) .. " with ID: " .. tostring(tmogItem:getID()))
+    TmogPrint(
+        "createTransmogItem for " .. tostring(ogItem:getName())
+        .. " with ID: " .. tostring(tmogItem:getID())
+        .. " | supportsColor=" .. tostring(supportsColor)
+        .. " | supportsTexture=" .. tostring(supportsTexture)
+    )
+
     return tmogItem
 end
 
@@ -386,12 +401,7 @@ TransmogDE.getItemTransmogModData = function(item)
         originalTexture = initialTexture,
 
         -- Active/default look used by transmog logic (starts as original)
-        color = originalColor and {
-            r = originalColor.r,
-            g = originalColor.g,
-            b = originalColor.b,
-            a = originalColor.a,
-        } or nil,
+        color = originalColor,
         texture = initialTexture,
 
         transmogTo = fullName,
@@ -482,7 +492,7 @@ TransmogDE.setClothingColor = function(item, color)
 
     item:getVisual():setTint(color)
 
-    item:synchWithVisual();
+    item:synchWithVisual()
 end
 
 TransmogDE.setClothingTexture = function(item, textureIndex)
@@ -496,7 +506,7 @@ TransmogDE.setClothingTexture = function(item, textureIndex)
         item:getVisual():setBaseTexture(textureIndex)
     end
 
-    item:synchWithVisual();
+    item:synchWithVisual()
 end
 
 TransmogDE.getClothingColor = function(item)
@@ -661,6 +671,114 @@ TransmogDE.isTransmogged = function(item)
     return moddata.transmogTo ~= selfFullName
 end
 
+TransmogDE.hasColorOverride = function(item)
+    if not item then return false end
+
+    local md = item:getModData()
+    local tmog = md and md.Transmog
+    if not tmog then return false end
+
+    local c = tmog.color
+    if not c then return false end
+
+    local oc = tmog.originalColor
+    if not oc then
+        return true
+    end
+
+    return
+        c.r ~= oc.r
+        or c.g ~= oc.g
+        or c.b ~= oc.b
+        or (c.a or 1) ~= (oc.a or 1)
+end
+
+TransmogDE.hasTextureOverride = function(item)
+    if not item then return false end
+
+    local md = item:getModData()
+    local tmog = md and md.Transmog
+    if not tmog then return false end
+
+    local tex = tmog.texture
+    local otex = tmog.originalTexture
+
+    if tex == nil or tex == "" then
+        return false
+    end
+
+    if otex == nil or otex == "" then
+        return false
+    end
+
+    return tex ~= otex
+end
+
+local _colorToString = function(c)
+    if not c then
+        return "nil"
+    end
+
+    return string.format(
+        "rgba(%.3f, %.3f, %.3f, %.3f)",
+        c.r or 0,
+        c.g or 0,
+        c.b or 0,
+        c.a ~= nil and c.a or 1
+    )
+end
+
+TransmogDE.hasTransmogStateWithDebug = function(item)
+    if not item then
+        TmogPrint("hasTransmogState: item is nil -> false")
+        return false
+    end
+
+    local isTransmogged      = TransmogDE.isTransmogged(item)
+    local isHidden           = TransmogDE.isClothingHidden(item)
+    local hasColorOverride   = TransmogDE.hasColorOverride(item)
+    local hasTextureOverride = TransmogDE.hasTextureOverride(item)
+
+    local md = item:getModData()
+    local tmog = md and md.Transmog
+
+    if tmog then
+        TmogPrint("tmog.originalColor=" .. _colorToString(tmog.originalColor)
+            .. " | tmog.color=" .. _colorToString(tmog.color)
+            .. " | tmog.originalTexture=" .. tostring(tmog.originalTexture)
+            .. " | tmog.texture=" .. tostring(tmog.texture)
+            .. " | tmog.transmogTo=" .. tostring(tmog.transmogTo)
+            .. " | tmog.hidden=" .. tostring(tmog.hidden)
+        )
+    end
+
+    local result =
+        isTransmogged
+        or isHidden
+        or hasColorOverride
+        or hasTextureOverride
+
+    TmogPrint("hasTransmogState result -> " .. tostring(result))
+
+    return result
+end
+
+TransmogDE.hasTransmogState = function(item)
+    if not item then
+        return false
+    end
+
+    if isDebugEnabled() then
+        return TransmogDE.hasTransmogStateWithDebug(item)
+    end
+
+    return
+        TransmogDE.isTransmogged(item)
+        or TransmogDE.isClothingHidden(item)
+        or TransmogDE.hasColorOverride(item)
+        or TransmogDE.hasTextureOverride(item)
+end
+
 -- ==========================================================
 -- Remove Transmog (keep visuals)
 -- ==========================================================
@@ -690,8 +808,8 @@ TransmogDE.removeTransmog = function(item)
 end
 
 -- Reset this item back to its original appearance and transmog target.
--- This should match how it looked when first picked up/crafted
--- (based on the initial snapshot from getItemTransmogModData).
+-- This restores only from the immutable original* snapshot captured when
+-- Transmog state was first initialized for the item.
 TransmogDE.setItemToDefault = function(item)
     if not item then
         return
@@ -702,62 +820,20 @@ TransmogDE.setItemToDefault = function(item)
         return
     end
 
-    local wasHidden = TransmogDE.isClothingHidden and TransmogDE.isClothingHidden(item) or false
-    local fromName = moddata.transmogTo and getItemNameFromFullType(moddata.transmogTo) or nil
-
-    -- Resolve the item’s own script fullType as the canonical default target.
+    -- Resolve this item's own script fullType as the canonical default target.
     local scriptItem = item:getScriptItem()
     if scriptItem and scriptItem.getScriptItem then
         scriptItem = scriptItem:getScriptItem()
     end
     local selfFullName = scriptItem and scriptItem:getFullName() or moddata.transmogTo
 
-    -- Choose default color/texture from immutable originals when available,
-    -- with sane fallbacks for legacy data.
-    local defaultColorTbl = moddata.originalColor or moddata.color or nil
-    local defaultTexture  = (moddata.originalTexture ~= nil and moddata.originalTexture)
-                         or (moddata.texture ~= nil and moddata.texture)
-                         or nil
-
-    -- Apply default tint back onto the item visual.
-    if defaultColorTbl then
-        local c = Color.new(
-            defaultColorTbl.r or 1.0,
-            defaultColorTbl.g or 1.0,
-            defaultColorTbl.b or 1.0,
-            defaultColorTbl.a or 1.0
-        )
-        --local immutable = ImmutableColor.new(c)
-        --TransmogDE.setClothingColor(item, immutable)
-
-        -- Keep active color in sync with the default snapshot.
-        moddata.color = {
-            r = defaultColorTbl.r or 1.0,
-            g = defaultColorTbl.g or 1.0,
-            b = defaultColorTbl.b or 1.0,
-            a = defaultColorTbl.a or 1.0,
-        }
-    else
-        -- If absolutely nothing is stored, clear any custom tint.
-        -- This lets the engine/scriptItem decide its natural look.
-        --item:getVisual():setTint(nil)
-    end
-
-    -- Apply default texture back onto the item visual.
-    if defaultTexture ~= nil then
-        --TransmogDE.setClothingTexture(item, defaultTexture)
-        moddata.texture = defaultTexture
-    end
+    moddata.color = moddata.originalColor
+    moddata.texture = moddata.originalTexture
 
     -- Reset mapping so we no longer transmog into anything else.
     moddata.transmogTo = selfFullName
     moddata.lastTransmogTo = selfFullName
-
-    local toName = getItemNameFromFullType(selfFullName)
-    local text = nil
-    if (fromName and fromName ~= toName) or wasHidden then
-        text = getText("IGUI_TransmogDE_Text_WasReset", toName)
-    end
+    moddata.hidden = nil
 
     -- UI feedback is handled by TransmogNet.notifyPlayer
 
@@ -819,7 +895,6 @@ TransmogDE.removeAllWornTransmogs = function(player)
             TransmogNet.updateItem(player, item)
         end
     end
-    -- triggerEvent("OnClothingUpdated", player)
 end
 
 TransmogDE.resetDefaultAllWornTransmogs = function(player)
@@ -837,12 +912,11 @@ TransmogDE.resetDefaultAllWornTransmogs = function(player)
             TransmogNet.updateItem(player, item)
         end
     end
-    -- triggerEvent("OnClothingUpdated", player)
 end
 
 TransmogDE.hideAllWornTransmogs = function(player)
     if not player then player = getPlayer() end
-    
+
     local wornItems = player:getWornItems()
     if not wornItems or not (wornItems:size() > 0) then
         return
@@ -855,7 +929,6 @@ TransmogDE.hideAllWornTransmogs = function(player)
             TransmogNet.updateItem(player, item)
         end
     end
-    -- triggerEvent("OnClothingUpdated", player)
 end
 
 TransmogDE.showAllWornTransmogs = function(player)
@@ -873,7 +946,6 @@ TransmogDE.showAllWornTransmogs = function(player)
             TransmogNet.updateItem(player, item)
         end
     end
-    -- triggerEvent("OnClothingUpdated", player)
 end
 
 TransmogDE.rebuildingWornItems = {}
