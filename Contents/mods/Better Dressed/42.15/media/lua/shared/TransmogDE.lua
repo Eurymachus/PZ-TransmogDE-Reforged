@@ -376,7 +376,6 @@ TransmogDE.getItemTransmogModData = function(item)
     end
 
     -- First-time initialization: capture how the item looks RIGHT NOW.
-    local clothingItemAsset = TransmogDE.getClothingItemAsset(item:getScriptItem())
     local visual = item:getVisual()
     local colorObj = visual and visual.getTint and visual:getTint() or nil
 
@@ -386,7 +385,7 @@ TransmogDE.getItemTransmogModData = function(item)
     -- Prefer baseTexture because getTextureChoice() is commonly -1 for "use base texture"
     local initialTexture = (baseTexture ~= nil and baseTexture ~= -1) and baseTexture or textureChoice
 
-    local originalColor = colorObj and clothingItemAsset and clothingItemAsset.getAllowRandomTint and clothingItemAsset:getAllowRandomTint() and {
+    local originalColor = colorObj and item:allowRandomTint() and {
         r = colorObj:getRedFloat(),
         g = colorObj:getGreenFloat(),
         b = colorObj:getBlueFloat(),
@@ -539,7 +538,7 @@ TransmogDE.getClothingColorAsInfo = function(item)
     -- Fallback to current visual tint (ImmutableColor)
     local tint = item:getVisual() and item:getVisual():getTint() or nil
     if tint then
-        return ColorInfo.new(tint:getR(), tint:getG(), tint:getB(), tint:getA())
+        return ColorInfo.new(tint:getRedFloat(), tint:getGreenFloat(), tint:getBlueFloat(), tint:getAlphaFloat())
     end
 
     return nil
@@ -556,10 +555,10 @@ TransmogDE.getClothingColorAsRaw = function(item)
     local tint = item:getVisual() and item:getVisual():getTint()
     if tint then
         return {
-            r = tint:getR(),
-            g = tint:getG(),
-            b = tint:getB(),
-            a = tint:getA()
+            r = tint:getRedFloat(),
+            g = tint:getGreenFloat(),
+            b = tint:getBlueFloat(),
+            a = tint:getAlphaFloat()
         }
     end
 
@@ -588,6 +587,33 @@ TransmogDE.getClothingTexture = function(item)
     end
 
     return texture
+end
+
+function TransmogDE.getTexturePreview(item, textureChoice)
+    if not item or not textureChoice then return nil end
+
+    local script = item:getScriptItem()
+    if not script then return nil end
+
+    local clothingAsset = TransmogDE.getClothingItemAsset(script)
+    if not clothingAsset then return nil end
+
+    local texChoices = clothingAsset:hasModel()
+                        and clothingAsset:getTextureChoices()
+                        or clothingAsset:getBaseTextures()
+    if not texChoices then return nil end
+
+    for i = 0, texChoices:size()-1 do
+        local entry = texChoices:get(i)
+        if entry == textureChoice then
+            local texName = script:getIconsForTexture():get(i)
+            if texName then
+                return getTexture(texName)
+            end
+        end
+    end
+
+    return nil
 end
 
 TransmogDE.setItemTransmog = function(itemToTmog, scriptItem)
@@ -714,6 +740,41 @@ TransmogDE.hasTextureOverride = function(item)
     return tex ~= otex
 end
 
+TransmogDE.canColorTmogItem = function(item)
+    if not item then return false end
+
+    local carrier = TransmogDE.getTransmogChild(item) or item
+    if not carrier then return false end
+
+    local script = carrier:getScriptItem()
+    if not script then return false end
+
+    local clothingItemAsset = TransmogDE.getClothingItemAsset(script)
+    if clothingItemAsset and clothingItemAsset.getAllowRandomTint and clothingItemAsset:getAllowRandomTint() then
+        return true
+    end
+
+    return false
+end
+
+TransmogDE.canTextureTmogItem = function(item)
+    if not item then return false end
+
+    local carrier = TransmogDE.getTransmogChild(item) or item
+    if not carrier then return false end
+
+    local script = carrier:getScriptItem()
+    if not script then return false end
+
+    local clothingItemAsset = TransmogDE.getClothingItemAsset(script)
+    if not clothingItemAsset then return false end
+
+    local textures = clothingItemAsset:hasModel()
+                    and clothingItemAsset:getTextureChoices()
+                    or clothingItemAsset:getBaseTextures()
+    return textures and textures:size() > 1 or false
+end
+
 local _colorToString = function(c)
     if not c then
         return "nil"
@@ -833,7 +894,6 @@ TransmogDE.setItemToDefault = function(item)
     -- Reset mapping so we no longer transmog into anything else.
     moddata.transmogTo = selfFullName
     moddata.lastTransmogTo = selfFullName
-    moddata.hidden = nil
 
     -- UI feedback is handled by TransmogNet.notifyPlayer
 
@@ -1227,6 +1287,11 @@ TransmogDE.updateAllConditionVisuals = function(player)
             TransmogDE.updateConditionVisuals(item)
         end
     end
+end
+
+function TransmogDE.copyVisuals(toItem, fromItem)
+    TransmogDE.setClothingColor(toItem, TransmogDE.getClothingColor(fromItem))
+    TransmogDE.setClothingTexture(toItem, TransmogDE.getClothingTexture(fromItem))
 end
 
 TransmogDE.reapplyVisuals = function(ogItem, tmogItem)
