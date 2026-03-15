@@ -91,9 +91,16 @@ function TexturePickerModal:onMouseUpOutside(x, y)
 end
 
 function TexturePickerModal.Open(player, clothing, textureChoices)
+    local viewer = TransmogListViewer.instance
+    if viewer and viewer.getIsVisible and viewer:getIsVisible() and viewer.item ~= clothing then
+        TransmogListViewer.Open(player, clothing)
+        return
+    end
+
     if TexturePickerModal.instance then
         TexturePickerModal.instance:close()
     end
+
     if textureChoices and (textureChoices:size() > 1) then
         local modal = TexturePickerModal:new(player, clothing, textureChoices)
         modal:initialise()
@@ -111,6 +118,7 @@ end
 function TexturePickerModal:updateTmogItemToTexture(clothing, textureChoices)
     if self.item ~= clothing then
         self.item = clothing
+        self.title = "Set texture of: " .. clothing:getDisplayName()
     end
     if self.textureChoices ~= textureChoices then
         self.textureChoices = textureChoices
@@ -177,7 +185,7 @@ function TexturePickerModal:new(character, item, textureChoices)
     o.character = character
     o.item = item
     o.textureChoices = textureChoices
-    o.title = "Set texture of: " .. item:getName()
+    o.title = "Set texture of: " .. item:getDisplayName()
     o.desc = character:getDescriptor()
     o.playerNum = playerNum
     o:setResizable(false)

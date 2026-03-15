@@ -85,19 +85,29 @@ function ColorPickerModal:setInitialFromItem()
 end
 
 function ColorPickerModal:updateTmogItemToColor(clothing)
-	self.item = clothing
-	self:setInitialFromItem()
+	if self.item ~= clothing then
+		self.item = clothing
+		self.title = "Set color of: " .. clothing:getDisplayName()
+		self:setInitialFromItem()
+	end
 end
 
 function ColorPickerModal.Open(player, clothing)
-	if ColorPickerModal.instance then
-		ColorPickerModal.instance:close()
-	end
-	local modal = ColorPickerModal:new(player, clothing)
-	modal:initialise()
-	modal:addToUIManager()
-	modal:restoreWindowState()
-	modal:setInitialFromItem()
+    local viewer = TransmogListViewer.instance
+    if viewer and viewer.getIsVisible and viewer:getIsVisible() and viewer.item ~= clothing then
+        TransmogListViewer.Open(player, clothing)
+        return
+    end
+
+    if ColorPickerModal.instance then
+        ColorPickerModal.instance:close()
+    end
+
+    local modal = ColorPickerModal:new(player, clothing)
+    modal:initialise()
+    modal:addToUIManager()
+    modal:restoreWindowState()
+    modal:setInitialFromItem()
 end
 
 function ColorPickerModal.Close()
@@ -143,8 +153,8 @@ function ColorPickerModal:new(character, item)
 	local o = ISCollapsableWindowJoypad.new(self, x, y, width, height)
 	o.character = character
 	o.item = item
-	o.title = "Set color of: " .. item:getName();
-	o.desc = character:getDescriptor();
+	o.title = "Set color of: " .. item:getDisplayName()
+	o.desc = character:getDescriptor()
 	o.playerNum = playerNum
 	o:setResizable(false)
 	ColorPickerModal.instance = o
