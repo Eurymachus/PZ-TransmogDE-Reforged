@@ -220,7 +220,7 @@ local function applyTransmogToPlayerItems(player)
         TmogPrint("Critical Error applyTransmogToPlayerItems: Player not defined")
         return
     end
-    wearHideEverything(player);
+    wearHideEverything(player)
     local toWearTmogIDs, toRemoveTmogIDs = wearTransmogItems(player)
     sendClothing(player, nil, nil)
     if #toWearTmogIDs > 0 then
@@ -263,11 +263,10 @@ local function onClothingUpdated(player)
     local playerNum = player:getPlayerNum() or 0
 
     -- Mark clothing dirty; OnPlayerUpdate will handle the heavy work.
-    if not TransmogDE.rebuildingWornItems[playerNum] then
+    --if not TransmogDE.rebuildingWornItems[playerNum] then
         TmogPrint("OnClothingUpdated -> mark clothing dirty for player " .. tostring(playerNum))
         TransmogDE._clothingDirty[playerNum] = true
-    end
-
+    --end
 end
 
 Events.OnClothingUpdated.Add(onClothingUpdated)

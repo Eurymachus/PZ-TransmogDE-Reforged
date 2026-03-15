@@ -14,24 +14,30 @@ local LEFTWRIST = "base:leftwrist"
 local RIGHTWRIST = "base:rightwrist"
 local FANNYPACK_BACK = "base:fannypackback"
 local FANNYPACK_FRONT = "base:fannypackfront"
+local SHORT_SLEEVE = "base:shortsleeveshirt"
+local TANKTOP = "base:tanktop"
+local JACKET_SUIT = "base:jacketsuit"
+local JACKET = "base:jacket"
+local SWEATER = "base:sweater"
+local SWEATER_HAT = "base:sweaterhat"
 
 TransmogDE.VisualMaskRules = {
     -- Suit Jackets/Long Jackets
-    ["base:jacketsuit"] = {
+    [JACKET_SUIT] = {
         LEFTWRIST,
         RIGHTWRIST,
         FANNYPACK_BACK,
         FANNYPACK_FRONT,
     },
     -- Jackets
-    ["base:jacket"] = {
+    [JACKET] = {
         LEFTWRIST,
         RIGHTWRIST,
         FANNYPACK_BACK,
         FANNYPACK_FRONT,
     },
     -- Sweaters and Hoodies
-    ["base:sweater"] = {
+    [SWEATER] = {
         -- If we hide watches for Sweaters we hide them for Sweater Vests too
         -- LEFTWRIST,
         -- RIGHTWRIST,
@@ -39,12 +45,16 @@ TransmogDE.VisualMaskRules = {
         FANNYPACK_FRONT,
     },
     -- Hoodies with hood up
-    ["base:sweaterhat"] = {
+    [SWEATER_HAT] = {
         -- Ignore hiding watches for all Sweater types, it doesnt look too horrible
         -- LEFTWRIST,
         -- RIGHTWRIST,
         FANNYPACK_BACK,
         FANNYPACK_FRONT,
+    },
+    -- Short Sleeve Shirts
+    [SHORT_SLEEVE] = {
+        TANKTOP,
     },
 }
 

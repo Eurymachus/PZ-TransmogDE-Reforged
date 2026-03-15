@@ -40,7 +40,6 @@ local function onPlayerUpdate(player)
     -- 2) Subsequent updates: request server apply when dirty
     if TransmogDE._clothingDirty[playerNum] then
         TransmogDE._clothingDirty[playerNum] = nil
-
         TransmogNet.requestUpdate(player)
     end
 end

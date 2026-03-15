@@ -424,8 +424,7 @@ TransmogNet.updatePlayer = function(player, args)
     TransmogDE._clothingDirty[player:getPlayerNum()] = nil
 end
 
-TransmogNet.wearTransmogItems = function(player, args)
-    TmogPrint("Wear Items")
+TransmogNet.wearTransmogItem = function(player, args)
     if not (args and args.toWearIDs) then return end
     local tmogItemIDs = args.toWearIDs
     if #tmogItemIDs <= 0 then return end
@@ -435,6 +434,11 @@ TransmogNet.wearTransmogItems = function(player, args)
             TransmogDE.setWornItemTmog(player, tmogItem)
         end
     end
+end
+
+TransmogNet.wearTransmogItems = function(player, args)
+    TmogPrint("Wear Items")
+    TransmogNet.wearTransmogItem(player, args)
     TransmogDE.reapplyVisualsForAllWorn(player)
     TransmogDE.refreshPlayerAndSyncUI(player)
 end
@@ -508,7 +512,7 @@ TransmogNet.sendTransmogClothing = function(player, toWearIDs)
         return
     end
 
-    --TransmogNet.wearTransmogItems(player, args)
+    TransmogNet.wearTransmogItems(player, args)
 end
 
 -- ====================================
@@ -1043,7 +1047,6 @@ end
 
 TransmogNet.requestUpdate = function(player)
     local playerNum = player:getPlayerNum()
-    TransmogDE._clothingDirty[player:getPlayerNum()] = nil
     if isClient() then
         TmogPrint("send REQUEST_UPDATE p=" .. tostring(playerNum))
         sendClientCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.REQUEST_UPDATE, {})

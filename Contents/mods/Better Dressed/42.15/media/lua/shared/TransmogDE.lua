@@ -1008,7 +1008,122 @@ TransmogDE.showAllWornTransmogs = function(player)
     end
 end
 
+-- Converted from java\characters\WornItems\WornItems.java using chatgtp -> public void setItem(String var1, InventoryItem var2)
+-- This is needed to avoid item clipping!
+TransmogDE.setWornItem = function(player, tmogItem)
+    --TmogPrint("Attempting to set worn Item: " .. tostring(tmogItem))
+    local wornItems = player:getWornItems()
+    local group = getClassFieldVal(wornItems, getClassField(wornItems, 0));
+    local items = getClassFieldVal(wornItems, getClassField(wornItems, 1));
+
+    local ogItemBodylocation = TransmogDE.TmogItemToOgItemBodylocation[tmogItem:getScriptItem():getFullName()]
+    if not ogItemBodylocation then
+        --TmogPrint("setWornItemTmog ogItemBodylocation is nil")
+        return
+    end
+
+    wornItems:remove(tmogItem)
+
+    -- Use the ogItem bodyLoc, so that they are in the correct order, otherwise, we'll get clipping
+    -- This ensures that for example, backpacks are on TOP of trousers
+
+    local insertAt = items:size()
+    --TmogPrint("setWornItemTmog insertAt [items:size]: " .. tostring(insertAt))
+    for i = 0, items:size() - 1 do
+        local wornItem = items:get(i)
+        local wornItemItem = wornItem:getItem()
+        if TransmogDE.isTransmogItem(wornItemItem) and not wornItemItem:hasTag(TransmogDE.ItemTag.Hide_Everything) then
+            local wornOgItemLocation = TransmogDE.TmogItemToOgItemBodylocation[wornItemItem:getScriptItem()
+            :getFullName()]
+            --TmogPrint('wornOgitemLocation', wornOgItemLocation)
+            --TmogPrint('ogItemBodylocation', ogItemBodylocation)
+            if group:indexOf(wornOgItemLocation) > group:indexOf(ogItemBodylocation) then
+                insertAt = i
+                break
+            end
+        end
+    end
+    --TmogPrint("setWornItemTmog finally insertAt: " .. tostring(insertAt))
+    local newWornItem = WornItem.new(TransmogDE.ItemBodyLocation.TransmogLocation, tmogItem)
+    items:add(insertAt, newWornItem)
+    --TmogPrint("setWornItemTmog final items:size: " .. tostring(items:size()))
+end
+
+local function getOgLocationOrder(group, item, fallbackIndex)
+    if not (group and item) then return end
+    local scriptItem = item and item:getScriptItem()
+    local fullName = scriptItem and scriptItem:getFullName() or nil
+    local ogLocation = fullName and TransmogDE.TmogItemToOgItemBodylocation[fullName] or nil
+    local orderIndex = ogLocation and group:indexOf(ogLocation) or 0
+
+    return {
+        item = item,
+        ogLocation = ogLocation,
+        orderIndex = orderIndex,
+        originalIndex = fallbackIndex or 0,
+    }
+end
+
 TransmogDE.rebuildingWornItems = {}
+
+TransmogDE.updateWornTmogItems = function(player)
+    TmogPrint("updateWornTmogItems Fired")
+    if not player then return false end
+
+    local wornItems = player:getWornItems()
+    if not wornItems then return false end
+
+    local transmogLocation = TransmogDE.ItemBodyLocation and TransmogDE.ItemBodyLocation.TransmogLocation
+    if not transmogLocation then return false end
+
+    local group = wornItems:getBodyLocationGroup()
+    if not group then return false end
+
+    local toWear = {}
+    local toRemove = {}
+
+    TmogPrint("updateWornTmogItems collecting Entries")
+    -- Collect currently worn tmog items in TransmogLocation, preserving current order
+    for i = 0, wornItems:size() - 1 do
+        local wornItem = wornItems:get(i)
+        local item = wornItem and wornItem:getItem() or nil
+        local location = wornItem and wornItem:getLocation() or nil
+
+        if item and location == transmogLocation and TransmogDE.isTransmogItem(item) then
+            toRemove[#toWear + 1] = item
+            toWear[#toWear + 1] = getOgLocationOrder(group, item, i)
+        end
+    end
+
+    if #toWear == 0 then
+        return false
+    end
+
+    TmogPrint("updateWornTmogItems found " .. tostring(#toWear) .. " entries to wear")
+    TmogPrint("updateWornTmogItems found " .. tostring(#toRemove) .. " entries to remove")
+    table.sort(toWear, function(a, b)
+        if a.orderIndex == b.orderIndex then
+            return a.originalIndex < b.originalIndex
+        end
+        return a.orderIndex < b.orderIndex
+    end)
+
+    TransmogDE.rebuildingWornItems[player:getPlayerNum()] = true
+
+    -- Remove current bucket contents only
+    for i = 1, #toRemove do
+        player:removeWornItem(toRemove[i])
+    end
+
+    -- Reapply in final desired order
+    for i = 1, #toWear do
+        --player:setWornItem(transmogLocation, entries[i].item)
+    end
+
+    TransmogDE.rebuildingWornItems[player:getPlayerNum()] = nil
+
+    return true
+end
 
 TransmogDE.setWornItemTmog = function(player, tmogItem)
     if not (player and tmogItem) then return false end
@@ -1025,19 +1140,7 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
     local entries = {}
     local pendingAlreadyPresent = false
 
-    local function getOgLocationOrder(item, fallbackIndex)
-        local scriptItem = item and item:getScriptItem()
-        local fullName = scriptItem and scriptItem:getFullName() or nil
-        local ogLocation = fullName and TransmogDE.TmogItemToOgItemBodylocation[fullName] or nil
-        local orderIndex = ogLocation and group:indexOf(ogLocation) or 999999
-
-        return {
-            item = item,
-            ogLocation = ogLocation,
-            orderIndex = orderIndex,
-            originalIndex = fallbackIndex or 999999,
-        }
-    end
+    local toRemove = {}
 
     -- Collect currently worn tmog items in TransmogLocation, preserving current order
     for i = 0, wornItems:size() - 1 do
@@ -1046,7 +1149,8 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
         local location = wornItem and wornItem:getLocation() or nil
 
         if item and location == transmogLocation and TransmogDE.isTransmogItem(item) then
-            entries[#entries + 1] = getOgLocationOrder(item, i)
+            toRemove[#entries + 1] = item
+            entries[#entries + 1] = getOgLocationOrder(group, item, i)
 
             if item == tmogItem then
                 pendingAlreadyPresent = true
@@ -1056,7 +1160,7 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
 
     -- Include the new/pending tmog item if not already worn in the bucket
     if not pendingAlreadyPresent then
-        entries[#entries + 1] = getOgLocationOrder(tmogItem, wornItems:size())
+        entries[#entries + 1] = getOgLocationOrder(group, tmogItem, wornItems:size())
     end
 
     if #entries == 0 then
@@ -1073,14 +1177,8 @@ TransmogDE.setWornItemTmog = function(player, tmogItem)
     TransmogDE.rebuildingWornItems[player:getPlayerNum()] = true
 
     -- Remove current bucket contents only
-    for i = 0, wornItems:size() - 1 do
-        local wornItem = wornItems:get(i)
-        local item = wornItem and wornItem:getItem() or nil
-        local location = wornItem and wornItem:getLocation() or nil
-
-        if item and location == transmogLocation and TransmogDE.isTransmogItem(item) then
-            player:removeWornItem(item)
-        end
+    for i = 1, #toRemove do
+        player:removeWornItem(toRemove[i])
     end
 
     -- Reapply in final desired order
