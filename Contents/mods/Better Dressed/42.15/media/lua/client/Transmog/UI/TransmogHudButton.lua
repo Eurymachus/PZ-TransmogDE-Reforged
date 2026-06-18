@@ -1,11 +1,25 @@
 require "ISUI/ISButton"
 
+local Prefs = require("Transmog/Prefs")
+
 TransmogHudButton = ISButton:derive("TransmogHudButton")
 TransmogHudButton.instances = TransmogHudButton.instances or {}
 
-local GAP_Y = 15
+local BUTTON_SIZE = 42
+local DEFAULT_MARGIN_X = 80
+local DEFAULT_MARGIN_Y = 220
+local DRAG_THRESHOLD = 4
+
+local function getPlayerKey(playerNum)
+    return "TransmogHudButton." .. tostring(playerNum or 0) .. "."
+end
 
 function TransmogHudButton:onClick()
+    if self.suppressClick then
+        self.suppressClick = false
+        return
+    end
+
     local player = getSpecificPlayer(self.playerNum)
     if not player then return end
 
@@ -19,86 +33,36 @@ function TransmogHudButton:onClick()
     TransmogWornItems.Open(player)
 end
 
-function TransmogHudButton:getEquippedPanel()
-    local pdata = getPlayerData(self.playerNum)
-    return pdata and pdata.equipped or nil
+function TransmogHudButton:getDefaultPosition()
+    local sw = getCore():getScreenWidth()
+    local sh = getCore():getScreenHeight()
+    return sw - self:getWidth() - DEFAULT_MARGIN_X, sh - self:getHeight() - DEFAULT_MARGIN_Y
 end
 
-local SCALE = 1 -- try 1.15–1.35 range
+function TransmogHudButton:restorePosition()
+    local key = getPlayerKey(self.playerNum)
+    local x = tonumber(Prefs.get(key .. "x", nil))
+    local y = tonumber(Prefs.get(key .. "y", nil))
 
-function TransmogHudButton:getSizeFromEquipped(eq)
-    local w, h
-
-    if eq and eq.searchBtn then
-        w = eq.searchBtn:getWidth()
-        h = eq.searchBtn:getHeight()
-    elseif eq and eq.healthBtn then
-        w = eq.healthBtn:getWidth()
-        h = eq.healthBtn:getHeight()
-    else
-        w, h = 32, 32
+    if not x or not y then
+        x, y = self:getDefaultPosition()
     end
 
-    return math.floor(w * SCALE), math.floor(h * SCALE)
+    x, y = Prefs.clampToScreen(x, y, self:getWidth(), self:getHeight())
+    self:setX(x)
+    self:setY(y)
 end
 
-function TransmogHudButton:getAnchorControl(eq)
-    if not eq then return nil end
-
-    local candidates = {
-        eq.warManagerBtn,
-        eq.adminBtn,
-        eq.clientBtn,
-        eq.safetyBtn,
-        eq.debugBtn,
-        eq.mapBtn,
-        eq.zoneBtn,
-        eq.searchBtn,
-        eq.movableBtn,
-        eq.buildBtn,
-        eq.craftingBtn,
-        eq.healthBtn,
-        eq.invBtn,
-        eq.offHand,
-    }
-
-    for i = 1, #candidates do
-        local c = candidates[i]
-        if c and c.getIsVisible and c:getIsVisible() then
-            return c
-        end
-    end
-
-    return eq.offHand or eq.mainHand
-end
-
-function TransmogHudButton:getLocalAnchorPosition(eq)
-    local anchor = self:getAnchorControl(eq)
-    if not anchor then
-        return 0, 0
-    end
-
-    local x = anchor:getX()
-    local y = anchor:getBottom() + GAP_Y
-    return x, y
+function TransmogHudButton:savePosition()
+    local key = getPlayerKey(self.playerNum)
+    Prefs.set(key .. "x", math.floor(self:getX()))
+    Prefs.set(key .. "y", math.floor(self:getY()))
 end
 
 function TransmogHudButton:reposition()
-    local eq = self:getEquippedPanel()
-    if not eq then return end
-
-    local x, y = self:getLocalAnchorPosition(eq)
-    local w, h = self:getSizeFromEquipped(eq)
-
+    local x, y = Prefs.clampToScreen(self:getX(), self:getY(), self:getWidth(), self:getHeight())
     self:setX(x)
     self:setY(y)
-    self:setWidth(w)
-    self:setHeight(h)
-
-    local requiredHeight = y + h
-    if eq:getHeight() < requiredHeight then
-        eq:setHeight(requiredHeight)
-    end
 end
 
 function TransmogHudButton:render()
@@ -122,36 +86,98 @@ function TransmogHudButton:render()
     end
 end
 
+function TransmogHudButton:onMouseDown(x, y)
+    ISButton.onMouseDown(self, x, y)
+
+    self.dragging = true
+    self.wasDragged = false
+    self.suppressClick = false
+    self.dragStartMouseX = getMouseX()
+    self.dragStartMouseY = getMouseY()
+    self.dragStartX = self:getX()
+    self.dragStartY = self:getY()
+end
+
+function TransmogHudButton:onMouseMove(dx, dy)
+    ISButton.onMouseMove(self, dx, dy)
+
+    if not self.dragging then return end
+
+    local mouseX = getMouseX()
+    local mouseY = getMouseY()
+    local deltaX = mouseX - self.dragStartMouseX
+    local deltaY = mouseY - self.dragStartMouseY
+
+    if not self.wasDragged and (math.abs(deltaX) >= DRAG_THRESHOLD or math.abs(deltaY) >= DRAG_THRESHOLD) then
+        self.wasDragged = true
+    end
+
+    if self.wasDragged then
+        local x, y = Prefs.clampToScreen(
+            self.dragStartX + deltaX,
+            self.dragStartY + deltaY,
+            self:getWidth(),
+            self:getHeight()
+        )
+        self:setX(x)
+        self:setY(y)
+    end
+end
+
+function TransmogHudButton:onMouseMoveOutside(dx, dy)
+    self:onMouseMove(dx, dy)
+end
+
+function TransmogHudButton:onMouseUp(x, y)
+    local wasDragged = self.wasDragged == true
+
+    self.dragging = false
+    self.wasDragged = false
+    self.dragStartMouseX = nil
+    self.dragStartMouseY = nil
+    self.dragStartX = nil
+    self.dragStartY = nil
+
+    if wasDragged then
+        self.suppressClick = true
+        self:savePosition()
+    end
+
+    ISButton.onMouseUp(self, x, y)
+end
+
+function TransmogHudButton:onMouseUpOutside(x, y)
+    local wasDragged = self.wasDragged == true
+
+    self.dragging = false
+    self.wasDragged = false
+    self.dragStartMouseX = nil
+    self.dragStartMouseY = nil
+    self.dragStartX = nil
+    self.dragStartY = nil
+
+    if wasDragged then
+        self:savePosition()
+    end
+
+    if ISButton.onMouseUpOutside then
+        ISButton.onMouseUpOutside(self, x, y)
+    end
+end
+
 function TransmogHudButton:createForPlayer(playerNum)
     if playerNum == nil then return nil end
 
     local player = getSpecificPlayer(playerNum)
     if not player then return nil end
 
-    local pdata = getPlayerData(playerNum)
-    local eq = pdata and pdata.equipped or nil
-    if not eq then return nil end
-
     local existing = self.instances[playerNum]
     if existing then
-        if existing:getParent() ~= eq then
-            local parent = existing:getParent()
-            if parent and parent.removeChild then
-                parent:removeChild(existing)
-            else
-                existing:removeFromUIManager()
-            end
-            self.instances[playerNum] = nil
-        else
-            existing:reposition()
-            return existing
-        end
+        existing:reposition()
+        return existing
     end
 
-    local w, h = self:getSizeFromEquipped(eq)
-    local x, y = 0, 0
-
-    local btn = ISButton:new(x, y, w, h, "", nil, nil)
+    local btn = ISButton:new(0, 0, BUTTON_SIZE, BUTTON_SIZE, "", nil, nil)
     setmetatable(btn, self)
     self.__index = self
 
@@ -161,9 +187,7 @@ function TransmogHudButton:createForPlayer(playerNum)
 
     btn:initialise()
     btn:instantiate()
-
-    eq:addChild(btn)
-
+    btn:addToUIManager()
     btn:clearMaxDrawHeight()
 
     btn.borderColor = { r = 1, g = 1, b = 1, a = 0 }
@@ -172,9 +196,9 @@ function TransmogHudButton:createForPlayer(playerNum)
     btn.backgroundColorPressed = { r = 0, g = 0, b = 0, a = 0 }
 
     btn.iconTex = getTexture("media/ui/TransmogIcon.png")
-    btn.tooltip = getTextOrNull("") or "Transmoggable Worn Items"
+    btn.tooltip = getTextOrNull("IGUI_TransmogDE_WornItems_title") or "Transmoggable Worn Items"
 
-    btn:reposition()
+    btn:restorePosition()
 
     self.instances[playerNum] = btn
     return btn
@@ -184,13 +208,7 @@ function TransmogHudButton:removeForPlayer(playerNum)
     local btn = self.instances[playerNum]
     if not btn then return end
 
-    local parent = btn:getParent()
-    if parent and parent.removeChild then
-        parent:removeChild(btn)
-    else
-        btn:removeFromUIManager()
-    end
-
+    btn:removeFromUIManager()
     self.instances[playerNum] = nil
 end
 
