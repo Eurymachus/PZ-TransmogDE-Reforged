@@ -3,6 +3,7 @@ TransmogDE = TransmogDE or {}
 TransmogDE.ImmersiveModeMap = {}
 TransmogDE.BackupClothingItemAsset = {}
 TransmogDE.TmogItemToOgItemBodylocation = {}
+TransmogDE.MAX_TRANSMOG_ITEMS = 10000
 
 -- HELPERS
 
@@ -80,8 +81,13 @@ TransmogDE.GenerateTransmogGlobalModData = function()
         if TransmogDE.isTransmoggable(item) then
             serverTransmoggedItemCount = serverTransmoggedItemCount + 1
             if not itemToTransmogMap[fullName] then
-                table.insert(transmogToItemMap, fullName)
-                itemToTransmogMap[fullName] = 'TransmogDE.TransmogItem_' .. #transmogToItemMap
+                local nextTransmogIndex = #transmogToItemMap + 1
+                if nextTransmogIndex <= TransmogDE.MAX_TRANSMOG_ITEMS then
+                    table.insert(transmogToItemMap, fullName)
+                    itemToTransmogMap[fullName] = 'TransmogDE.TransmogItem_' .. nextTransmogIndex
+                else
+                    TmogPrint("ERROR: Reached limit of transmoggable items, skipping " .. tostring(fullName))
+                end
             end
             --TmogPrint(fullName .. ' -> ' .. tostring(itemToTransmogMap[fullName]))
         else
@@ -89,7 +95,7 @@ TransmogDE.GenerateTransmogGlobalModData = function()
         end
     end
 
-    if #transmogToItemMap >= 5000 then
+    if #transmogToItemMap >= TransmogDE.MAX_TRANSMOG_ITEMS then
         TmogPrint("ERROR: Reached limit of transmoggable items")
     end
 
@@ -291,6 +297,10 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     end
 
     local tmogItem = player:getInventory():AddItem(tmogItemName)
+    if not tmogItem then
+        TmogPrint("ERROR: Failed to create transmog item " .. tostring(tmogItemName))
+        return nil
+    end
 
     -- set tmogItem as child of ogItem
     itemTmogModData.childId = tmogItem:getID()
