@@ -58,6 +58,54 @@ TransmogDE.VisualMaskRules = {
     },
 }
 
+local function addHiddenSlot(out, slot)
+    if not slot then return end
+    out[tostring(slot)] = true
+    TmogPrint("Hides: " .. tostring(slot))
+end
+
+local function addVanillaHiddenSlots(out, coveringSlot)
+    local group = BodyLocations and BodyLocations.getGroup and BodyLocations.getGroup("Human")
+    if not group or not coveringSlot then return end
+
+    local allLocations = group:getAllLocations()
+    if not allLocations then return end
+
+    local size = allLocations:size()
+    for i = 0, size - 1 do
+        local location = allLocations:get(i)
+        local hiddenSlot = location and location:getId()
+
+        if hiddenSlot and group:isHideModel(coveringSlot, hiddenSlot) then
+            addHiddenSlot(out, hiddenSlot)
+        end
+    end
+end
+
+local function addAltSlot(out, slot)
+    if not slot then return end
+    out[tostring(slot)] = true
+    TmogPrint("Alts: " .. tostring(slot))
+end
+
+local function addVanillaAltSlots(out, coveringSlot)
+    local group = BodyLocations and BodyLocations.getGroup and BodyLocations.getGroup("Human")
+    if not group or not coveringSlot then return end
+
+    local allLocations = group:getAllLocations()
+    if not allLocations then return end
+
+    local size = allLocations:size()
+    for i = 0, size - 1 do
+        local location = allLocations:get(i)
+        local altSlot = location and location:getId()
+
+        if altSlot and group:isAltModel(coveringSlot, altSlot) then
+            addAltSlot(out, altSlot)
+        end
+    end
+end
+
 --- Add a new visual masking rule.
 -- @param coveringSlot string  BodyLocation of the covering visual slot (e.g. "Jacket")
 -- @param hiddenSlot   string  BodyLocation of the visual slot to hide (e.g. "FannyPackFront")
@@ -122,14 +170,27 @@ function TransmogDE.getHiddenVisualSlotsForCovering(item)
     TmogPrint("Slot name: " .. coveringSlotString)
     if coveringSlot then
         local out = {}
-        local rules = TransmogDE.VisualMaskRules[coveringSlotString]
-        if not rules then return out end
 
-        for _, slot in ipairs(rules) do
-            out[slot] = true
-            TmogPrint("Hides: " .. tostring(slot))
+        addVanillaHiddenSlots(out, coveringSlot)
+
+        local rules = TransmogDE.VisualMaskRules[coveringSlotString]
+        if rules then
+            for _, slot in ipairs(rules) do
+                addHiddenSlot(out, slot)
+            end
         end
 
+        return out
+    end
+end
+
+function TransmogDE.getAltVisualSlotsForCovering(item)
+    local coveringSlot = TransmogDE.getItemVisualBodyLocation(item)
+    local coveringSlotString = tostring(coveringSlot)
+    TmogPrint("Alt slot name: " .. coveringSlotString)
+    if coveringSlot then
+        local out = {}
+        addVanillaAltSlots(out, coveringSlot)
         return out
     end
 end

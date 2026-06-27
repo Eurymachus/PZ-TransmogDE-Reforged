@@ -62,6 +62,7 @@ local function wearTransmogItems(player)
     --         TransmogDE.VisualMaskRules.
     -- //////////////////////////////////////////////////////////////
     local hiddenVisualSlots = {}
+    local altVisualSlots = {}
 
     if TransmogDE and TransmogDE.getHiddenVisualSlotsForCovering then
         for i = 0, wornItems:size() - 1 do
@@ -86,6 +87,15 @@ local function wearTransmogItems(player)
                         TmogPrint(tostring(count) .. " rules found!")
                     else
                         TmogPrint("No Visual Mask Rules")
+                    end
+
+                    if TransmogDE.getAltVisualSlotsForCovering then
+                        local altForThis = TransmogDE.getAltVisualSlotsForCovering(item)
+                        if altForThis then
+                            for slot, _ in pairs(altForThis) do
+                                altVisualSlots[slot] = true
+                            end
+                        end
                     end
                 end
             end
@@ -120,7 +130,8 @@ local function wearTransmogItems(player)
 
             if not isMasked then
                 -- No existing child and not masked → create carrier.
-                local tmogItem = TransmogDE.createTransmogItem(item, player)
+                local carrierVariant = TransmogDE.getDesiredTransmogCarrierVariant(item, altVisualSlots)
+                local tmogItem = TransmogDE.createTransmogItem(item, player, carrierVariant == "alt")
                 if tmogItem then
                     TmogPrint("Item to wear: " .. tostring(itemDisplayName))
                     table.insert(toWear, tmogItem)
@@ -162,10 +173,15 @@ local function wearTransmogItems(player)
                 local visualLoc = TransmogDE.getItemVisualBodyLocation(parentItem)
                 local visualLocString = tostring(visualLoc)
                 local isMasked = visualLoc and hiddenVisualSlots[visualLocString] or false
+                local desiredCarrierVariant = TransmogDE.getDesiredTransmogCarrierVariant(parentItem, altVisualSlots)
+                local currentCarrierVariant = TransmogDE.getTransmogCarrierVariant(item)
+                local carrierVariantChanged = currentCarrierVariant ~= desiredCarrierVariant
 
                 TmogPrint(tostring(item) .. " (carrier) isMasked = " .. tostring(isMasked)
                     .. " | parent=" .. tostring(parentDisplayName) ..
-                    " | visualLoc=" .. visualLocString)
+                    " | visualLoc=" .. visualLocString ..
+                    " | currentCarrierVariant=" .. tostring(currentCarrierVariant) ..
+                    " | desiredCarrierVariant=" .. tostring(desiredCarrierVariant))
 
                 if isMasked then
                     TmogPrint("Item to remove: " .. tostring(itemDisplayName))
@@ -174,9 +190,25 @@ local function wearTransmogItems(player)
                     TmogPrint("Carrier masked, removing: " .. tostring(itemDisplayName) ..
                         " | VisualLoc: " .. visualLocString)
                     if pmd and pmd.Transmog and pmd.Transmog.childId == item:getID() then
-                        --pmd.Transmog.childId = nil
+                        pmd.Transmog.childId = nil
                     end
                     table.insert(toRemove, item)
+                elseif carrierVariantChanged then
+                    TmogPrint("Carrier variant changed, replacing: " .. tostring(itemDisplayName)
+                        .. " | current=" .. tostring(currentCarrierVariant)
+                        .. " | desired=" .. tostring(desiredCarrierVariant))
+
+                    if pmd and pmd.Transmog and pmd.Transmog.childId == item:getID() then
+                        pmd.Transmog.childId = nil
+                    end
+
+                    table.insert(toRemove, item)
+
+                    local replacement = TransmogDE.createTransmogItem(parentItem, player, desiredCarrierVariant == "alt")
+                    if replacement then
+                        TmogPrint("Replacement item to wear: " .. tostring(parentDisplayName))
+                        table.insert(toWear, replacement)
+                    end
                 else
                     -- Still valid and not masked → keep and sync visuals.
                     TransmogDE.syncConditionVisualsForTmog(item)

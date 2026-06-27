@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_GUID>3592742c-80f1-55f4-a568-c9e377c659e0</m_GUID>
+  <m_MaleModel>media\models_X\Static\Clothes\Bob_Wood_Shoulderpad_R_ALT.x</m_MaleModel>
+  <m_FemaleModel>media\models_X\Static\Clothes\Kate_Wood_Shoulderpad_R_ALT.x</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_Static>true</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone>Bip01_R_UpperArm</m_AttachBone>
+  <m_MasksFolder>none</m_MasksFolder>
+  <textureChoices>clothes\armor\woodshoulderpads</textureChoices>
+</clothingItem>

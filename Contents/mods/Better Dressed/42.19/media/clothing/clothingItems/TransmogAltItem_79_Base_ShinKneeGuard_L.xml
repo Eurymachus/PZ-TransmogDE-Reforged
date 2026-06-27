@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_GUID>249707da-08a0-5088-b496-3906bddbcfbc</m_GUID>
+  <m_MaleModel>skinned\clothes\Bob_ShinKneeGuard_L_ALT</m_MaleModel>
+  <m_FemaleModel>skinned\clothes\Kate_ShinKneeGuard_L_ALT</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_Static>false</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone />
+  <textureChoices>clothes\armor\ShinKneeGuard_L_Baseball_Red</textureChoices>
+  <textureChoices>clothes\armor\ShinKneeGuard_L_IceHockey</textureChoices>
+  <textureChoices>clothes\armor\ShinKneeGuard_L_Protective</textureChoices>
+</clothingItem>

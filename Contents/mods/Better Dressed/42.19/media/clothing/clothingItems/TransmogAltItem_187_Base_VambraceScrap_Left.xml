@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_GUID>6322764b-022a-51f7-83e6-0e1818b19d5c</m_GUID>
+  <m_MaleModel>static\clothes\bob_vambrace_l_alt</m_MaleModel>
+  <m_FemaleModel>static\clothes\kate_vambrace_l_alt</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_Static>true</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone>Bip01_L_Forearm</m_AttachBone>
+  <m_MasksFolder>none</m_MasksFolder>
+  <textureChoices>clothes\armor\vambrace_metal_basic</textureChoices>
+</clothingItem>

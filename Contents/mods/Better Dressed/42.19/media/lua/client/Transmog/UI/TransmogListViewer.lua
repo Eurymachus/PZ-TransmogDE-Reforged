@@ -418,8 +418,8 @@ function TransmogListViewer:initList()
             local isTransmogItem = TransmogDE.isTransmoggable(item) and (TransmogDE.immersiveModeItemCheck(item) or (getCore():getDebug() or isAdmin()))
             if isTransmogItem then
                 local isLocationUnrestricted = (getCore():getDebug() or isAdmin()) or (not SandboxVars.TransmogDE.LimitTransmogToSameBodyLocation)
-                local isSameBodyLocation = item:getBodyLocation() == self.item:getBodyLocation()
-                local locationAllowed = isLocationUnrestricted or isSameBodyLocation
+                local isSameBodyRegion = TransmogDE.isSameBodyRegion(item:getBodyLocation(), self.item:getBodyLocation())
+                local locationAllowed = isLocationUnrestricted or isSameBodyRegion
                 if locationAllowed then
                     if not self.module[item:getModuleName()] then
                         self.module[item:getModuleName()] = {}

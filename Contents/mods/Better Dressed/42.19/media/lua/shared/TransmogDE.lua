@@ -3,6 +3,7 @@ TransmogDE = TransmogDE or {}
 TransmogDE.ImmersiveModeMap = {}
 TransmogDE.BackupClothingItemAsset = {}
 TransmogDE.TmogItemToOgItemBodylocation = {}
+TransmogDE.BodyLocationToRegion = {}
 TransmogDE.MAX_TRANSMOG_ITEMS = 10000
 
 -- HELPERS
@@ -160,6 +161,11 @@ TransmogDE.patchAllItemsFromModData = function(modData)
             --TmogPrint("New BodyLocation = " .. tostring(newBodyLocation))
             -- store this map for the wear tmog fix
             TransmogDE.TmogItemToOgItemBodylocation[tmogItemName] = newBodyLocation
+
+            local altTmogItemName = TransmogDE.getAltTransmogItemName(originalItemName)
+            if altTmogItemName then
+                TransmogDE.TmogItemToOgItemBodylocation[altTmogItemName] = newBodyLocation
+            end
         end
     end
 end
@@ -206,6 +212,138 @@ TransmogDE.invalidBodyLocations = {
 TransmogDE.addBodyLocationToIgnore = function(bodyLocation)
     local location = tostring(bodyLocation)
     TransmogDE.invalidBodyLocations[location] = true
+end
+
+local function _normalizeBodyLocation(bodyLocation)
+    if not bodyLocation then
+        return nil
+    end
+
+    local location = tostring(bodyLocation)
+    if location == "" then
+        return nil
+    end
+
+    return string.lower(location)
+end
+
+local function _addBodyRegion(regionName, locations)
+    if not regionName or not locations then
+        return
+    end
+
+    for _, location in ipairs(locations) do
+        local normalizedLocation = _normalizeBodyLocation(location)
+        if normalizedLocation then
+            TransmogDE.BodyLocationToRegion[normalizedLocation] = regionName
+        end
+    end
+end
+
+_addBodyRegion("Head", {
+    "base:hat", "base:fullhat", "base:eyes", "base:lefteye", "base:righteye",
+    "base:mask", "base:maskeyes", "base:maskfull", "base:ears", "base:eartop", "base:nose",
+})
+
+_addBodyRegion("Neck", {
+    "base:neck", "base:neck_texture", "base:necklace", "base:necklace_long", "base:gorget", "base:scarf",
+})
+
+_addBodyRegion("TorsoOuter", {
+    "base:shirt", "base:shortsleeveshirt", "base:tshirt", "base:tanktop", "base:sweater", "base:sweaterhat",
+    "base:jacket", "base:jacket_bulky", "base:jackethat", "base:jackethat_bulky", "base:jacket_down", "base:jacketsuit",
+    "base:fulltop", "base:jersey", "base:torsoextravest", "base:torsoextravestbullet", "base:vesttexture",
+    "base:torsoextra", "base:cuirass",
+})
+
+_addBodyRegion("TorsoUnder", {
+    "base:underweartop", "base:underwearbottom", "base:underwearextra1", "base:underwearextra2", "base:underwear",
+})
+
+_addBodyRegion("FullBody", {
+    "base:dress", "base:longdress", "base:fullsuit", "base:fullsuithead", "base:boilersuit", "base:bathrobe",
+    "base:torso1legs1",
+})
+
+_addBodyRegion("Arms", {
+    "base:rightarm", "base:leftarm", "base:forearm_right", "base:forearm_left", "base:elbow_right", "base:elbow_left",
+})
+
+_addBodyRegion("Shoulders", {
+    "base:sportshoulderpad", "base:sportshoulderpadontop", "base:shoulderpadleft", "base:shoulderpadright",
+})
+
+_addBodyRegion("Hands", {
+    "base:hands", "base:handsleft", "base:handsright", "base:leftwrist", "base:rightwrist",
+})
+
+_addBodyRegion("Fingers", {
+    "base:right_middlefinger", "base:left_middlefinger", "base:right_ringfinger", "base:left_ringfinger",
+})
+
+_addBodyRegion("Legs", {
+    "base:pants", "base:pants_skinny", "base:shortpants", "base:shortsshort", "base:skirt", "base:longskirt",
+    "base:pantsextra",
+    "base:legs1", "base:thigh_right", "base:thigh_left", "base:knee_right", "base:knee_left", "base:calf_right",
+    "base:calf_left",
+    "base:calf_right_texture", "base:calf_left_texture", "base:gaiter_left", "base:gaiter_right",
+})
+
+_addBodyRegion("Feet", {
+    "base:shoes", "base:socks",
+})
+
+_addBodyRegion("Belt", {
+    "base:belt", "base:beltextra", "base:ankleholster", "base:codpiece", "base:bellybutton",
+})
+
+_addBodyRegion("Bags", {
+    "base:back", "base:satchel", "base:fannypackfront", "base:fannypackback", "base:webbing", "base:ammostrap",
+    "base:shoulderholster",
+})
+
+_addBodyRegion("Tail", {
+    "base:tail",
+})
+
+_addBodyRegion("BreathingApparatus", {
+    "base:scba", "base:scbanotank",
+})
+
+TransmogDE.addBodyLocationToRegion = function(bodyLocation, regionName)
+    local normalizedLocation = _normalizeBodyLocation(bodyLocation)
+    if not normalizedLocation or not regionName then
+        return
+    end
+
+    TransmogDE.BodyLocationToRegion[normalizedLocation] = tostring(regionName)
+end
+
+TransmogDE.getBodyRegion = function(bodyLocation)
+    local normalizedLocation = _normalizeBodyLocation(bodyLocation)
+    if not normalizedLocation then
+        return nil
+    end
+
+    return TransmogDE.BodyLocationToRegion[normalizedLocation]
+end
+
+TransmogDE.isSameBodyRegion = function(firstBodyLocation, secondBodyLocation)
+    local firstLocation = _normalizeBodyLocation(firstBodyLocation)
+    local secondLocation = _normalizeBodyLocation(secondBodyLocation)
+
+    if not firstLocation or not secondLocation then
+        return false
+    end
+
+    local firstRegion = TransmogDE.getBodyRegion(firstLocation)
+    local secondRegion = TransmogDE.getBodyRegion(secondLocation)
+
+    if firstRegion and secondRegion then
+        return firstRegion == secondRegion
+    end
+
+    return firstLocation == secondLocation
 end
 
 TransmogDE.isTransmoggableBodylocation = function(bodyLocation)
@@ -275,6 +413,53 @@ TransmogDE.isTransmogItem = function(scriptItem)
     return scriptItem:getModuleName() == "TransmogDE"
 end
 
+TransmogDE.getAltTransmogItemName = function(targetFullType)
+    if not (targetFullType and TransmogDE.AltTransmogItems) then
+        return nil
+    end
+
+    return TransmogDE.AltTransmogItems[targetFullType]
+end
+
+TransmogDE.getTransmogCarrierVariant = function(tmogItem)
+    local md = tmogItem and tmogItem:getModData()
+    return (md and md.TransmogCarrierVariant) or "normal"
+end
+
+TransmogDE.getDesiredTransmogCarrierVariant = function(parentItem, altVisualSlots)
+    if not (parentItem and altVisualSlots) then
+        return "normal"
+    end
+
+    local itemTmogModData = TransmogDE.getItemTransmogModData(parentItem)
+    local targetFullType = itemTmogModData and itemTmogModData.transmogTo
+    if not TransmogDE.getAltTransmogItemName(targetFullType) then
+        return "normal"
+    end
+
+    local visualLoc = TransmogDE.getItemVisualBodyLocation(parentItem)
+    if visualLoc and altVisualSlots[tostring(visualLoc)] then
+        return "alt"
+    end
+
+    return "normal"
+end
+
+TransmogDE.getTransmogCarrierItemName = function(ogItem, useAltCarrier)
+    local transmogModData = TransmogDE.getTransmogModData()
+    local itemTmogModData = TransmogDE.getItemTransmogModData(ogItem)
+    local targetFullType = itemTmogModData and itemTmogModData.transmogTo
+
+    if useAltCarrier then
+        local altItemName = TransmogDE.getAltTransmogItemName(targetFullType)
+        if altItemName then
+            return altItemName, "alt"
+        end
+    end
+
+    return transmogModData.itemToTransmogMap[targetFullType], "normal"
+end
+
 TransmogDE.getTransmogModData = function()
     local TransmogModData = ModData.get("TransmogModData");
     return TransmogModData or {
@@ -283,14 +468,14 @@ TransmogDE.getTransmogModData = function()
     }
 end
 
-TransmogDE.createTransmogItem = function(ogItem, player)
+TransmogDE.createTransmogItem = function(ogItem, player, useAltCarrier)
     --_dbgTextureDump("createTransmogItem ENTER og", ogItem)
     local transmogModData = TransmogDE.getTransmogModData()
     local itemTmogModData = TransmogDE.getItemTransmogModData(ogItem)
 
     --_dbgTextureDump("createTransmogItem AFTER getItemTransmogModData og", ogItem)
 
-    local tmogItemName = transmogModData.itemToTransmogMap[itemTmogModData.transmogTo]
+    local tmogItemName, carrierVariant = TransmogDE.getTransmogCarrierItemName(ogItem, useAltCarrier)
 
     if not tmogItemName then
         return
@@ -306,6 +491,7 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     itemTmogModData.childId = tmogItem:getID()
     -- set ogItem as parent of tmogItem
     tmogItem:getModData()["TransmogParent"] = ogItem:getID()
+    tmogItem:getModData()["TransmogCarrierVariant"] = carrierVariant
 
     -- For debug purpose
     tmogItem:setName("Tmog: " .. ogItem:getName())
@@ -345,6 +531,7 @@ TransmogDE.createTransmogItem = function(ogItem, player)
     TmogPrint(
         "createTransmogItem for " .. tostring(ogItem:getName())
         .. " with ID: " .. tostring(tmogItem:getID())
+        .. " | carrierVariant=" .. tostring(carrierVariant)
         .. " | supportsColor=" .. tostring(supportsColor)
         .. " | supportsTexture=" .. tostring(supportsTexture)
     )

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_MaleModel>media\models_X\Static\Clothes\Bob_ThighMetalSpike_L_ALT.x</m_MaleModel>
+  <m_FemaleModel>media\models_X\Static\Clothes\Kate_ThighMetalSpike_L_ALT.x</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_GUID>c9b0ad93-0104-5564-9b23-ad4d5f0a6109</m_GUID>
+  <m_Static>true</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone>Bip01_L_Thigh</m_AttachBone>
+  <m_MasksFolder>none</m_MasksFolder>
+  <textureChoices>clothes\armor\thighmetal_l</textureChoices>
+</clothingItem>

@@ -50010,4 +50010,984 @@
     <guid>49559888-bbfe-49ba-a297-60cda05f982c</guid>
   </files>
 
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_1_Base_Codpiece_Leather.xml</path>
+    <guid>6106f1a8-46e3-501e-88e0-8280e0444f7e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_2_Base_Codpiece_Metal.xml</path>
+    <guid>2547675f-1e75-59de-852d-f3459b4739da</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_3_Base_Cuirass_BasicBone.xml</path>
+    <guid>77c2e015-b429-5cf2-a344-9111136a9385</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_4_Base_Cuirass_Bone.xml</path>
+    <guid>6bf3e96f-d1d4-56ea-93d0-834f99f28c2c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_5_Base_Cuirass_CoatOfPlates.xml</path>
+    <guid>4de01378-82bc-55c3-918e-e4c72bf757f8</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_6_Base_Cuirass_Magazine.xml</path>
+    <guid>2b590f25-5489-5836-a9a0-3543113564a3</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_7_Base_Cuirass_Metal.xml</path>
+    <guid>268bd630-a83e-5d91-93b4-e3232052400c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_8_Base_Cuirass_MetalScrap.xml</path>
+    <guid>422cc213-e1ef-593f-861e-e584ce33dd4e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_9_Base_Cuirass_Tire.xml</path>
+    <guid>0be09b99-9e99-5cfd-bee7-ae89c32870a2</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_10_Base_Cuirass_Wood.xml</path>
+    <guid>53310c1f-f749-5f72-8e81-4db7b23118b4</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_11_Base_ElbowPad_Left.xml</path>
+    <guid>45a8cf7f-80f1-56a6-ba8a-f41b0799ce44</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_12_Base_ElbowPad_Left_Leather.xml</path>
+    <guid>e9aff67a-9e94-5e6d-b87f-54ddbe726ec3</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_13_Base_ElbowPad_Left_Military.xml</path>
+    <guid>97032fd0-937d-5ec3-9bea-c25b7625505e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_14_Base_ElbowPad_Left_Sport.xml</path>
+    <guid>5263607c-8fa2-572c-a5ef-49718ac36e85</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_15_Base_ElbowPad_Left_Tactical.xml</path>
+    <guid>5110d593-7499-5688-9562-3ccec1a330fe</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_16_Base_ElbowPad_Left_TINT.xml</path>
+    <guid>0c281c9e-faac-5bf8-bceb-2fa2833c4c5e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_17_Base_ElbowPad_Left_Workman.xml</path>
+    <guid>3743d00d-4d81-56ab-9dd8-17d319f4daf4</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_18_Base_ElbowPad_Right.xml</path>
+    <guid>9628b7c4-e483-541c-8033-edf572f727ce</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_19_Base_ElbowPad_Right_Leather.xml</path>
+    <guid>51df1a53-6b51-5bc2-93f5-7d4d880b0703</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_20_Base_ElbowPad_Right_Military.xml</path>
+    <guid>f2716b16-92b2-586a-b795-480338b9fd8b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_21_Base_ElbowPad_Right_Sport.xml</path>
+    <guid>c1eb0b6c-5997-5f50-9d17-149f5d0e44d7</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_22_Base_ElbowPad_Right_Tactical.xml</path>
+    <guid>1206f3dd-5f7b-58fc-b00a-9e86b39cf453</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_23_Base_ElbowPad_Right_TINT.xml</path>
+    <guid>741477e1-5e27-5e4e-9ab8-434d865abd0f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_24_Base_ElbowPad_Right_Workman.xml</path>
+    <guid>4425498a-b2a2-5a5e-bb8a-8f9fe10d407a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_25_Base_Football_Jersey_Black.xml</path>
+    <guid>e9bba8c4-c4f7-5103-86d9-7788cd43edaf</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_26_Base_Football_Jersey_Blue.xml</path>
+    <guid>797fef5a-576b-518c-b2cb-9fa27075b628</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_27_Base_Football_Jersey_White.xml</path>
+    <guid>b6d01dc8-5e45-5a05-9088-4081f937efd1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_28_Base_Greave_Left.xml</path>
+    <guid>fecbff88-73db-5b17-ab52-40006a77b4fc</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_29_Base_Greave_Right.xml</path>
+    <guid>e46ff4d8-d69a-59ba-b9b4-c6a648484e1d</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_30_Base_GreaveBodyArmour_Left.xml</path>
+    <guid>3b4a88cb-5111-5833-9b3c-48a683f671db</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_31_Base_GreaveBodyArmour_Left_Army.xml</path>
+    <guid>0c2d03ed-8513-59a4-8d75-d337fcd77958</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_32_Base_GreaveBodyArmour_Left_Civ.xml</path>
+    <guid>04e64d59-ed5c-59d8-8b54-6d45011914c9</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_33_Base_GreaveBodyArmour_Left_Desert.xml</path>
+    <guid>def34513-2443-577d-a6dd-dbe65baeae56</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_34_Base_GreaveBodyArmour_Left_Police.xml</path>
+    <guid>17140884-7bce-58a2-b52a-ece81d5ad825</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_35_Base_GreaveBodyArmour_Left_SWAT.xml</path>
+    <guid>f0aefbde-79f8-59d1-86f4-8f4839b15d13</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_36_Base_GreaveBodyArmour_Right.xml</path>
+    <guid>2e8e700d-1ec9-5fea-9e5e-f6f10f71eb65</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_37_Base_GreaveBodyArmour_Right_Army.xml</path>
+    <guid>7b28b65d-f2ca-5bd3-9f54-2ff985d8c8a0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_38_Base_GreaveBodyArmour_Right_Civ.xml</path>
+    <guid>b0ffc51a-b714-5fdb-a5f7-812afbe65535</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_39_Base_GreaveBodyArmour_Right_Desert.xml</path>
+    <guid>6bc0a6f9-24ae-54d3-8d00-e89ceefa2f30</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_40_Base_GreaveBodyArmour_Right_Police.xml</path>
+    <guid>14e2937a-5599-576c-9850-5e8eb462e9d1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_41_Base_GreaveBodyArmour_Right_SWAT.xml</path>
+    <guid>86cbf24d-e44b-50bf-842f-dcf3f9b42697</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_42_Base_GreaveBone_Left.xml</path>
+    <guid>3edf727c-89a0-5d65-bace-dc3585a96611</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_43_Base_GreaveBone_Right.xml</path>
+    <guid>92ac44c4-b040-5344-b77b-c4517d52a0b2</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_44_Base_GreaveMagazine_Left.xml</path>
+    <guid>81531739-bdf6-581b-bf49-45d00ce0c6e0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_45_Base_GreaveMagazine_Right.xml</path>
+    <guid>0f371ac5-6379-5e9c-8aad-27b7f6055f5c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_46_Base_GreaveScrap_Left.xml</path>
+    <guid>b942d3ba-5fc1-56ba-9f5b-6f9de13a4cc1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_47_Base_GreaveScrap_Right.xml</path>
+    <guid>9a953e14-edd8-57c7-aaa4-0083723478d8</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_48_Base_GreaveSpike_Left.xml</path>
+    <guid>012dabea-3a54-5300-b174-4030dde7ca92</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_49_Base_GreaveSpike_Right.xml</path>
+    <guid>0517f613-f441-5475-bd74-efb4a763eeac</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_50_Base_GreaveSpikeScrap_Left.xml</path>
+    <guid>f7a5dd83-691e-59ff-a766-e6a110a779d7</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_51_Base_GreaveSpikeScrap_Right.xml</path>
+    <guid>a825bc68-a4c8-59d6-ad5a-6eeacafd9296</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_52_Base_GreaveTire_Left.xml</path>
+    <guid>a8fd5b36-cf53-582e-a5e1-802ba2be978c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_53_Base_GreaveTire_Right.xml</path>
+    <guid>aa351efa-3a69-5988-9d4e-09178708497d</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_54_Base_GreaveWood_Left.xml</path>
+    <guid>f0d1d79d-0495-51ee-8c85-a157d9adda15</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_55_Base_GreaveWood_Right.xml</path>
+    <guid>1c62e6e9-4f1f-50a2-8656-8775d5d6ba17</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_56_Base_Hat_BalaclavaFace.xml</path>
+    <guid>cdab5342-af53-586d-8f16-549fa4742ffb</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_57_Base_Hat_BalaclavaFull.xml</path>
+    <guid>d75ac893-8151-5415-996b-8bf846da1abc</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_58_Base_Hat_BandanaMask.xml</path>
+    <guid>c234477e-9823-5350-94f8-30a1a40db172</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_59_Base_Hat_BandanaMask_Green.xml</path>
+    <guid>c427ae50-bfe8-5f5c-be32-1a02990fa1f9</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_60_Base_Hat_BandanaMaskTINT.xml</path>
+    <guid>1de46767-e188-50e6-8c7e-2e09b452e4c3</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_61_Base_Ice_Hockey_Jersey_Black.xml</path>
+    <guid>5f919a96-ea30-5807-b71f-17c768ca6cba</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_62_Base_Ice_Hockey_Jersey_BlueUni.xml</path>
+    <guid>67c00de8-95c2-5600-bbf1-c2cb97bfdcd0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_63_Base_Ice_Hockey_Jersey_Red.xml</path>
+    <guid>911d7416-4511-586b-bc28-3250f7c6937b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_64_Base_Ice_Hockey_Jersey_White.xml</path>
+    <guid>f0f11b15-103d-5dd0-9cd0-3fb77ab14645</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_65_Base_Kneepad_Left.xml</path>
+    <guid>0b566aed-aed4-5f68-b910-df12525f2cac</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_66_Base_Kneepad_Left_Leather.xml</path>
+    <guid>a5e4a19f-a34c-5f61-87b5-8d57eb4a38b3</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_67_Base_Kneepad_Left_Military.xml</path>
+    <guid>dcaca80e-cf9b-5723-9862-c24aa000785d</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_68_Base_Kneepad_Left_Sport.xml</path>
+    <guid>2cc11fc8-845e-59e1-8ca6-9d8e0a4eccb9</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_69_Base_Kneepad_Left_Tactical.xml</path>
+    <guid>79071450-f3eb-53a1-83ca-5a4badf80877</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_70_Base_Kneepad_Left_TINT.xml</path>
+    <guid>6bf17366-d06b-508a-9b4c-216c92a33f5f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_71_Base_Kneepad_Left_Workman.xml</path>
+    <guid>18f39519-850c-5037-94d3-cd9281b0605a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_72_Base_Kneepad_Right.xml</path>
+    <guid>099d23e1-c6f9-5ede-82f9-e656dd692b9a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_73_Base_Kneepad_Right_Leather.xml</path>
+    <guid>1e651765-1057-5d56-a5ae-9aa8ebe61e3a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_74_Base_Kneepad_Right_Military.xml</path>
+    <guid>3e1668f8-6781-582f-8c2b-111df702a61b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_75_Base_Kneepad_Right_Sport.xml</path>
+    <guid>cb5b2f12-d3b7-5c7f-9337-623bddd1086f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_76_Base_Kneepad_Right_Tactical.xml</path>
+    <guid>47c025a4-384f-5c74-819a-2d0064734021</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_77_Base_Kneepad_Right_TINT.xml</path>
+    <guid>d72b1429-49e1-5c85-a8c8-75eeb716fd0a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_78_Base_Kneepad_Right_Workman.xml</path>
+    <guid>dea66e2a-569f-5531-99da-2991bbf24b0b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_79_Base_ShinKneeGuard_L.xml</path>
+    <guid>249707da-08a0-5088-b496-3906bddbcfbc</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_80_Base_ShinKneeGuard_L_Baseball.xml</path>
+    <guid>03703024-e9bc-5087-8922-b0b801587552</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_81_Base_ShinKneeGuard_L_IceHockey.xml</path>
+    <guid>7ad1a896-faa7-5c3f-9c63-40f1590ffed2</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_82_Base_ShinKneeGuard_L_Metal.xml</path>
+    <guid>f81b15e8-c16b-59ed-9107-a388377ee122</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_83_Base_ShinKneeGuard_L_Protective.xml</path>
+    <guid>24a507bb-fba0-5009-8dd4-fee97fee5c58</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_84_Base_ShinKneeGuard_L_TINT.xml</path>
+    <guid>77117c69-8f02-5324-9e19-7310a299df85</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_85_Base_ShinKneeGuard_R.xml</path>
+    <guid>ca23afe4-a0ae-57ef-899f-fa8d354208a6</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_86_Base_ShinKneeGuard_R_Baseball.xml</path>
+    <guid>a7bedc39-87be-5492-9fc1-51ff4481c34c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_87_Base_ShinKneeGuard_R_IceHockey.xml</path>
+    <guid>75361cdb-b12d-52ee-a5ec-e78a8c9aef08</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_88_Base_ShinKneeGuard_R_Metal.xml</path>
+    <guid>3d6da687-065c-5748-bab9-143e6fab385c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_89_Base_ShinKneeGuard_R_Protective.xml</path>
+    <guid>9ee9482e-7dfc-5ecb-890b-5dd366d5cfa7</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_90_Base_ShinKneeGuard_R_TINT.xml</path>
+    <guid>d8da95df-c971-52ab-9a8d-ab9ae15dce3c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_91_Base_ShinKneeGuardSpike_L.xml</path>
+    <guid>7e8e9274-b5d3-58c7-8ede-f5797a43d9dc</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_92_Base_ShinKneeGuardSpike_L_Baseball.xml</path>
+    <guid>f4778c14-01cd-58ea-a147-99ea1471f9db</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_93_Base_ShinKneeGuardSpike_L_IceHockey.xml</path>
+    <guid>d5f96c6e-4394-59a2-9b6b-1e6e7ea25cb0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_94_Base_ShinKneeGuardSpike_L_Metal.xml</path>
+    <guid>b6569a68-95ff-5470-b474-aa7961cf6638</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_95_Base_ShinKneeGuardSpike_L_Protective.xml</path>
+    <guid>5d6f9155-a883-555c-ae12-4f60b4b787a1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_96_Base_ShinKneeGuardSpike_R.xml</path>
+    <guid>10ad80c0-1620-5ec8-819b-9190f1326b77</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_97_Base_ShinKneeGuardSpike_R_Baseball.xml</path>
+    <guid>172e3769-3e21-53ad-a2bb-316c1bd4a2ec</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_98_Base_ShinKneeGuardSpike_R_IceHockey.xml</path>
+    <guid>185b0bf5-3b8b-5e1a-bafc-c9d0a1ec9601</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_99_Base_ShinKneeGuardSpike_R_Metal.xml</path>
+    <guid>3e6c4b3a-1e26-5e59-84f7-890f901eebb3</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_100_Base_ShinKneeGuardSpike_R_Protective.xml</path>
+    <guid>334df2bb-9f05-5cb2-b76a-cf0d546decdc</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_101_Base_Shinpad_HockeyGoalie_L.xml</path>
+    <guid>4a2808f0-3ddb-52ae-b0cc-be530d924fd7</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_102_Base_Shinpad_HockeyGoalie_L_Blue.xml</path>
+    <guid>1b6a4fd9-c8d4-5f51-88c1-c1f2b8fa80fd</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_103_Base_Shinpad_HockeyGoalie_L_Red.xml</path>
+    <guid>048bcc53-eebd-556a-a437-1cc56d8fe79d</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_104_Base_Shinpad_HockeyGoalie_L_White.xml</path>
+    <guid>88727082-1852-5dfb-881a-9b609afb0291</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_105_Base_Shinpad_HockeyGoalie_R.xml</path>
+    <guid>6e523d62-1198-5469-9605-110be3aead5c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_106_Base_Shinpad_HockeyGoalie_R_Blue.xml</path>
+    <guid>5528808e-789f-5a6b-9d45-eca2b151ded1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_107_Base_Shinpad_HockeyGoalie_R_Red.xml</path>
+    <guid>2f476c36-0294-59d0-b682-a635be859f2e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_108_Base_Shinpad_HockeyGoalie_R_White.xml</path>
+    <guid>115250d3-7557-5eb2-8bc9-226ee6ebd628</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_109_Base_Shoulderpad_Articulated_L_Metal.xml</path>
+    <guid>32d21dbb-61b3-5667-9b01-efcc8dc3486b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_110_Base_Shoulderpad_Articulated_R_Metal.xml</path>
+    <guid>b460766d-bda0-56e2-b3e8-7df262d35e42</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_111_Base_Shoulderpad_ArticulatedSpike_L.xml</path>
+    <guid>90e3a33c-09ec-58a1-95a9-51a48349e825</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_112_Base_Shoulderpad_ArticulatedSpike_R.xml</path>
+    <guid>fd702062-7fa2-504b-a188-864c8d137e4b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_113_Base_Shoulderpad_Bone_L.xml</path>
+    <guid>a2776b0c-a3b3-5842-a916-ecd840165052</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_114_Base_Shoulderpad_Bone_R.xml</path>
+    <guid>5bc93cf0-5b99-54c3-b5d9-6931ba122ca6</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_115_Base_Shoulderpad_Football_L.xml</path>
+    <guid>0e797562-75bc-5590-82e4-fa87321f6c72</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_116_Base_Shoulderpad_Football_R.xml</path>
+    <guid>baf6bc86-195a-523a-8be2-aa1fb23f49a8</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_117_Base_Shoulderpad_Football_Spiked_L.xml</path>
+    <guid>a146fa4c-f898-5fcb-a02a-1aaca0cf8512</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_118_Base_Shoulderpad_Football_Spiked_R.xml</path>
+    <guid>1f674d24-edc0-5915-9fd6-7915a586f8f0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_119_Base_Shoulderpad_Metal_L.xml</path>
+    <guid>05eb842b-3619-59eb-a4b0-f076a8d7df66</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_120_Base_Shoulderpad_Metal_R.xml</path>
+    <guid>c820cf86-a8dc-5b1e-affc-4b5a9d7692b0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_121_Base_Shoulderpad_MetalScrap_L.xml</path>
+    <guid>7faf5d26-e651-5a8c-8394-783b2dc4049b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_122_Base_Shoulderpad_MetalScrap_R.xml</path>
+    <guid>0fb52f70-ed6d-5c7c-bcdd-6ace6c5382a5</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_123_Base_Shoulderpad_MetalSpike_L.xml</path>
+    <guid>7c01440f-3c5d-511d-9de0-cf492a34dfa2</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_124_Base_Shoulderpad_MetalSpike_R.xml</path>
+    <guid>dc4b05db-7cd2-5716-bb9b-0bd5d8f921bf</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_125_Base_Shoulderpad_MetalSpikeScrap_L.xml</path>
+    <guid>04d62107-7ce9-5f9b-9474-a14c7b79f45f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_126_Base_Shoulderpad_MetalSpikeScrap_R.xml</path>
+    <guid>63565d89-7e3e-5f1a-91ba-56d2a34a62dd</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_127_Base_Shoulderpad_Tire_L.xml</path>
+    <guid>9a16da5b-60fe-5f21-a643-bcfa7c8c5c46</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_128_Base_Shoulderpad_Tire_R.xml</path>
+    <guid>c609ef36-92e2-53e2-9962-4a305008cab1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_129_Base_Shoulderpad_Wood_L.xml</path>
+    <guid>7ef52890-e4a6-5736-b0b6-bcd5cd95a104</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_130_Base_Shoulderpad_Wood_R.xml</path>
+    <guid>3592742c-80f1-55f4-a568-c9e377c659e0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_131_Base_Thigh_ArticMetal_L.xml</path>
+    <guid>d0cc896a-0639-54ff-9edc-5c8fa5f4751b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_132_Base_Thigh_ArticMetal_R.xml</path>
+    <guid>c88bbfaf-0eb2-5b71-a2ab-569177faf14f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_133_Base_ThighBodyArmour_L.xml</path>
+    <guid>9f837360-873a-5e7c-ad00-71c961a93c99</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_134_Base_ThighBodyArmour_L_Army.xml</path>
+    <guid>1adb6ef0-da78-5a28-8e39-97bb33417bc6</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_135_Base_ThighBodyArmour_L_Civ.xml</path>
+    <guid>1a41355d-482a-5eb1-a86b-1d5322bc0b7a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_136_Base_ThighBodyArmour_L_Desert.xml</path>
+    <guid>7dfdc13e-fb73-58c3-a935-9ff9ff850a18</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_137_Base_ThighBodyArmour_L_Police.xml</path>
+    <guid>ec3f2165-2099-55cd-a4ed-e13ae8945560</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_138_Base_ThighBodyArmour_L_SWAT.xml</path>
+    <guid>af6e93ab-c6a6-5b2a-a56f-cb336a9e24e5</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_139_Base_ThighBodyArmour_R.xml</path>
+    <guid>066b2e2b-b1a9-5655-b554-643a7758992e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_140_Base_ThighBodyArmour_R_Army.xml</path>
+    <guid>1acb550f-8e95-509b-9e9d-8aa7b16495aa</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_141_Base_ThighBodyArmour_R_Civ.xml</path>
+    <guid>6712d161-172e-5682-a8da-96d91217e321</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_142_Base_ThighBodyArmour_R_Desert.xml</path>
+    <guid>606cb890-3ccd-5295-9944-41d053c61d63</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_143_Base_ThighBodyArmour_R_Police.xml</path>
+    <guid>67114743-a656-53d0-b589-df429b3a664f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_144_Base_ThighBodyArmour_R_SWAT.xml</path>
+    <guid>7212fb90-cc3c-57b0-a5a4-3eb27f7c7757</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_145_Base_ThighBone_L.xml</path>
+    <guid>f16605c7-266c-51b9-b7da-412e914d1972</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_146_Base_ThighBone_R.xml</path>
+    <guid>6bf16ccd-3389-55a5-b44c-5be38f818345</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_147_Base_ThighMagazine_L.xml</path>
+    <guid>eaafe757-1dd1-5f6a-94f5-55a7ff0816e0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_148_Base_ThighMagazine_R.xml</path>
+    <guid>0fc22877-82c6-56f5-8d60-de34d3bd4794</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_149_Base_ThighMetal_L.xml</path>
+    <guid>7a47b6fc-62e0-592e-b474-e62ddb27c3b1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_150_Base_ThighMetal_R.xml</path>
+    <guid>f744f3f2-98b7-5ddb-8943-d31f71670c83</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_151_Base_ThighMetalSpike_L.xml</path>
+    <guid>c9b0ad93-0104-5564-9b23-ad4d5f0a6109</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_152_Base_ThighMetalSpike_R.xml</path>
+    <guid>c7a2c932-7059-5a08-99ec-0c8316e4ffca</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_153_Base_ThighProtective_L.xml</path>
+    <guid>4b7edf23-c76c-54ed-b25b-c731b1d94e4a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_154_Base_ThighProtective_R.xml</path>
+    <guid>8c882a66-7f83-5422-962b-695d05ccdd9b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_155_Base_ThighScrapMetal_L.xml</path>
+    <guid>9e64cab7-6595-5310-a2ec-3d2521f6a9aa</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_156_Base_ThighScrapMetal_R.xml</path>
+    <guid>c216245a-de5c-5c69-8cfc-531133f9aa1f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_157_Base_ThighScrapMetalSpike_L.xml</path>
+    <guid>d4c5599d-cd50-52e8-a216-dfcc01719e42</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_158_Base_ThighScrapMetalSpike_R.xml</path>
+    <guid>bb84c233-752f-5980-b722-47923e84d8f1</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_159_Base_ThighTire_L.xml</path>
+    <guid>da169791-6ebc-5aa4-8bde-e80d83b671b9</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_160_Base_ThighTire_R.xml</path>
+    <guid>35c03ad4-322e-5d52-96e5-b63959e9cae7</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_161_Base_ThighWood_L.xml</path>
+    <guid>74354795-58f4-51a1-b527-79d171100aa9</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_162_Base_ThighWood_R.xml</path>
+    <guid>0d0d5e6a-bdb9-5362-b214-adb45b64dedd</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_163_Base_Vambrace_BodyArmour_Left.xml</path>
+    <guid>8e623fd3-1c13-5464-ac13-f52ed494e757</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_164_Base_Vambrace_BodyArmour_Left_Army.xml</path>
+    <guid>a700db29-7470-53c2-b138-5b320f15c1e0</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_165_Base_Vambrace_BodyArmour_Left_Civ.xml</path>
+    <guid>db68a253-e737-5371-8dc8-ce05b840ea2b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_166_Base_Vambrace_BodyArmour_Left_Desert.xml</path>
+    <guid>f1a6567a-e4dc-5e69-bb0d-8222b9c172b4</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_167_Base_Vambrace_BodyArmour_Left_Police.xml</path>
+    <guid>3cac11cd-3d84-5506-b4d9-1b263463862f</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_168_Base_Vambrace_BodyArmour_Left_SWAT.xml</path>
+    <guid>25dc6161-4b1f-56c4-8b32-a770d3538312</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_169_Base_Vambrace_BodyArmour_Right.xml</path>
+    <guid>e162dbb8-b9a2-57e6-ac00-7ceef1420716</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_170_Base_Vambrace_BodyArmour_Right_Army.xml</path>
+    <guid>4c1be22a-f211-5652-b3b4-8221f28826ea</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_171_Base_Vambrace_BodyArmour_Right_Civ.xml</path>
+    <guid>e23202d8-f7ce-50c4-b8fe-ccd326edbfea</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_172_Base_Vambrace_BodyArmour_Right_Desert.xml</path>
+    <guid>c72e8c7f-5270-5eac-9c9c-4332c7b158a7</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_173_Base_Vambrace_BodyArmour_Right_Police.xml</path>
+    <guid>1e7fd9f8-334c-5ccb-8f77-579f740ed9eb</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_174_Base_Vambrace_BodyArmour_Right_SWAT.xml</path>
+    <guid>8ee28387-f99d-5ac1-ae7a-655ae218a13e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_175_Base_Vambrace_FullMetal_Left.xml</path>
+    <guid>ba27ec04-a8e6-5e07-8a01-a3749a1da569</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_176_Base_Vambrace_FullMetal_Right.xml</path>
+    <guid>3f3ff1b4-ad93-5dba-9c20-12d59aa76fab</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_177_Base_Vambrace_Leather_Left.xml</path>
+    <guid>fe408dbc-4c73-5d7c-848d-79bb9420df1e</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_178_Base_Vambrace_Leather_Right.xml</path>
+    <guid>23bd2e4d-faf9-5ff4-806e-07443fe7b7dc</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_179_Base_Vambrace_LeatherSpike_Left.xml</path>
+    <guid>43d59b0f-f406-51b7-8d5a-ae95b08dd650</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_180_Base_Vambrace_LeatherSpike_Right.xml</path>
+    <guid>d215c01d-82c4-5427-b9b1-7aed978fe107</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_181_Base_Vambrace_Left.xml</path>
+    <guid>5ab3590b-fbfd-57a6-b4e1-579abcb67f4c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_182_Base_Vambrace_Right.xml</path>
+    <guid>b3c65b6a-b07e-5078-bd00-17f1b160680c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_183_Base_VambraceBone_Left.xml</path>
+    <guid>edb051b6-663d-5234-97f3-70d1f7efe33b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_184_Base_VambraceBone_Right.xml</path>
+    <guid>6e6afbc3-7fef-5463-8f49-5c5574155993</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_185_Base_VambraceMagazine_Left.xml</path>
+    <guid>45d58f62-b98c-53b5-badb-0c280019603a</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_186_Base_VambraceMagazine_Right.xml</path>
+    <guid>b7ad1979-0b8e-5189-842b-1c102dc23945</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_187_Base_VambraceScrap_Left.xml</path>
+    <guid>6322764b-022a-51f7-83e6-0e1818b19d5c</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_188_Base_VambraceScrap_Right.xml</path>
+    <guid>fef985dd-0e9e-5d36-9026-92bb6fe5fa00</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_189_Base_VambraceSpike_Left.xml</path>
+    <guid>8fb7c99d-92b9-528a-804c-b6280f6cd5fe</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_190_Base_VambraceSpike_Right.xml</path>
+    <guid>4aeabca9-7523-5daa-aa5c-79ba36207155</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_191_Base_VambraceSpikeScrap_Left.xml</path>
+    <guid>a7836e88-3433-5d6e-9ec4-50b7cd07d6b2</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_192_Base_VambraceSpikeScrap_Right.xml</path>
+    <guid>87ba93d5-1bd3-5288-9c43-4c2d5e3947ce</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_193_Base_VambraceTire_Left.xml</path>
+    <guid>920179fe-7ac5-5349-90f2-89c397ddef98</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_194_Base_VambraceTire_Right.xml</path>
+    <guid>f3be88e7-71b7-5097-99ab-1931331ca16b</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_195_Base_VambraceWood_Left.xml</path>
+    <guid>2c650ef6-ccef-5600-b685-12927bf59b30</guid>
+  </files>
+
+  <files>
+    <path>media/clothing/clothingItems/TransmogAltItem_196_Base_VambraceWood_Right.xml</path>
+    <guid>2c771767-0ae9-5b48-9787-d6347a64cbb8</guid>
+  </files>
+
 </fileGuidTable>

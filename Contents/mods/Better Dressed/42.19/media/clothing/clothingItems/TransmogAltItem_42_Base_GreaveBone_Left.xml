@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_GUID>3edf727c-89a0-5d65-bace-dc3585a96611</m_GUID>
+  <m_MaleModel>media\models_X\Static\Clothes\Bob_GreaveBone_Left_ALT.x</m_MaleModel>
+  <m_FemaleModel>media\models_X\Static\Clothes\Kate_GreaveBone_Left_ALT.x</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_Static>true</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone>Bip01_L_Calf</m_AttachBone>
+  <textureChoices>clothes\armor\greavesbone_left</textureChoices>
+</clothingItem>
