@@ -1,0 +1,13 @@
+VERSION = 1,
+
+option TransmogDE.ImmersiveModeToggle
+{
+	type = boolean, default = true,
+	page = TransmogDE, translation = TransmogDE_ImmersiveModeToggle,
+}
+
+option TransmogDE.LimitTransmogToSameBodyLocation
+{
+	type = boolean, default = true,
+	page = TransmogDE, translation = TransmogDE_LimitTransmogToSameBodyLocation,
+}
