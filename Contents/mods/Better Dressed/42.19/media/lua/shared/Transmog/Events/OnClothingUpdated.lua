@@ -63,6 +63,8 @@ local function wearTransmogItems(player)
     -- //////////////////////////////////////////////////////////////
     local hiddenVisualSlots = {}
     local altVisualSlots = {}
+    local hiddenProviderSlotTypes = {}
+    local visibleProviderSlotTypes = {}
 
     if TransmogDE and TransmogDE.getHiddenVisualSlotsForCovering then
         for i = 0, wornItems:size() - 1 do
@@ -114,6 +116,24 @@ local function wearTransmogItems(player)
         -- TmogDebugPrintTags(item)
         TmogPrint("Assessing item: " .. tostring(itemDisplayName))
         TmogPrint("BodyLocation: " .. tostring(script:getBodyLocation()))
+
+        if item and not isHideHelper then
+            local visualLoc = TransmogDE.getItemVisualBodyLocation(item)
+            local visualLocString = tostring(visualLoc)
+            local isMasked = visualLoc and hiddenVisualSlots[visualLocString] or false
+            local isExplicitlyHidden = TransmogDE.isClothingHidden and TransmogDE.isClothingHidden(item) or false
+
+            if TransmogDE.addHiddenProvidedAttachmentSlots then
+                TransmogDE.addHiddenProvidedAttachmentSlots(hiddenProviderSlotTypes, item)
+            end
+
+            if not isMasked
+                and not isExplicitlyHidden
+                and TransmogDE.addVisibleProvidedAttachmentSlots then
+                TransmogDE.addVisibleProvidedAttachmentSlots(visibleProviderSlotTypes, item)
+            end
+        end
+
         ----------------------------------------------------------------
         -- 1) REAL ITEMS: create carriers if transmoggable & not masked
         ----------------------------------------------------------------
@@ -217,6 +237,10 @@ local function wearTransmogItems(player)
                 end
             end
         end
+    end
+
+    if TransmogDE.syncHiddenProvidedAttachments then
+        TransmogDE.syncHiddenProvidedAttachments(player, hiddenProviderSlotTypes, visibleProviderSlotTypes)
     end
 
     local toWearIDs = {}
