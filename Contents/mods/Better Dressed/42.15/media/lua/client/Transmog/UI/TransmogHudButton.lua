@@ -14,6 +14,23 @@ local function getPlayerKey(playerNum)
     return "TransmogHudButton." .. tostring(playerNum or 0) .. "."
 end
 
+local function isWorldMapVisible()
+    return ISWorldMap_instance and ISWorldMap_instance:isVisible()
+end
+
+function TransmogHudButton:syncVisibility()
+    local mapVisible = isWorldMapVisible() == true
+    if self._hiddenForWorldMap == mapVisible then return end
+
+    self._hiddenForWorldMap = mapVisible
+    self:setVisible(not mapVisible)
+
+    if not mapVisible then
+        self:setAlwaysOnTop(true)
+        self:bringToTop()
+    end
+end
+
 function TransmogHudButton:onClick()
     if self.suppressClick then
         self.suppressClick = false
@@ -173,6 +190,9 @@ function TransmogHudButton:createForPlayer(playerNum)
 
     local existing = self.instances[playerNum]
     if existing then
+        existing:setAlwaysOnTop(true)
+        existing:bringToTop()
+        existing:syncVisibility()
         existing:reposition()
         return existing
     end
@@ -187,7 +207,9 @@ function TransmogHudButton:createForPlayer(playerNum)
 
     btn:initialise()
     btn:instantiate()
+    btn:setAlwaysOnTop(true)
     btn:addToUIManager()
+    btn:bringToTop()
     btn:clearMaxDrawHeight()
 
     btn.borderColor = { r = 1, g = 1, b = 1, a = 0 }
@@ -199,6 +221,7 @@ function TransmogHudButton:createForPlayer(playerNum)
     btn.tooltip = getTextOrNull("IGUI_TransmogDE_WornItems_title") or "Transmoggable Worn Items"
 
     btn:restorePosition()
+    btn:syncVisibility()
 
     self.instances[playerNum] = btn
     return btn
@@ -228,6 +251,14 @@ function TransmogHudButton:repositionAll()
     end
 end
 
+function TransmogHudButton:syncAllVisibility()
+    for playerNum, btn in pairs(self.instances) do
+        if btn and getSpecificPlayer(playerNum) then
+            btn:syncVisibility()
+        end
+    end
+end
+
 local function createTransmogHudButtons()
     TransmogHudButton:createForAllPlayers()
 end
@@ -242,4 +273,8 @@ Events.OnGameStart.Add(createTransmogHudButtons)
 
 Events.OnResolutionChange.Add(function()
     TransmogHudButton:repositionAll()
+end)
+
+Events.OnTick.Add(function()
+    TransmogHudButton:syncAllVisibility()
 end)
