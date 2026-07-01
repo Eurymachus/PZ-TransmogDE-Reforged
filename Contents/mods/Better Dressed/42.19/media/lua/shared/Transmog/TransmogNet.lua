@@ -15,6 +15,10 @@ TransmogNet.Commands = {
     -- Single-item ops
     HIDE                = "HIDE",
     SHOW                = "SHOW",
+    HIDE_ATTACHED_SLOTS = "HIDE_ATTACHED_SLOTS",
+    SHOW_ATTACHED_SLOTS = "SHOW_ATTACHED_SLOTS",
+    HIDE_ATTACHMENT_MODEL = "HIDE_ATTACHMENT_MODEL",
+    SHOW_ATTACHMENT_MODEL = "SHOW_ATTACHMENT_MODEL",
     REMOVE_TRANSMOG     = "REMOVE_TRANSMOG",
     RESET_DEFAULT       = "RESET_DEFAULT",
     SET_COLOR           = "SET_COLOR",
@@ -267,6 +271,24 @@ TransmogNet.notifyPlayer = function(player, result)
         if focusItem then
             local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
             haloText = getText("IGUI_TransmogDE_Text_WasShown", fromName)
+        end
+    elseif cmd == TransmogNet.Commands.HIDE_ATTACHED_SLOTS then
+        if focusItem then
+            local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
+            haloText = getTextOrNull("IGUI_TransmogDE_Text_AttachedSlotsHidden", fromName) or ("Attached slots hidden (" .. tostring(fromName) .. ")")
+        end
+    elseif cmd == TransmogNet.Commands.SHOW_ATTACHED_SLOTS then
+        if focusItem then
+            local fromName = getItemNameFromFullType(focusItem:getScriptItem():getFullName())
+            haloText = getTextOrNull("IGUI_TransmogDE_Text_AttachedSlotsShown", fromName) or ("Attached slots shown (" .. tostring(fromName) .. ")")
+        end
+    elseif cmd == TransmogNet.Commands.HIDE_ATTACHMENT_MODEL then
+        if focusItem then
+            haloText = getTextOrNull("IGUI_TransmogDE_Text_AttachmentModelHidden", focusItem:getDisplayName()) or ("Attachment hidden (" .. tostring(focusItem:getDisplayName()) .. ")")
+        end
+    elseif cmd == TransmogNet.Commands.SHOW_ATTACHMENT_MODEL then
+        if focusItem then
+            haloText = getTextOrNull("IGUI_TransmogDE_Text_AttachmentModelShown", focusItem:getDisplayName()) or ("Attachment shown (" .. tostring(focusItem:getDisplayName()) .. ")")
         end
     elseif cmd == TransmogNet.Commands.REMOVE_TRANSMOG then
         if focusItem then
@@ -777,6 +799,76 @@ TransmogNet.requestShowRecieved = function(player, args)
     notifyClient(player, args.requestID, TransmogNet.Commands.SHOW, true, 1)
 end
 
+TransmogNet.requestHideAttachedSlotsRecieved = function(player, args)
+    if not (args and args.requestID and args.itemId and args.ref and args.ref.kind) then return end
+    local item = resolveItemByRef(player, args.itemId, args.ref)
+    if not item then
+        notifyClient(player, args.requestID, TransmogNet.Commands.HIDE_ATTACHED_SLOTS, false, 0)
+        return
+    end
+
+    TransmogDE.setAttachedSlotsHidden(item)
+    if TransmogDE.hideProvidedAttachmentSlots then
+        TransmogDE.hideProvidedAttachmentSlots(player, item)
+    end
+
+    TransmogNet.updateItem(player, item)
+
+    TransmogDE.triggerUpdate(player)
+    notifyClient(player, args.requestID, TransmogNet.Commands.HIDE_ATTACHED_SLOTS, true, 1)
+end
+
+TransmogNet.requestShowAttachedSlotsRecieved = function(player, args)
+    if not (args and args.requestID and args.itemId and args.ref and args.ref.kind) then return end
+    local item = resolveItemByRef(player, args.itemId, args.ref)
+    if not item then
+        notifyClient(player, args.requestID, TransmogNet.Commands.SHOW_ATTACHED_SLOTS, false, 0)
+        return
+    end
+
+    TransmogDE.setAttachedSlotsShown(item)
+    if TransmogDE.restoreProvidedAttachmentSlots then
+        TransmogDE.restoreProvidedAttachmentSlots(player, item)
+    end
+
+    TransmogNet.updateItem(player, item)
+
+    TransmogDE.triggerUpdate(player)
+    notifyClient(player, args.requestID, TransmogNet.Commands.SHOW_ATTACHED_SLOTS, true, 1)
+end
+
+TransmogNet.requestHideAttachmentModelRecieved = function(player, args)
+    if not (args and args.requestID and args.itemId and args.ref and args.ref.kind) then return end
+    local item = resolveItemByRef(player, args.itemId, args.ref)
+    if not item then
+        notifyClient(player, args.requestID, TransmogNet.Commands.HIDE_ATTACHMENT_MODEL, false, 0)
+        return
+    end
+
+    local ok = TransmogDE.hideAttachmentModel(player, item)
+
+    TransmogNet.updateItem(player, item)
+
+    TransmogDE.triggerUpdate(player)
+    notifyClient(player, args.requestID, TransmogNet.Commands.HIDE_ATTACHMENT_MODEL, ok == true, ok and 1 or 0)
+end
+
+TransmogNet.requestShowAttachmentModelRecieved = function(player, args)
+    if not (args and args.requestID and args.itemId and args.ref and args.ref.kind) then return end
+    local item = resolveItemByRef(player, args.itemId, args.ref)
+    if not item then
+        notifyClient(player, args.requestID, TransmogNet.Commands.SHOW_ATTACHMENT_MODEL, false, 0)
+        return
+    end
+
+    local ok = TransmogDE.showAttachmentModel(player, item)
+
+    TransmogNet.updateItem(player, item)
+
+    TransmogDE.triggerUpdate(player)
+    notifyClient(player, args.requestID, TransmogNet.Commands.SHOW_ATTACHMENT_MODEL, ok == true, ok and 1 or 0)
+end
+
 TransmogNet.requestRemoveTransmogRecieved = function(player, args)
     if not (args and args.requestID and args.itemId and args.ref and args.ref.kind) then return end
     local item = resolveItemByRef(player, args.itemId, args.ref)
@@ -901,6 +993,10 @@ local clientCommandReceivers = {
     REQUEST_UPDATE      = TransmogNet.requestUpdateRecieved,
     HIDE                = TransmogNet.requestHideRecieved,
     SHOW                = TransmogNet.requestShowRecieved,
+    HIDE_ATTACHED_SLOTS = TransmogNet.requestHideAttachedSlotsRecieved,
+    SHOW_ATTACHED_SLOTS = TransmogNet.requestShowAttachedSlotsRecieved,
+    HIDE_ATTACHMENT_MODEL = TransmogNet.requestHideAttachmentModelRecieved,
+    SHOW_ATTACHMENT_MODEL = TransmogNet.requestShowAttachmentModelRecieved,
     REMOVE_TRANSMOG     = TransmogNet.requestRemoveTransmogRecieved,
     RESET_DEFAULT       = TransmogNet.requestResetDefaultRecieved,
     SET_COLOR           = TransmogNet.requestSetColorRecieved,
@@ -1164,6 +1260,26 @@ end
 TransmogNet.requestShow = function(player, item)
     local requestID = newRequest(item)
     requestOpClient(player, TransmogNet.Commands.SHOW, item, requestID)
+end
+
+TransmogNet.requestHideAttachedSlots = function(player, item)
+    local requestID = newRequest(item)
+    requestOpClient(player, TransmogNet.Commands.HIDE_ATTACHED_SLOTS, item, requestID)
+end
+
+TransmogNet.requestShowAttachedSlots = function(player, item)
+    local requestID = newRequest(item)
+    requestOpClient(player, TransmogNet.Commands.SHOW_ATTACHED_SLOTS, item, requestID)
+end
+
+TransmogNet.requestHideAttachmentModel = function(player, item)
+    local requestID = newRequest(item)
+    requestOpClient(player, TransmogNet.Commands.HIDE_ATTACHMENT_MODEL, item, requestID)
+end
+
+TransmogNet.requestShowAttachmentModel = function(player, item)
+    local requestID = newRequest(item)
+    requestOpClient(player, TransmogNet.Commands.SHOW_ATTACHMENT_MODEL, item, requestID)
 end
 
 TransmogNet.requestRemoveTransmog = function(player, item)

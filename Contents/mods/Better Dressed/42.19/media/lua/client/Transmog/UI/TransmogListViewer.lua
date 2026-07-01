@@ -338,13 +338,13 @@ function TransmogListViewer:syncUIState()
     if not (self and self.item and self.hideItem and self.showItem) then return end
 
     local isHidden = TransmogDE.isClothingHidden(self.item)
-    local isTransmogged = TransmogDE.isTransmogged(self.item)
-    local hasTransmogState = TransmogDE.hasTransmogState(self.item)
+    local canRemoveTransmog = TransmogDE.canRemoveTransmog(self.item)
+    local canResetTransmog = TransmogDE.canResetTransmog(self.item)
 
     self.hideItem:setVisible(not isHidden)
     self.showItem:setVisible(isHidden)
-    self.remove:setEnable(isTransmogged)
-    self.reset:setEnable(hasTransmogState)
+    self.remove:setEnable(canRemoveTransmog)
+    self.reset:setEnable(canResetTransmog)
 
     ColorPickerModal.updateItemToColor(self.player, self.item)
     TexturePickerModal.updateItemToTexture(self.player, self.item)

@@ -122,13 +122,15 @@ local function wearTransmogItems(player)
             local visualLocString = tostring(visualLoc)
             local isMasked = visualLoc and hiddenVisualSlots[visualLocString] or false
             local isExplicitlyHidden = TransmogDE.isClothingHidden and TransmogDE.isClothingHidden(item) or false
+            local hideAttachedSlots = TransmogDE.areAttachedSlotsHidden and TransmogDE.areAttachedSlotsHidden(item) or false
 
-            if TransmogDE.addHiddenProvidedAttachmentSlots then
+            if hideAttachedSlots and TransmogDE.addHiddenProvidedAttachmentSlots then
                 TransmogDE.addHiddenProvidedAttachmentSlots(hiddenProviderSlotTypes, item)
             end
 
             if not isMasked
                 and not isExplicitlyHidden
+                and not hideAttachedSlots
                 and TransmogDE.addVisibleProvidedAttachmentSlots then
                 TransmogDE.addVisibleProvidedAttachmentSlots(visibleProviderSlotTypes, item)
             end

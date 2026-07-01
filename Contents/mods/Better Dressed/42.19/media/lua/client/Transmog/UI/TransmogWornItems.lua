@@ -248,14 +248,14 @@ function TransmogWornItems:onActionSlotClicked(row, slotId)
     if not item then return end
 
     if slotId == 1 then
-        if row.hasTransmogState then
+        if row.canResetTransmog then
             TransmogNet.requestResetDefault(self.player, item)
         end
         return
     end
 
     if slotId == 2 then
-        if row.hasTransmog then
+        if row.canRemoveTransmog then
             TransmogNet.requestRemoveTransmog(self.player, item)
         end
         return
@@ -467,8 +467,8 @@ function TransmogWornItemsList:doDrawItem(y, item, alt)
 
     -- Slot enable state model
     local function isSlotEnabled(slotId, row)
-        if slotId == 1 then return row.hasTransmogState end
-        if slotId == 2 then return row.hasTransmog end
+        if slotId == 1 then return row.canResetTransmog end
+        if slotId == 2 then return row.canRemoveTransmog end
         if slotId == 3 then return true end
         if slotId == 4 then return true end
         if slotId == 5 then return row.canTexture end
@@ -636,7 +636,7 @@ function TransmogWornItems:getRowSlotTooltip(row, slotId)
     if not row then return nil end
 
     if slotId == 1 then
-        if row.hasTransmogState then
+        if row.canResetTransmog then
             return getTextOrNull("IGUI_TransmogDE_WornItems_Tooltip_Reset")
                 or "Reset this item's transmog visuals"
         end
@@ -644,7 +644,7 @@ function TransmogWornItems:getRowSlotTooltip(row, slotId)
             or "Nothing to reset"
 
     elseif slotId == 2 then
-        if row.hasTransmog then
+        if row.canRemoveTransmog then
             return getTextOrNull("IGUI_TransmogDE_WornItems_Tooltip_Remove")
                 or "Remove this item's transmog"
         end
@@ -973,11 +973,11 @@ function TransmogWornItems:buildBatchState(rows)
     for i = 1, count do
         local row = rows[i]
 
-        if row.hasTransmogState then
+        if row.canResetTransmog then
             state.anyTransmogState = true
         end
 
-        if row.hasTransmog then
+        if row.canRemoveTransmog then
             state.anyTransmog = true
         end
 
@@ -1179,6 +1179,8 @@ function TransmogWornItems:buildItemList()
             local transmogItem = item
             local hasTransmog = TransmogDE.isTransmogged(item)
             local hasTransmogState = TransmogDE.hasTransmogState(item)
+            local canRemoveTransmog = TransmogDE.canRemoveTransmog(item)
+            local canResetTransmog = TransmogDE.canResetTransmog(item)
             local isHidden = TransmogDE.isClothingHidden(item)
             local canColor = TransmogDE.canColorTmogItem(item)
             local canTexture = TransmogDE.canTextureTmogItem(item)
@@ -1207,6 +1209,8 @@ function TransmogWornItems:buildItemList()
                 targetName = targetName,
                 hasTransmog = hasTransmog,
                 hasTransmogState = hasTransmogState,
+                canRemoveTransmog = canRemoveTransmog,
+                canResetTransmog = canResetTransmog,
                 isHidden = isHidden,
                 canColor = canColor,
                 canTexture = canTexture,

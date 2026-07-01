@@ -239,6 +239,20 @@ local function getItemAttachmentSlotTypes(item)
     return out
 end
 
+local function getProvidedAttachmentLocationNameSet(item)
+    local out = {}
+    local provided = getItemAttachmentSlotTypes(item)
+
+    for slotType, _ in pairs(provided) do
+        local locationNames = getAttachedLocationNameSetForSlotType(slotType)
+        for locationName, _ in pairs(locationNames) do
+            out[locationName] = true
+        end
+    end
+
+    return out
+end
+
 local function getScriptAttachmentSlotTypes(scriptItem)
     local out = {}
     if not scriptItem then
@@ -330,9 +344,15 @@ local function sendAttachedItemUpdate(player, location, item)
 end
 
 local function refreshAttachedModels(player)
-    if player and player.resetEquippedHandsModels then
+    if not player then
+        return
+    end
+
+    if player.resetEquippedHandsModels then
         player:resetEquippedHandsModels()
-    elseif player and player.resetModelNextFrame then
+    end
+
+    if player.resetModelNextFrame then
         player:resetModelNextFrame()
     end
 end
@@ -346,50 +366,60 @@ local function restoreTransmogHiddenAttachment(player, item)
         return false
     end
 
-    if hidden.hadStaticModelOverride then
-        item:setStaticModel(hidden.staticModel)
-    else
-        md.staticModel = nil
-    end
-
-    if hidden.hadWorldStaticModelOverride then
-        item:setWorldStaticModel(hidden.worldStaticModel)
-    else
-        md.worldStaticModel = nil
-    end
-
+    local location = hidden.location
     md.TransmogHiddenAttachment = nil
-    syncItemFields(player, item)
+
+    if location then
+        item:setAttachedToModel(location)
+        player:setAttachedItem(location, item)
+    end
+
+    syncItemModData(player, item)
     refreshAttachedModels(player)
 
     return true
 end
 
-local function hideTransmogAttachment(player, item, location, hiddenSlotTypes)
+local function tableHasAny(tbl)
+    if not tbl then
+        return false
+    end
+
+    for _, _ in pairs(tbl) do
+        return true
+    end
+
+    return false
+end
+
+local function hideTransmogAttachment(player, item, location, hiddenSlotTypes, manual, allowLocationMatch)
     if not player or not item or not location then return false end
 
     local slotType = item:getAttachedSlotType()
-    if not slotType or not hiddenSlotTypes[tostring(slotType)] then
+    if not allowLocationMatch and (not slotType or not hiddenSlotTypes[tostring(slotType)]) then
         return false
     end
 
     local md = item:getModData()
     if md.TransmogHiddenAttachment then
+        if manual == true then
+            md.TransmogHiddenAttachment.manual = true
+            md.TransmogAttachmentForceVisible = nil
+        end
         return false
     end
 
     md.TransmogHiddenAttachment = {
         location = location,
         slotType = slotType,
-        staticModel = md.staticModel,
-        worldStaticModel = md.worldStaticModel,
-        hadStaticModelOverride = md.staticModel ~= nil,
-        hadWorldStaticModelOverride = md.worldStaticModel ~= nil,
+        manual = manual == true,
+        locationMatched = allowLocationMatch == true,
     }
+    md.TransmogAttachmentForceVisible = nil
 
-    item:setStaticModel("")
-    item:setWorldStaticModel("")
-    syncItemFields(player, item)
+    player:removeAttachedItem(item)
+    item:setAttachedToModel(location)
+    syncItemModData(player, item)
     refreshAttachedModels(player)
 
     return true
@@ -410,7 +440,15 @@ function TransmogDE.syncHiddenProvidedAttachments(player, hiddenProviderSlotType
     local effectiveHiddenProviderSlotTypes = {}
     local locationNamesToHide = {}
 
+    local explicitHiddenLocations = hiddenProviderSlotTypes.__locations
+    if explicitHiddenLocations then
+        for locationName, _ in pairs(explicitHiddenLocations) do
+            locationNamesToHide[locationName] = true
+        end
+    end
+
     for slotType, _ in pairs(hiddenProviderSlotTypes) do
+        if slotType ~= "__locations" then
         if not (visibleProviderSlotTypes and visibleProviderSlotTypes[slotType]) then
             effectiveHiddenProviderSlotTypes[slotType] = true
 
@@ -418,6 +456,7 @@ function TransmogDE.syncHiddenProvidedAttachments(player, hiddenProviderSlotType
             for locationName, _ in pairs(locationNames) do
                 locationNamesToHide[locationName] = true
             end
+        end
         end
     end
 
@@ -427,27 +466,41 @@ function TransmogDE.syncHiddenProvidedAttachments(player, hiddenProviderSlotType
         local item = attachedItem and attachedItem:getItem()
         local location = getAttachmentLocationName(attachedItems, attachedItem)
         local slotType = item and item:getAttachedSlotType()
+        local md = item and item:getModData()
         local providedSlotHidden = slotType and effectiveHiddenProviderSlotTypes[tostring(slotType)]
-        if item and location and (providedSlotHidden or locationNamesToHide[location]) then
-            table.insert(attachedToHide, { item = item, location = location })
+        local forceVisible = md and md.TransmogAttachmentForceVisible == true
+        local locationHidden = location and locationNamesToHide[location] == true
+        if item and location and not forceVisible and (providedSlotHidden or locationHidden) then
+            table.insert(attachedToHide, {
+                item = item,
+                location = location,
+                locationMatched = locationHidden and not providedSlotHidden,
+            })
         end
     end
 
     for _, entry in ipairs(attachedToHide) do
-        if hideTransmogAttachment(player, entry.item, entry.location, effectiveHiddenProviderSlotTypes) then
+        if hideTransmogAttachment(player, entry.item, entry.location, effectiveHiddenProviderSlotTypes, false, entry.locationMatched) then
             changed = true
         end
     end
 
     local items = inv:getItems()
+    local hasEffectiveHiddenProviders = tableHasAny(effectiveHiddenProviderSlotTypes) or tableHasAny(locationNamesToHide)
     for i = 0, items:size() - 1 do
         local item = items:get(i)
         local md = item and item:getModData()
         local hidden = md and md.TransmogHiddenAttachment
         local slotType = hidden and tostring(hidden.slotType) or nil
+        local forceVisible = md and md.TransmogAttachmentForceVisible == true
+        local hiddenLocation = hidden and hidden.location
+        local hiddenBySlotType = slotType and effectiveHiddenProviderSlotTypes[slotType] == true
+        local hiddenByLocation = hiddenLocation and locationNamesToHide[hiddenLocation] == true
         if hidden
-            and not effectiveHiddenProviderSlotTypes[slotType]
-            and (not visibleProviderSlotTypes or visibleProviderSlotTypes[slotType]) then
+            and (forceVisible or hidden.manual ~= true)
+            and (forceVisible or not hiddenBySlotType)
+            and (forceVisible or not hiddenByLocation)
+            and (forceVisible or not hasEffectiveHiddenProviders or not visibleProviderSlotTypes or visibleProviderSlotTypes[slotType]) then
             if restoreTransmogHiddenAttachment(player, item) then
                 changed = true
             end
@@ -468,15 +521,198 @@ function TransmogDE.syncHiddenProvidedAttachments(player, hiddenProviderSlotType
     end
 end
 
+function TransmogDE.isAttachedItem(player, item)
+    if not player or not item then
+        return false
+    end
+
+    local attachedItems = player:getAttachedItems()
+    if not attachedItems then
+        return false
+    end
+
+    for i = 0, attachedItems:size() - 1 do
+        local attachedItem = attachedItems:get(i)
+        if attachedItem and attachedItem:getItem() == item then
+            return true
+        end
+    end
+
+    return false
+end
+
+function TransmogDE.isAttachmentModelHidden(item)
+    local md = item and item:getModData()
+    return md and md.TransmogHiddenAttachment ~= nil
+end
+
+function TransmogDE.isAttachedOrHiddenAttachment(player, item)
+    if TransmogDE.isAttachmentModelHidden and TransmogDE.isAttachmentModelHidden(item) then
+        return true
+    end
+
+    return TransmogDE.isAttachedItem and TransmogDE.isAttachedItem(player, item) or false
+end
+
+function TransmogDE.hideAttachmentModel(player, item)
+    if not player or not item then
+        return false
+    end
+
+    local attachedItems = player:getAttachedItems()
+    if not attachedItems then
+        return false
+    end
+
+    for i = 0, attachedItems:size() - 1 do
+        local attachedItem = attachedItems:get(i)
+        if attachedItem and attachedItem:getItem() == item then
+            local location = getAttachmentLocationName(attachedItems, attachedItem)
+            local slotType = item:getAttachedSlotType()
+            if not slotType then
+                return false
+            end
+            return hideTransmogAttachment(player, item, location, { [tostring(slotType)] = true }, true, false)
+        end
+    end
+
+    return false
+end
+
+function TransmogDE.showAttachmentModel(player, item)
+    if not player or not item then
+        return false
+    end
+
+    local md = item:getModData()
+    md.TransmogAttachmentForceVisible = true
+
+    if restoreTransmogHiddenAttachment(player, item) then
+        return true
+    end
+
+    refreshAttachedModels(player)
+    return true
+end
+
+function TransmogDE.hideProvidedAttachmentSlots(player, providerItem)
+    if not player or not providerItem then
+        return false
+    end
+
+    local attachedItems = player:getAttachedItems()
+    if not attachedItems then
+        return false
+    end
+
+    local providerLocations = getProvidedAttachmentLocationNameSet(providerItem)
+    local changed = false
+    local toHide = {}
+
+    for i = 0, attachedItems:size() - 1 do
+        local attachedItem = attachedItems:get(i)
+        local item = attachedItem and attachedItem:getItem()
+        local location = getAttachmentLocationName(attachedItems, attachedItem)
+        if item and location and providerLocations[location] then
+            table.insert(toHide, { item = item, location = location })
+        end
+    end
+
+    for _, entry in ipairs(toHide) do
+        local slotType = entry.item:getAttachedSlotType()
+        local hiddenSlotTypes = {}
+        if slotType then
+            hiddenSlotTypes[tostring(slotType)] = true
+        end
+
+        if hideTransmogAttachment(player, entry.item, entry.location, hiddenSlotTypes, false, true) then
+            changed = true
+        end
+    end
+
+    return changed
+end
+
+function TransmogDE.restoreProvidedAttachmentSlots(player, providerItem)
+    if not player or not providerItem then
+        return false
+    end
+
+    local inv = player:getInventory()
+    if not inv then
+        return false
+    end
+
+    local providerLocations = getProvidedAttachmentLocationNameSet(providerItem)
+    local changed = false
+    local items = inv:getItems()
+
+    for i = 0, items:size() - 1 do
+        local item = items:get(i)
+        local md = item and item:getModData()
+        local hidden = md and md.TransmogHiddenAttachment
+        if hidden and hidden.location and providerLocations[hidden.location] then
+            if restoreTransmogHiddenAttachment(player, item) then
+                changed = true
+            end
+        end
+    end
+
+    return changed
+end
+
 function TransmogDE.addHiddenProvidedAttachmentSlots(out, item)
     if not out or not item then
         return
     end
 
-    local provided = getItemAttachmentSlotTypes(item)
-    for slotType, _ in pairs(provided) do
-        out[slotType] = true
+    local attachments = TransmogDE.getAttachmentTransmogModData and TransmogDE.getAttachmentTransmogModData(item) or nil
+    local slots = attachments and attachments.slots or nil
+    if not slots then
+        return
     end
+
+    out.__locations = out.__locations or {}
+
+    for locationName, visible in pairs(slots) do
+        if locationName ~= "__all" and visible == false then
+            out.__locations[locationName] = true
+        end
+    end
+
+    if slots.__all == false then
+        local locations = getProvidedAttachmentLocationNameSet(item)
+        for locationName, _ in pairs(locations) do
+            out.__locations[locationName] = true
+        end
+    end
+end
+
+function TransmogDE.setProvidedAttachmentSlotsHidden(item)
+    local attachments = TransmogDE.getAttachmentTransmogModData and TransmogDE.getAttachmentTransmogModData(item) or nil
+    if not attachments then
+        return
+    end
+
+    attachments.slots = {}
+
+    local locations = getProvidedAttachmentLocationNameSet(item)
+    for locationName, _ in pairs(locations) do
+        attachments.slots[locationName] = false
+    end
+end
+
+function TransmogDE.hasProvidedAttachmentSlots(item)
+    if not item then
+        return false
+    end
+
+    local provided = getItemAttachmentSlotTypes(item)
+    for _, _ in pairs(provided) do
+        return true
+    end
+
+    return false
 end
 
 function TransmogDE.addVisibleProvidedAttachmentSlots(out, item)
@@ -489,6 +725,96 @@ function TransmogDE.addVisibleProvidedAttachmentSlots(out, item)
         out[slotType] = true
     end
 end
+
+local function patchHotbarHiddenAttachments()
+    if not ISHotbar or ISHotbar.__TransmogDE_HiddenAttachmentPatch then
+        return
+    end
+
+    local originalUpdate = ISHotbar.update
+    ISHotbar.update = function(self)
+        local hiddenItems = nil
+        if self and self.attachedItems and self.chr then
+            hiddenItems = {}
+            for slotIndex, item in pairs(self.attachedItems) do
+                local md = item and item:getModData()
+                if md and md.TransmogHiddenAttachment then
+                    if md.TransmogHiddenAttachment.location and item:getAttachedToModel() == nil then
+                        item:setAttachedToModel(md.TransmogHiddenAttachment.location)
+                    end
+                    hiddenItems[slotIndex] = item
+                    self.attachedItems[slotIndex] = nil
+                    self.chr:removeAttachedItem(item)
+                end
+            end
+        end
+
+        local result = originalUpdate(self)
+
+        if hiddenItems and self and self.attachedItems then
+            for slotIndex, item in pairs(hiddenItems) do
+                if item:getAttachedSlot() == slotIndex then
+                    self.attachedItems[slotIndex] = item
+                end
+            end
+        end
+
+        return result
+    end
+
+    ISHotbar.__TransmogDE_HiddenAttachmentPatch = true
+end
+
+local function repairHiddenAttachmentLocation(item)
+    local md = item and item:getModData()
+    local hidden = md and md.TransmogHiddenAttachment
+    if hidden and hidden.location and item:getAttachedToModel() == nil then
+        item:setAttachedToModel(hidden.location)
+    end
+end
+
+local function enforceHiddenAttachmentDetached(player, item)
+    local md = item and item:getModData()
+    if player and md and md.TransmogHiddenAttachment then
+        player:removeAttachedItem(item)
+        refreshAttachedModels(player)
+    end
+end
+
+local function patchUnequipHiddenAttachments()
+    if not ISUnequipAction or ISUnequipAction.__TransmogDE_HiddenAttachmentPatch then
+        return
+    end
+
+    local originalAnimEvent = ISUnequipAction.animEvent
+    ISUnequipAction.animEvent = function(self, event, parameter)
+        if self and self.item then
+            repairHiddenAttachmentLocation(self.item)
+        end
+        local result = originalAnimEvent(self, event, parameter)
+        if self and self.item then
+            enforceHiddenAttachmentDetached(self.character, self.item)
+        end
+        return result
+    end
+
+    local originalPerform = ISUnequipAction.perform
+    ISUnequipAction.perform = function(self)
+        if self and self.item then
+            repairHiddenAttachmentLocation(self.item)
+        end
+        local result = originalPerform(self)
+        if self and self.item then
+            enforceHiddenAttachmentDetached(self.character, self.item)
+        end
+        return result
+    end
+
+    ISUnequipAction.__TransmogDE_HiddenAttachmentPatch = true
+end
+
+Events.OnGameStart.Add(patchHotbarHiddenAttachments)
+Events.OnGameStart.Add(patchUnequipHiddenAttachments)
 
 --- Add a new visual masking rule.
 -- @param coveringSlot string  BodyLocation of the covering visual slot (e.g. "Jacket")

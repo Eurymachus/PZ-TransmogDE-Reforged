@@ -563,6 +563,7 @@ end
 --   transmogTo       = current transmog target fullType
 --   lastTransmogTo   = last non-hidden transmog target
 --   childId          = carrier item id (if any)
+--   attachments      = per-provider attachment visibility state
 TransmogDE.getItemTransmogModData = function(item)
     local itemModData = item:getModData()
     local tmog = itemModData['Transmog']
@@ -894,6 +895,37 @@ TransmogDE.isTransmogged = function(item)
     return moddata.transmogTo ~= selfFullName
 end
 
+TransmogDE.getItemSelfFullType = function(item)
+    if not item then
+        return nil
+    end
+
+    local scriptItem = item:getScriptItem()
+    if scriptItem and scriptItem.getScriptItem then
+        scriptItem = scriptItem:getScriptItem()
+    end
+
+    return scriptItem and scriptItem:getFullName() or nil
+end
+
+TransmogDE.hasHiddenTransmogTarget = function(item)
+    if not item then
+        return false
+    end
+
+    local moddata = TransmogDE.getItemTransmogModData(item)
+    if not moddata or moddata.transmogTo ~= nil then
+        return false
+    end
+
+    local selfFullType = TransmogDE.getItemSelfFullType(item)
+    return moddata.lastTransmogTo ~= nil and moddata.lastTransmogTo ~= selfFullType
+end
+
+TransmogDE.canRemoveTransmog = function(item)
+    return TransmogDE.isTransmogged(item) or TransmogDE.hasHiddenTransmogTarget(item)
+end
+
 TransmogDE.hasColorOverride = function(item)
     if not item then return false end
 
@@ -1037,6 +1069,15 @@ TransmogDE.hasTransmogState = function(item)
         or TransmogDE.hasTextureOverride(item)
 end
 
+TransmogDE.canResetTransmog = function(item)
+    if not item then
+        return false
+    end
+
+    return TransmogDE.hasTransmogState(item)
+        or (TransmogDE.areAttachedSlotsHidden and TransmogDE.areAttachedSlotsHidden(item))
+end
+
 -- ==========================================================
 -- Remove Transmog (keep visuals)
 -- ==========================================================
@@ -1091,6 +1132,7 @@ TransmogDE.setItemToDefault = function(item)
     -- Reset mapping so we no longer transmog into anything else.
     moddata.transmogTo = selfFullName
     moddata.lastTransmogTo = selfFullName
+    moddata.attachments = nil
 
     -- UI feedback is handled by TransmogNet.notifyPlayer
 
@@ -1135,6 +1177,58 @@ TransmogDE.setClothingShown = function(item)
     -- UI feedback is handled by TransmogNet.notifyPlayer
 
     TransmogDE.forceUpdateClothing(item)
+end
+
+TransmogDE.getAttachmentTransmogModData = function(item)
+    if not item then
+        return nil
+    end
+
+    local md = TransmogDE.getItemTransmogModData(item)
+    md.attachments = md.attachments or {}
+    md.attachments.slots = md.attachments.slots or {}
+    md.attachments.slotmodels = md.attachments.slotmodels or {}
+    return md.attachments
+end
+
+TransmogDE.areAttachedSlotsHidden = function(item)
+    if not item then
+        return false
+    end
+    local attachments = TransmogDE.getAttachmentTransmogModData(item)
+    if not attachments then
+        return false
+    end
+
+    for _, visible in pairs(attachments.slots) do
+        if visible == false then
+            return true
+        end
+    end
+
+    return false
+end
+
+TransmogDE.setAttachedSlotsHidden = function(item)
+    if not item then
+        return
+    end
+    if TransmogDE.setProvidedAttachmentSlotsHidden then
+        TransmogDE.setProvidedAttachmentSlotsHidden(item)
+        return
+    end
+
+    local attachments = TransmogDE.getAttachmentTransmogModData(item)
+    attachments.slots.__all = false
+end
+
+TransmogDE.setAttachedSlotsShown = function(item)
+    if not item then
+        return
+    end
+    local attachments = TransmogDE.getAttachmentTransmogModData(item)
+    attachments.slots = {}
+    attachments.slotmodels = {}
 end
 
 TransmogDE.removeAllWornTransmogs = function(player)
