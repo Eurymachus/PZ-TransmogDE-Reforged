@@ -357,6 +357,96 @@ local function refreshAttachedModels(player)
     end
 end
 
+local function captureHiddenAttachmentVisual(item)
+    local md = item and item:getModData()
+    if not md then
+        return nil
+    end
+
+    local visual = md.TransmogHiddenAttachmentVisual
+    if visual and visual.captured == true then
+        return visual
+    end
+
+    visual = {
+        captured = true,
+        staticModel = item.getStaticModel and item:getStaticModel() or nil,
+        worldStaticModel = item.getWorldStaticModel and item:getWorldStaticModel() or nil,
+        weaponSprite = item.getWeaponSprite and item:getWeaponSprite() or nil,
+        hadStaticModelOverride = rawget(md, "staticModel") ~= nil,
+        staticModelOverride = rawget(md, "staticModel"),
+        hadWorldStaticModelOverride = rawget(md, "worldStaticModel") ~= nil,
+        worldStaticModelOverride = rawget(md, "worldStaticModel"),
+    }
+
+    md.TransmogHiddenAttachmentVisual = visual
+    return visual
+end
+
+local function applyHiddenAttachmentVisual(item)
+    if not item then
+        return false
+    end
+
+    local visual = captureHiddenAttachmentVisual(item)
+    local wasApplied = visual and visual.applied == true
+
+    if item.setStaticModel then
+        item:setStaticModel("")
+    end
+    if item.setWorldStaticModel then
+        item:setWorldStaticModel("")
+    end
+    if item.setWeaponSprite then
+        item:setWeaponSprite("")
+    end
+
+    if visual then
+        visual.applied = true
+    end
+
+    return not wasApplied
+end
+
+local function restoreHiddenAttachmentVisual(item)
+    local md = item and item:getModData()
+    local visual = md and md.TransmogHiddenAttachmentVisual
+    if not visual then
+        return
+    end
+
+    if item.setStaticModel then
+        if visual.hadStaticModelOverride then
+            item:setStaticModel(visual.staticModelOverride)
+        else
+            rawset(md, "staticModel", nil)
+        end
+    end
+
+    if item.setWorldStaticModel then
+        if visual.hadWorldStaticModelOverride then
+            item:setWorldStaticModel(visual.worldStaticModelOverride)
+        else
+            rawset(md, "worldStaticModel", nil)
+        end
+    end
+
+    if item.setWeaponSprite then
+        item:setWeaponSprite(visual.weaponSprite)
+    end
+
+    md.TransmogHiddenAttachmentVisual = nil
+end
+
+local function shouldKeepHiddenAttachmentAttached(item)
+    return item
+        and item.canEmitLight
+        and item:canEmitLight()
+        and item:getType() ~= "CandleLit"
+        and item:getType() ~= "Lantern_HurricaneLit"
+        and not instanceof(item, "HandWeapon")
+end
+
 local function restoreTransmogHiddenAttachment(player, item)
     if not player or not item then return false end
 
@@ -367,15 +457,27 @@ local function restoreTransmogHiddenAttachment(player, item)
     end
 
     local location = hidden.location
+    local equipped = player:isEquipped(item)
+    local refreshed = false
     md.TransmogHiddenAttachment = nil
 
-    if location then
+    if equipped then
+        player:removeAttachedItem(item)
+        refreshAttachedModels(player)
+        refreshed = true
+    end
+
+    restoreHiddenAttachmentVisual(item)
+
+    if location and not equipped then
         item:setAttachedToModel(location)
         player:setAttachedItem(location, item)
     end
 
     syncItemModData(player, item)
-    refreshAttachedModels(player)
+    if not refreshed then
+        refreshAttachedModels(player)
+    end
 
     return true
 end
@@ -417,8 +519,13 @@ local function hideTransmogAttachment(player, item, location, hiddenSlotTypes, m
     }
     md.TransmogAttachmentForceVisible = nil
 
-    player:removeAttachedItem(item)
+    applyHiddenAttachmentVisual(item)
     item:setAttachedToModel(location)
+    if shouldKeepHiddenAttachmentAttached(item) then
+        player:setAttachedItem(location, item)
+    else
+        player:removeAttachedItem(item)
+    end
     syncItemModData(player, item)
     refreshAttachedModels(player)
 
@@ -496,6 +603,17 @@ function TransmogDE.syncHiddenProvidedAttachments(player, hiddenProviderSlotType
         local hiddenLocation = hidden and hidden.location
         local hiddenBySlotType = slotType and effectiveHiddenProviderSlotTypes[slotType] == true
         local hiddenByLocation = hiddenLocation and locationNamesToHide[hiddenLocation] == true
+        if hidden then
+            applyHiddenAttachmentVisual(item)
+            if shouldKeepHiddenAttachmentAttached(item)
+                and hiddenLocation
+                and not player:isEquipped(item)
+                and player:getAttachedItem(hiddenLocation) ~= item then
+                item:setAttachedToModel(hiddenLocation)
+                player:setAttachedItem(hiddenLocation, item)
+                changed = true
+            end
+        end
         if hidden
             and (forceVisible or hidden.manual ~= true)
             and (forceVisible or not hiddenBySlotType)
@@ -742,9 +860,13 @@ local function patchHotbarHiddenAttachments()
                     if md.TransmogHiddenAttachment.location and item:getAttachedToModel() == nil then
                         item:setAttachedToModel(md.TransmogHiddenAttachment.location)
                     end
-                    hiddenItems[slotIndex] = item
-                    self.attachedItems[slotIndex] = nil
-                    self.chr:removeAttachedItem(item)
+                    if shouldKeepHiddenAttachmentAttached(item) and not self.chr:isEquipped(item) then
+                        applyHiddenAttachmentVisual(item)
+                    else
+                        hiddenItems[slotIndex] = item
+                        self.attachedItems[slotIndex] = nil
+                        self.chr:removeAttachedItem(item)
+                    end
                 end
             end
         end
@@ -776,7 +898,15 @@ end
 local function enforceHiddenAttachmentDetached(player, item)
     local md = item and item:getModData()
     if player and md and md.TransmogHiddenAttachment then
-        player:removeAttachedItem(item)
+        if shouldKeepHiddenAttachmentAttached(item)
+            and md.TransmogHiddenAttachment.location
+            and not player:isEquipped(item) then
+            applyHiddenAttachmentVisual(item)
+            item:setAttachedToModel(md.TransmogHiddenAttachment.location)
+            player:setAttachedItem(md.TransmogHiddenAttachment.location, item)
+        else
+            player:removeAttachedItem(item)
+        end
         refreshAttachedModels(player)
     end
 end
@@ -813,8 +943,122 @@ local function patchUnequipHiddenAttachments()
     ISUnequipAction.__TransmogDE_HiddenAttachmentPatch = true
 end
 
+local function isToggleableLight(item)
+    return shouldKeepHiddenAttachmentAttached(item)
+        and not instanceof(item, "HandWeapon")
+        and item.canBeActivated
+        and item:canBeActivated()
+end
+
+local function getHiddenAttachmentLight(player)
+    local inv = player and player:getInventory()
+    local items = inv and inv:getItems()
+    if not items then
+        return nil
+    end
+
+    for i = 0, items:size() - 1 do
+        local item = items:get(i)
+        local md = item and item:getModData()
+        if md and md.TransmogHiddenAttachment and isToggleableLight(item) then
+            return item
+        end
+    end
+end
+
+local function toggleLightItem(player, item)
+    local md = item and item:getModData()
+    local hidden = md and md.TransmogHiddenAttachment
+    if hidden and hidden.location and shouldKeepHiddenAttachmentAttached(item) and not player:isEquipped(item) then
+        applyHiddenAttachmentVisual(item)
+        item:setAttachedToModel(hidden.location)
+        if player:getAttachedItem(hidden.location) ~= item then
+            player:setAttachedItem(hidden.location, item)
+            refreshAttachedModels(player)
+        end
+    end
+
+    item:setActivated(not item:isActivated())
+    if syncItemActivated then
+        syncItemActivated(player, item)
+    end
+    item:playActivateDeactivateSound()
+end
+
+local function patchItemBindingHiddenAttachmentLights()
+    if not ItemBindingHandler or ItemBindingHandler.__TransmogDE_HiddenAttachmentPatch then
+        return
+    end
+
+    ItemBindingHandler.toggleLight = function(key)
+        local playerObj = getSpecificPlayer(0)
+        if not playerObj then
+            return
+        end
+
+        if getCore():isKey("ToggleVehicleHeadlights", key) then
+            local vehicle = playerObj:getVehicle()
+            if vehicle and vehicle:isDriver(playerObj) and not playerObj:isAiming() then
+                if vehicle:hasHeadlights() then
+                    ISVehicleMenu.onToggleHeadlights(playerObj)
+                end
+                return
+            end
+        end
+
+        local secondary = playerObj:getSecondaryHandItem()
+        if isToggleableLight(secondary) or (secondary and secondary:canEmitLight()
+            and secondary:getType() ~= "CandleLit"
+            and secondary:getType() ~= "Lantern_HurricaneLit"
+            and secondary:canBeActivated()) then
+            toggleLightItem(playerObj, secondary)
+            return
+        end
+
+        local primary = playerObj:getPrimaryHandItem()
+        if isToggleableLight(primary) or (primary and primary:canEmitLight()
+            and primary:getType() ~= "CandleLit"
+            and primary:getType() ~= "Lantern_HurricaneLit"
+            and primary:canBeActivated()) then
+            toggleLightItem(playerObj, primary)
+            return
+        end
+
+        local attachedItems = playerObj:getAttachedItems()
+        for i = 1, attachedItems:size() do
+            local item = attachedItems:getItemByIndex(i - 1)
+            if isToggleableLight(item) then
+                toggleLightItem(playerObj, item)
+                return
+            end
+        end
+
+        local hiddenLight = getHiddenAttachmentLight(playerObj)
+        if hiddenLight then
+            toggleLightItem(playerObj, hiddenLight)
+            return
+        end
+
+        if playerObj:isAiming() then return end
+        local function predicateLightSource(item)
+            return item:canEmitLight() and (item:getLightStrength() > 0)
+        end
+        local function compareLightStrength(a, b)
+            return a:getLightStrength() - b:getLightStrength()
+        end
+        local lightSource = playerObj:getInventory():getBestEvalRecurse(predicateLightSource, compareLightStrength)
+        if lightSource ~= nil then
+            ISInventoryPaneContextMenu.transferIfNeeded(playerObj, lightSource)
+            ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, lightSource, 50, instanceof(lightSource, "HandWeapon"), false))
+        end
+    end
+
+    ItemBindingHandler.__TransmogDE_HiddenAttachmentPatch = true
+end
+
 Events.OnGameStart.Add(patchHotbarHiddenAttachments)
 Events.OnGameStart.Add(patchUnequipHiddenAttachments)
+Events.OnGameStart.Add(patchItemBindingHiddenAttachmentLights)
 
 --- Add a new visual masking rule.
 -- @param coveringSlot string  BodyLocation of the covering visual slot (e.g. "Jacket")
