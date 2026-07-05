@@ -3,8 +3,45 @@ require "ISUI/ISToolTipInv"
 local BACKGROUND_ALPHA = 0.9
 
 ---------------------------------------------------------
--- If BCI is active, DON'T override ISToolTipInv here.
--- BCI will call TransmogDE.getTooltipLines(item) itself.
+-- If a shared tooltip controller is active, register as
+-- a row provider and leave ISToolTipInv ownership alone.
+---------------------------------------------------------
+if _G.EuryTooltipController then
+    local TransmogTooltipProvider = {
+        priority = 20,
+    }
+
+    function TransmogTooltipProvider:getRows(ctx)
+        return TransmogDE.getTooltipLines(ctx.item)
+    end
+
+    function TransmogTooltipProvider:getTextX(ctx)
+        if ctx.ownerProvider and ctx.ownerProvider.id == "BetterClothingInfo" then
+            return 5
+        end
+        return 12
+    end
+
+    function TransmogTooltipProvider:getLinePadLeft(ctx)
+        if ctx.ownerProvider and ctx.ownerProvider.id == "BetterClothingInfo" then
+            return 5
+        end
+        return 10
+    end
+
+    function TransmogTooltipProvider:getLinePadRight(ctx)
+        if ctx.ownerProvider and ctx.ownerProvider.id == "BetterClothingInfo" then
+            return 5
+        end
+        return 10
+    end
+
+    _G.EuryTooltipController:registerProvider("BetterDressedTransmog", TransmogTooltipProvider)
+    return
+end
+
+---------------------------------------------------------
+-- Legacy compatibility: BCI owns transmog rows itself.
 ---------------------------------------------------------
 if _G.BCI_TooltipInv_Active then
     return
