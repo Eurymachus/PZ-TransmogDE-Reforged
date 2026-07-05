@@ -6,6 +6,9 @@ group:getOrCreateLocation("Hide_Everything")
 local function updateBodyLocations()
 	local group = BodyLocations.getGroup("Human")
 
+	group:setHideModel("FullSuitHead", "TorsoExtraVest")
+	group:setHideModel("FullSuitHead", "TorsoExtraVestBullet")
+
 	local locations = group:getAllLocations();
 	local locationsSize = locations:size() - 1
 

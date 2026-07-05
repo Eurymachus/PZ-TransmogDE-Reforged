@@ -18,8 +18,28 @@ local function isWorldMapVisible()
     return ISWorldMap_instance and ISWorldMap_instance:isVisible()
 end
 
+local function isAnnotatedMapVisible()
+    if not UIManager or not UIManager.getUI then return false end
+
+    local uis = UIManager.getUI()
+    if not uis then return false end
+
+    for i = 0, uis:size() - 1 do
+        local ui = uis:get(i)
+        if ui
+            and ui.Type == "ISMapWrapper"
+            and ui.mapUI
+            and ui:isVisible()
+        then
+            return true
+        end
+    end
+
+    return false
+end
+
 function TransmogHudButton:syncVisibility()
-    local mapVisible = isWorldMapVisible() == true
+    local mapVisible = isWorldMapVisible() == true or isAnnotatedMapVisible() == true
     if self._hiddenForWorldMap == mapVisible then return end
 
     self._hiddenForWorldMap = mapVisible

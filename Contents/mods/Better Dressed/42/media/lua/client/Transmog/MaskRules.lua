@@ -14,8 +14,15 @@ local LEFTWRIST = "LeftWrist"
 local RIGHTWRIST = "RightWrist"
 local FANNYPACK_BACK = "FannyPackBack"
 local FANNYPACK_FRONT = "FannyPackFront"
+local TORSO_EXTRA_VEST = "TorsoExtraVest"
+local TORSO_EXTRA_VEST_BULLET = "TorsoExtraVestBullet"
 
 TransmogDE.VisualMaskRules = {
+    -- Full-body suits
+    FullSuitHead = {
+        TORSO_EXTRA_VEST,
+        TORSO_EXTRA_VEST_BULLET,
+    },
     -- Suit Jackets/Long Jackets
     JacketSuit = {
         LEFTWRIST,
