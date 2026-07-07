@@ -2,6 +2,13 @@ require "ISUI/ISToolTipInv"
 
 local BACKGROUND_ALPHA = 0.9
 
+local function getTooltipFont(tt)
+    if tt and tt.getFont then
+        return tt:getFont()
+    end
+    return UIFont.Medium
+end
+
 ---------------------------------------------------------
 -- If a shared tooltip controller is active, register as
 -- a row provider and leave ISToolTipInv ownership alone.
@@ -110,7 +117,7 @@ local function RenderTooltip_Transmog(self)
     -- ----- MEASURE PASS: transmog lines -----
     local extraW, extraH = 0, 0
     do
-        local font = UIFont.Medium
+        local font = getTooltipFont(tt)
         local tm = getTextManager()
         local lineH = tt:getLineSpacing() or 18
         local padLeft, padRight = 5, 5
@@ -172,7 +179,7 @@ local function RenderTooltip_Transmog(self)
 
     -- ----- DRAW PASS: transmog lines -----
     do
-        local font = UIFont.Medium
+        local font = getTooltipFont(tt)
         local y = baseH + 5
         local lineH = tt:getLineSpacing() or 18
 
