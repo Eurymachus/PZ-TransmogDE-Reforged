@@ -807,7 +807,6 @@ TransmogNet.requestHideAttachedSlotsRecieved = function(player, args)
         return
     end
 
-    TransmogDE.setAttachedSlotsHidden(item)
     if TransmogDE.hideProvidedAttachmentSlots then
         TransmogDE.hideProvidedAttachmentSlots(player, item)
     end
@@ -826,7 +825,6 @@ TransmogNet.requestShowAttachedSlotsRecieved = function(player, args)
         return
     end
 
-    TransmogDE.setAttachedSlotsShown(item)
     if TransmogDE.restoreProvidedAttachmentSlots then
         TransmogDE.restoreProvidedAttachmentSlots(player, item)
     end

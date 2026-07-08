@@ -30,8 +30,8 @@ local addEditTransmogItemOption = function(playerNum, context, items)
 
     if tostring(#items) == "1"
         and selectedItem
-        and TransmogDE.isAttachedOrHiddenAttachment
-        and TransmogDE.isAttachedOrHiddenAttachment(player, selectedItem) then
+        and TransmogDE.isAttachmentSlotAssigned
+        and TransmogDE.isAttachmentSlotAssigned(player, selectedItem) then
         local attachmentOption = nil
         if TransmogDE.isAttachmentModelHidden and TransmogDE.isAttachmentModelHidden(selectedItem) then
             attachmentOption = context:addOption(
@@ -81,7 +81,10 @@ local addEditTransmogItemOption = function(playerNum, context, items)
         end
 
         if TransmogDE.hasProvidedAttachmentSlots and TransmogDE.hasProvidedAttachmentSlots(clothing) then
-            if not TransmogDE.areAttachedSlotsHidden(clothing) then
+            local attachedSlotsHidden = TransmogDE.areProvidedAttachmentModelsAllHidden
+                and TransmogDE.areProvidedAttachmentModelsAllHidden(player, clothing)
+
+            if not attachedSlotsHidden then
                 menuContext:addOption(
                     textHideAttachedSlots,
                     player,

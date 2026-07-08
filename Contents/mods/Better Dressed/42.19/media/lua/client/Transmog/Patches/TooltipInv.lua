@@ -9,13 +9,25 @@ local function getTooltipFont(tt)
     return UIFont.Medium
 end
 
+local function getTooltipLineText(line)
+    local label = line.label or ""
+    local value = line.value or ""
+    if label ~= "" or value ~= "" then
+        if value ~= "" then
+            return label .. " " .. value
+        end
+        return label
+    end
+    return line.text or ""
+end
+
 ---------------------------------------------------------
 -- If a shared tooltip controller is active, register as
 -- a row provider and leave ISToolTipInv ownership alone.
 ---------------------------------------------------------
 if _G.EuryTooltipController then
     local TransmogTooltipProvider = {
-        priority = 20,
+        priority = 10000,
     }
 
     function TransmogTooltipProvider:getRows(ctx)
@@ -123,7 +135,7 @@ local function RenderTooltip_Transmog(self)
         local padLeft, padRight = 5, 5
 
         for _, line in ipairs(tLines) do
-            local text = line.text or ""
+            local text = getTooltipLineText(line)
             if text ~= "" then
                 local w = tm:MeasureStringX(font, text) + padLeft + padRight
                 if w > extraW then
@@ -184,13 +196,31 @@ local function RenderTooltip_Transmog(self)
         local lineH = tt:getLineSpacing() or 18
 
         for _, line in ipairs(tLines) do
-            local text = line.text or ""
-            if text ~= "" then
+            local label = line.label or ""
+            local value = line.value or ""
+            if label ~= "" or value ~= "" then
+                local labelR = line.labelR or line.r or 1.0
+                local labelG = line.labelG or line.g or 1.0
+                local labelB = line.labelB or line.b or 0.8
+                local valueR = line.valueR or 1.0
+                local valueG = line.valueG or 0.6
+                local valueB = line.valueB or 0.0
+
+                tt:DrawText(font, label, TEXT_X, y, labelR, labelG, labelB, 1.0)
+                if value ~= "" then
+                    local valueX = TEXT_X + getTextManager():MeasureStringX(font, label) + 6
+                    tt:DrawText(font, value, valueX, y, valueR, valueG, valueB, 1.0)
+                end
+                y = y + lineH
+            else
+                local text = line.text or ""
+                if text ~= "" then
                 local r = line.r or 1.0
                 local g = line.g or 0.6
                 local b = line.b or 0.0
                 tt:DrawText(font, text, TEXT_X, y, r, g, b, 1.0)
                 y = y + lineH
+                end
             end
         end
     end
