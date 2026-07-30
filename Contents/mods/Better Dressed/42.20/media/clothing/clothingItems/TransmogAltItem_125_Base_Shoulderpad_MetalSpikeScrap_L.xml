@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_GUID>04d62107-7ce9-5f9b-9474-a14c7b79f45f</m_GUID>
+  <m_MaleModel>media\models_X\Static\Clothes\Bob_MetalSpike_Shoulderpad_L_ALT.x</m_MaleModel>
+  <m_FemaleModel>media\models_X\Static\Clothes\Kate_MetalSpike_Shoulderpad_L_ALT.x</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_Static>true</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone>Bip01_L_UpperArm</m_AttachBone>
+  <m_MasksFolder>none</m_MasksFolder>
+  <textureChoices>clothes\armor\metalshoulderpads_basic</textureChoices>
+</clothingItem>

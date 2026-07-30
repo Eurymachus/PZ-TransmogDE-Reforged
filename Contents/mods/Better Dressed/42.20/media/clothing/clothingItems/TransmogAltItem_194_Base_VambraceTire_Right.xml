@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_MaleModel>media\models_X\Static\Clothes\Bob_VambraceMagazine_R_ALT.x</m_MaleModel>
+  <m_FemaleModel>media\models_X\Static\Clothes\Kate_VambraceMagazine_R_ALT.x</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_GUID>f3be88e7-71b7-5097-99ab-1931331ca16b</m_GUID>
+  <m_Static>true</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone>Bip01_R_Forearm</m_AttachBone>
+  <m_MasksFolder>none</m_MasksFolder>
+  <textureChoices>clothes\armor\vambacetire</textureChoices>
+</clothingItem>

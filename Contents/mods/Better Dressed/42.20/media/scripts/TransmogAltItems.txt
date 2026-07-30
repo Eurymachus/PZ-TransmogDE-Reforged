@@ -1,0 +1,2552 @@
+module TransmogDE {
+    imports { Base }
+
+    item TransmogAltItem_1_Base_Codpiece_Leather
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_1_Base_Codpiece_Leather, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_1_Base_Codpiece_Leather,
+    }
+
+    item TransmogAltItem_2_Base_Codpiece_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_2_Base_Codpiece_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_2_Base_Codpiece_Metal,
+    }
+
+    item TransmogAltItem_3_Base_Cuirass_BasicBone
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_3_Base_Cuirass_BasicBone, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_3_Base_Cuirass_BasicBone,
+    }
+
+    item TransmogAltItem_4_Base_Cuirass_Bone
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_4_Base_Cuirass_Bone, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_4_Base_Cuirass_Bone,
+    }
+
+    item TransmogAltItem_5_Base_Cuirass_CoatOfPlates
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_5_Base_Cuirass_CoatOfPlates, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_5_Base_Cuirass_CoatOfPlates,
+    }
+
+    item TransmogAltItem_6_Base_Cuirass_Magazine
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_6_Base_Cuirass_Magazine, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_6_Base_Cuirass_Magazine,
+    }
+
+    item TransmogAltItem_7_Base_Cuirass_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_7_Base_Cuirass_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_7_Base_Cuirass_Metal,
+    }
+
+    item TransmogAltItem_8_Base_Cuirass_MetalScrap
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_8_Base_Cuirass_MetalScrap, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_8_Base_Cuirass_MetalScrap,
+    }
+
+    item TransmogAltItem_9_Base_Cuirass_Tire
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_9_Base_Cuirass_Tire, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_9_Base_Cuirass_Tire,
+    }
+
+    item TransmogAltItem_10_Base_Cuirass_Wood
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_10_Base_Cuirass_Wood, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_10_Base_Cuirass_Wood,
+    }
+
+    item TransmogAltItem_11_Base_ElbowPad_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_11_Base_ElbowPad_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_11_Base_ElbowPad_Left,
+    }
+
+    item TransmogAltItem_12_Base_ElbowPad_Left_Leather
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_12_Base_ElbowPad_Left_Leather, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_12_Base_ElbowPad_Left_Leather,
+    }
+
+    item TransmogAltItem_13_Base_ElbowPad_Left_Military
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_13_Base_ElbowPad_Left_Military, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_13_Base_ElbowPad_Left_Military,
+    }
+
+    item TransmogAltItem_14_Base_ElbowPad_Left_Sport
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_14_Base_ElbowPad_Left_Sport, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_14_Base_ElbowPad_Left_Sport,
+    }
+
+    item TransmogAltItem_15_Base_ElbowPad_Left_Tactical
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_15_Base_ElbowPad_Left_Tactical, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_15_Base_ElbowPad_Left_Tactical,
+    }
+
+    item TransmogAltItem_16_Base_ElbowPad_Left_TINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_16_Base_ElbowPad_Left_TINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_16_Base_ElbowPad_Left_TINT,
+    }
+
+    item TransmogAltItem_17_Base_ElbowPad_Left_Workman
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_17_Base_ElbowPad_Left_Workman, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_17_Base_ElbowPad_Left_Workman,
+    }
+
+    item TransmogAltItem_18_Base_ElbowPad_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_18_Base_ElbowPad_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_18_Base_ElbowPad_Right,
+    }
+
+    item TransmogAltItem_19_Base_ElbowPad_Right_Leather
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_19_Base_ElbowPad_Right_Leather, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_19_Base_ElbowPad_Right_Leather,
+    }
+
+    item TransmogAltItem_20_Base_ElbowPad_Right_Military
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_20_Base_ElbowPad_Right_Military, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_20_Base_ElbowPad_Right_Military,
+    }
+
+    item TransmogAltItem_21_Base_ElbowPad_Right_Sport
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_21_Base_ElbowPad_Right_Sport, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_21_Base_ElbowPad_Right_Sport,
+    }
+
+    item TransmogAltItem_22_Base_ElbowPad_Right_Tactical
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_22_Base_ElbowPad_Right_Tactical, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_22_Base_ElbowPad_Right_Tactical,
+    }
+
+    item TransmogAltItem_23_Base_ElbowPad_Right_TINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_23_Base_ElbowPad_Right_TINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_23_Base_ElbowPad_Right_TINT,
+    }
+
+    item TransmogAltItem_24_Base_ElbowPad_Right_Workman
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_24_Base_ElbowPad_Right_Workman, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_24_Base_ElbowPad_Right_Workman,
+    }
+
+    item TransmogAltItem_25_Base_Football_Jersey_Black
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_25_Base_Football_Jersey_Black, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_25_Base_Football_Jersey_Black,
+    }
+
+    item TransmogAltItem_26_Base_Football_Jersey_Blue
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_26_Base_Football_Jersey_Blue, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_26_Base_Football_Jersey_Blue,
+    }
+
+    item TransmogAltItem_27_Base_Football_Jersey_White
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_27_Base_Football_Jersey_White, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_27_Base_Football_Jersey_White,
+    }
+
+    item TransmogAltItem_28_Base_Greave_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_28_Base_Greave_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_28_Base_Greave_Left,
+    }
+
+    item TransmogAltItem_29_Base_Greave_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_29_Base_Greave_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_29_Base_Greave_Right,
+    }
+
+    item TransmogAltItem_30_Base_GreaveBodyArmour_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_30_Base_GreaveBodyArmour_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_30_Base_GreaveBodyArmour_Left,
+    }
+
+    item TransmogAltItem_31_Base_GreaveBodyArmour_Left_Army
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_31_Base_GreaveBodyArmour_Left_Army, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_31_Base_GreaveBodyArmour_Left_Army,
+    }
+
+    item TransmogAltItem_32_Base_GreaveBodyArmour_Left_Civ
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_32_Base_GreaveBodyArmour_Left_Civ, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_32_Base_GreaveBodyArmour_Left_Civ,
+    }
+
+    item TransmogAltItem_33_Base_GreaveBodyArmour_Left_Desert
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_33_Base_GreaveBodyArmour_Left_Desert, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_33_Base_GreaveBodyArmour_Left_Desert,
+    }
+
+    item TransmogAltItem_34_Base_GreaveBodyArmour_Left_Police
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_34_Base_GreaveBodyArmour_Left_Police, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_34_Base_GreaveBodyArmour_Left_Police,
+    }
+
+    item TransmogAltItem_35_Base_GreaveBodyArmour_Left_SWAT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_35_Base_GreaveBodyArmour_Left_SWAT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_35_Base_GreaveBodyArmour_Left_SWAT,
+    }
+
+    item TransmogAltItem_36_Base_GreaveBodyArmour_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_36_Base_GreaveBodyArmour_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_36_Base_GreaveBodyArmour_Right,
+    }
+
+    item TransmogAltItem_37_Base_GreaveBodyArmour_Right_Army
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_37_Base_GreaveBodyArmour_Right_Army, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_37_Base_GreaveBodyArmour_Right_Army,
+    }
+
+    item TransmogAltItem_38_Base_GreaveBodyArmour_Right_Civ
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_38_Base_GreaveBodyArmour_Right_Civ, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_38_Base_GreaveBodyArmour_Right_Civ,
+    }
+
+    item TransmogAltItem_39_Base_GreaveBodyArmour_Right_Desert
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_39_Base_GreaveBodyArmour_Right_Desert, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_39_Base_GreaveBodyArmour_Right_Desert,
+    }
+
+    item TransmogAltItem_40_Base_GreaveBodyArmour_Right_Police
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_40_Base_GreaveBodyArmour_Right_Police, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_40_Base_GreaveBodyArmour_Right_Police,
+    }
+
+    item TransmogAltItem_41_Base_GreaveBodyArmour_Right_SWAT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_41_Base_GreaveBodyArmour_Right_SWAT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_41_Base_GreaveBodyArmour_Right_SWAT,
+    }
+
+    item TransmogAltItem_42_Base_GreaveBone_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_42_Base_GreaveBone_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_42_Base_GreaveBone_Left,
+    }
+
+    item TransmogAltItem_43_Base_GreaveBone_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_43_Base_GreaveBone_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_43_Base_GreaveBone_Right,
+    }
+
+    item TransmogAltItem_44_Base_GreaveMagazine_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_44_Base_GreaveMagazine_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_44_Base_GreaveMagazine_Left,
+    }
+
+    item TransmogAltItem_45_Base_GreaveMagazine_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_45_Base_GreaveMagazine_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_45_Base_GreaveMagazine_Right,
+    }
+
+    item TransmogAltItem_46_Base_GreaveScrap_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_46_Base_GreaveScrap_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_46_Base_GreaveScrap_Left,
+    }
+
+    item TransmogAltItem_47_Base_GreaveScrap_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_47_Base_GreaveScrap_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_47_Base_GreaveScrap_Right,
+    }
+
+    item TransmogAltItem_48_Base_GreaveSpike_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_48_Base_GreaveSpike_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_48_Base_GreaveSpike_Left,
+    }
+
+    item TransmogAltItem_49_Base_GreaveSpike_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_49_Base_GreaveSpike_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_49_Base_GreaveSpike_Right,
+    }
+
+    item TransmogAltItem_50_Base_GreaveSpikeScrap_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_50_Base_GreaveSpikeScrap_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_50_Base_GreaveSpikeScrap_Left,
+    }
+
+    item TransmogAltItem_51_Base_GreaveSpikeScrap_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_51_Base_GreaveSpikeScrap_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_51_Base_GreaveSpikeScrap_Right,
+    }
+
+    item TransmogAltItem_52_Base_GreaveTire_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_52_Base_GreaveTire_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_52_Base_GreaveTire_Left,
+    }
+
+    item TransmogAltItem_53_Base_GreaveTire_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_53_Base_GreaveTire_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_53_Base_GreaveTire_Right,
+    }
+
+    item TransmogAltItem_54_Base_GreaveWood_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_54_Base_GreaveWood_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_54_Base_GreaveWood_Left,
+    }
+
+    item TransmogAltItem_55_Base_GreaveWood_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_55_Base_GreaveWood_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_55_Base_GreaveWood_Right,
+    }
+
+    item TransmogAltItem_56_Base_Hat_BalaclavaFace
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_56_Base_Hat_BalaclavaFace, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_56_Base_Hat_BalaclavaFace,
+    }
+
+    item TransmogAltItem_57_Base_Hat_BalaclavaFull
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_57_Base_Hat_BalaclavaFull, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_57_Base_Hat_BalaclavaFull,
+    }
+
+    item TransmogAltItem_58_Base_Hat_BandanaMask
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_58_Base_Hat_BandanaMask, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_58_Base_Hat_BandanaMask,
+    }
+
+    item TransmogAltItem_59_Base_Hat_BandanaMask_Green
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_59_Base_Hat_BandanaMask_Green, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_59_Base_Hat_BandanaMask_Green,
+    }
+
+    item TransmogAltItem_60_Base_Hat_BandanaMaskTINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_60_Base_Hat_BandanaMaskTINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_60_Base_Hat_BandanaMaskTINT,
+    }
+
+    item TransmogAltItem_61_Base_Ice_Hockey_Jersey_Black
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_61_Base_Ice_Hockey_Jersey_Black, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_61_Base_Ice_Hockey_Jersey_Black,
+    }
+
+    item TransmogAltItem_62_Base_Ice_Hockey_Jersey_BlueUni
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_62_Base_Ice_Hockey_Jersey_BlueUni, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_62_Base_Ice_Hockey_Jersey_BlueUni,
+    }
+
+    item TransmogAltItem_63_Base_Ice_Hockey_Jersey_Red
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_63_Base_Ice_Hockey_Jersey_Red, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_63_Base_Ice_Hockey_Jersey_Red,
+    }
+
+    item TransmogAltItem_64_Base_Ice_Hockey_Jersey_White
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_64_Base_Ice_Hockey_Jersey_White, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_64_Base_Ice_Hockey_Jersey_White,
+    }
+
+    item TransmogAltItem_65_Base_Kneepad_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_65_Base_Kneepad_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_65_Base_Kneepad_Left,
+    }
+
+    item TransmogAltItem_66_Base_Kneepad_Left_Leather
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_66_Base_Kneepad_Left_Leather, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_66_Base_Kneepad_Left_Leather,
+    }
+
+    item TransmogAltItem_67_Base_Kneepad_Left_Military
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_67_Base_Kneepad_Left_Military, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_67_Base_Kneepad_Left_Military,
+    }
+
+    item TransmogAltItem_68_Base_Kneepad_Left_Sport
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_68_Base_Kneepad_Left_Sport, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_68_Base_Kneepad_Left_Sport,
+    }
+
+    item TransmogAltItem_69_Base_Kneepad_Left_Tactical
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_69_Base_Kneepad_Left_Tactical, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_69_Base_Kneepad_Left_Tactical,
+    }
+
+    item TransmogAltItem_70_Base_Kneepad_Left_TINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_70_Base_Kneepad_Left_TINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_70_Base_Kneepad_Left_TINT,
+    }
+
+    item TransmogAltItem_71_Base_Kneepad_Left_Workman
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_71_Base_Kneepad_Left_Workman, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_71_Base_Kneepad_Left_Workman,
+    }
+
+    item TransmogAltItem_72_Base_Kneepad_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_72_Base_Kneepad_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_72_Base_Kneepad_Right,
+    }
+
+    item TransmogAltItem_73_Base_Kneepad_Right_Leather
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_73_Base_Kneepad_Right_Leather, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_73_Base_Kneepad_Right_Leather,
+    }
+
+    item TransmogAltItem_74_Base_Kneepad_Right_Military
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_74_Base_Kneepad_Right_Military, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_74_Base_Kneepad_Right_Military,
+    }
+
+    item TransmogAltItem_75_Base_Kneepad_Right_Sport
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_75_Base_Kneepad_Right_Sport, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_75_Base_Kneepad_Right_Sport,
+    }
+
+    item TransmogAltItem_76_Base_Kneepad_Right_Tactical
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_76_Base_Kneepad_Right_Tactical, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_76_Base_Kneepad_Right_Tactical,
+    }
+
+    item TransmogAltItem_77_Base_Kneepad_Right_TINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_77_Base_Kneepad_Right_TINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_77_Base_Kneepad_Right_TINT,
+    }
+
+    item TransmogAltItem_78_Base_Kneepad_Right_Workman
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_78_Base_Kneepad_Right_Workman, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_78_Base_Kneepad_Right_Workman,
+    }
+
+    item TransmogAltItem_79_Base_ShinKneeGuard_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_79_Base_ShinKneeGuard_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_79_Base_ShinKneeGuard_L,
+    }
+
+    item TransmogAltItem_80_Base_ShinKneeGuard_L_Baseball
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_80_Base_ShinKneeGuard_L_Baseball, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_80_Base_ShinKneeGuard_L_Baseball,
+    }
+
+    item TransmogAltItem_81_Base_ShinKneeGuard_L_IceHockey
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_81_Base_ShinKneeGuard_L_IceHockey, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_81_Base_ShinKneeGuard_L_IceHockey,
+    }
+
+    item TransmogAltItem_82_Base_ShinKneeGuard_L_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_82_Base_ShinKneeGuard_L_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_82_Base_ShinKneeGuard_L_Metal,
+    }
+
+    item TransmogAltItem_83_Base_ShinKneeGuard_L_Protective
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_83_Base_ShinKneeGuard_L_Protective, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_83_Base_ShinKneeGuard_L_Protective,
+    }
+
+    item TransmogAltItem_84_Base_ShinKneeGuard_L_TINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_84_Base_ShinKneeGuard_L_TINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_84_Base_ShinKneeGuard_L_TINT,
+    }
+
+    item TransmogAltItem_85_Base_ShinKneeGuard_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_85_Base_ShinKneeGuard_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_85_Base_ShinKneeGuard_R,
+    }
+
+    item TransmogAltItem_86_Base_ShinKneeGuard_R_Baseball
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_86_Base_ShinKneeGuard_R_Baseball, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_86_Base_ShinKneeGuard_R_Baseball,
+    }
+
+    item TransmogAltItem_87_Base_ShinKneeGuard_R_IceHockey
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_87_Base_ShinKneeGuard_R_IceHockey, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_87_Base_ShinKneeGuard_R_IceHockey,
+    }
+
+    item TransmogAltItem_88_Base_ShinKneeGuard_R_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_88_Base_ShinKneeGuard_R_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_88_Base_ShinKneeGuard_R_Metal,
+    }
+
+    item TransmogAltItem_89_Base_ShinKneeGuard_R_Protective
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_89_Base_ShinKneeGuard_R_Protective, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_89_Base_ShinKneeGuard_R_Protective,
+    }
+
+    item TransmogAltItem_90_Base_ShinKneeGuard_R_TINT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_90_Base_ShinKneeGuard_R_TINT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_90_Base_ShinKneeGuard_R_TINT,
+    }
+
+    item TransmogAltItem_91_Base_ShinKneeGuardSpike_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_91_Base_ShinKneeGuardSpike_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_91_Base_ShinKneeGuardSpike_L,
+    }
+
+    item TransmogAltItem_92_Base_ShinKneeGuardSpike_L_Baseball
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_92_Base_ShinKneeGuardSpike_L_Baseball, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_92_Base_ShinKneeGuardSpike_L_Baseball,
+    }
+
+    item TransmogAltItem_93_Base_ShinKneeGuardSpike_L_IceHockey
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_93_Base_ShinKneeGuardSpike_L_IceHockey, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_93_Base_ShinKneeGuardSpike_L_IceHockey,
+    }
+
+    item TransmogAltItem_94_Base_ShinKneeGuardSpike_L_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_94_Base_ShinKneeGuardSpike_L_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_94_Base_ShinKneeGuardSpike_L_Metal,
+    }
+
+    item TransmogAltItem_95_Base_ShinKneeGuardSpike_L_Protective
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_95_Base_ShinKneeGuardSpike_L_Protective, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_95_Base_ShinKneeGuardSpike_L_Protective,
+    }
+
+    item TransmogAltItem_96_Base_ShinKneeGuardSpike_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_96_Base_ShinKneeGuardSpike_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_96_Base_ShinKneeGuardSpike_R,
+    }
+
+    item TransmogAltItem_97_Base_ShinKneeGuardSpike_R_Baseball
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_97_Base_ShinKneeGuardSpike_R_Baseball, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_97_Base_ShinKneeGuardSpike_R_Baseball,
+    }
+
+    item TransmogAltItem_98_Base_ShinKneeGuardSpike_R_IceHockey
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_98_Base_ShinKneeGuardSpike_R_IceHockey, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_98_Base_ShinKneeGuardSpike_R_IceHockey,
+    }
+
+    item TransmogAltItem_99_Base_ShinKneeGuardSpike_R_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_99_Base_ShinKneeGuardSpike_R_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_99_Base_ShinKneeGuardSpike_R_Metal,
+    }
+
+    item TransmogAltItem_100_Base_ShinKneeGuardSpike_R_Protective
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_100_Base_ShinKneeGuardSpike_R_Protective, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_100_Base_ShinKneeGuardSpike_R_Protective,
+    }
+
+    item TransmogAltItem_101_Base_Shinpad_HockeyGoalie_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_101_Base_Shinpad_HockeyGoalie_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_101_Base_Shinpad_HockeyGoalie_L,
+    }
+
+    item TransmogAltItem_102_Base_Shinpad_HockeyGoalie_L_Blue
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_102_Base_Shinpad_HockeyGoalie_L_Blue, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_102_Base_Shinpad_HockeyGoalie_L_Blue,
+    }
+
+    item TransmogAltItem_103_Base_Shinpad_HockeyGoalie_L_Red
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_103_Base_Shinpad_HockeyGoalie_L_Red, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_103_Base_Shinpad_HockeyGoalie_L_Red,
+    }
+
+    item TransmogAltItem_104_Base_Shinpad_HockeyGoalie_L_White
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_104_Base_Shinpad_HockeyGoalie_L_White, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_104_Base_Shinpad_HockeyGoalie_L_White,
+    }
+
+    item TransmogAltItem_105_Base_Shinpad_HockeyGoalie_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_105_Base_Shinpad_HockeyGoalie_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_105_Base_Shinpad_HockeyGoalie_R,
+    }
+
+    item TransmogAltItem_106_Base_Shinpad_HockeyGoalie_R_Blue
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_106_Base_Shinpad_HockeyGoalie_R_Blue, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_106_Base_Shinpad_HockeyGoalie_R_Blue,
+    }
+
+    item TransmogAltItem_107_Base_Shinpad_HockeyGoalie_R_Red
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_107_Base_Shinpad_HockeyGoalie_R_Red, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_107_Base_Shinpad_HockeyGoalie_R_Red,
+    }
+
+    item TransmogAltItem_108_Base_Shinpad_HockeyGoalie_R_White
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_108_Base_Shinpad_HockeyGoalie_R_White, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_108_Base_Shinpad_HockeyGoalie_R_White,
+    }
+
+    item TransmogAltItem_109_Base_Shoulderpad_Articulated_L_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_109_Base_Shoulderpad_Articulated_L_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_109_Base_Shoulderpad_Articulated_L_Metal,
+    }
+
+    item TransmogAltItem_110_Base_Shoulderpad_Articulated_R_Metal
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_110_Base_Shoulderpad_Articulated_R_Metal, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_110_Base_Shoulderpad_Articulated_R_Metal,
+    }
+
+    item TransmogAltItem_111_Base_Shoulderpad_ArticulatedSpike_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_111_Base_Shoulderpad_ArticulatedSpike_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_111_Base_Shoulderpad_ArticulatedSpike_L,
+    }
+
+    item TransmogAltItem_112_Base_Shoulderpad_ArticulatedSpike_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_112_Base_Shoulderpad_ArticulatedSpike_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_112_Base_Shoulderpad_ArticulatedSpike_R,
+    }
+
+    item TransmogAltItem_113_Base_Shoulderpad_Bone_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_113_Base_Shoulderpad_Bone_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_113_Base_Shoulderpad_Bone_L,
+    }
+
+    item TransmogAltItem_114_Base_Shoulderpad_Bone_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_114_Base_Shoulderpad_Bone_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_114_Base_Shoulderpad_Bone_R,
+    }
+
+    item TransmogAltItem_115_Base_Shoulderpad_Football_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_115_Base_Shoulderpad_Football_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_115_Base_Shoulderpad_Football_L,
+    }
+
+    item TransmogAltItem_116_Base_Shoulderpad_Football_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_116_Base_Shoulderpad_Football_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_116_Base_Shoulderpad_Football_R,
+    }
+
+    item TransmogAltItem_117_Base_Shoulderpad_Football_Spiked_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_117_Base_Shoulderpad_Football_Spiked_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_117_Base_Shoulderpad_Football_Spiked_L,
+    }
+
+    item TransmogAltItem_118_Base_Shoulderpad_Football_Spiked_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_118_Base_Shoulderpad_Football_Spiked_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_118_Base_Shoulderpad_Football_Spiked_R,
+    }
+
+    item TransmogAltItem_119_Base_Shoulderpad_Metal_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_119_Base_Shoulderpad_Metal_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_119_Base_Shoulderpad_Metal_L,
+    }
+
+    item TransmogAltItem_120_Base_Shoulderpad_Metal_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_120_Base_Shoulderpad_Metal_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_120_Base_Shoulderpad_Metal_R,
+    }
+
+    item TransmogAltItem_121_Base_Shoulderpad_MetalScrap_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_121_Base_Shoulderpad_MetalScrap_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_121_Base_Shoulderpad_MetalScrap_L,
+    }
+
+    item TransmogAltItem_122_Base_Shoulderpad_MetalScrap_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_122_Base_Shoulderpad_MetalScrap_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_122_Base_Shoulderpad_MetalScrap_R,
+    }
+
+    item TransmogAltItem_123_Base_Shoulderpad_MetalSpike_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_123_Base_Shoulderpad_MetalSpike_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_123_Base_Shoulderpad_MetalSpike_L,
+    }
+
+    item TransmogAltItem_124_Base_Shoulderpad_MetalSpike_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_124_Base_Shoulderpad_MetalSpike_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_124_Base_Shoulderpad_MetalSpike_R,
+    }
+
+    item TransmogAltItem_125_Base_Shoulderpad_MetalSpikeScrap_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_125_Base_Shoulderpad_MetalSpikeScrap_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_125_Base_Shoulderpad_MetalSpikeScrap_L,
+    }
+
+    item TransmogAltItem_126_Base_Shoulderpad_MetalSpikeScrap_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_126_Base_Shoulderpad_MetalSpikeScrap_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_126_Base_Shoulderpad_MetalSpikeScrap_R,
+    }
+
+    item TransmogAltItem_127_Base_Shoulderpad_Tire_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_127_Base_Shoulderpad_Tire_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_127_Base_Shoulderpad_Tire_L,
+    }
+
+    item TransmogAltItem_128_Base_Shoulderpad_Tire_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_128_Base_Shoulderpad_Tire_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_128_Base_Shoulderpad_Tire_R,
+    }
+
+    item TransmogAltItem_129_Base_Shoulderpad_Wood_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_129_Base_Shoulderpad_Wood_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_129_Base_Shoulderpad_Wood_L,
+    }
+
+    item TransmogAltItem_130_Base_Shoulderpad_Wood_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_130_Base_Shoulderpad_Wood_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_130_Base_Shoulderpad_Wood_R,
+    }
+
+    item TransmogAltItem_131_Base_Thigh_ArticMetal_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_131_Base_Thigh_ArticMetal_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_131_Base_Thigh_ArticMetal_L,
+    }
+
+    item TransmogAltItem_132_Base_Thigh_ArticMetal_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_132_Base_Thigh_ArticMetal_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_132_Base_Thigh_ArticMetal_R,
+    }
+
+    item TransmogAltItem_133_Base_ThighBodyArmour_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_133_Base_ThighBodyArmour_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_133_Base_ThighBodyArmour_L,
+    }
+
+    item TransmogAltItem_134_Base_ThighBodyArmour_L_Army
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_134_Base_ThighBodyArmour_L_Army, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_134_Base_ThighBodyArmour_L_Army,
+    }
+
+    item TransmogAltItem_135_Base_ThighBodyArmour_L_Civ
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_135_Base_ThighBodyArmour_L_Civ, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_135_Base_ThighBodyArmour_L_Civ,
+    }
+
+    item TransmogAltItem_136_Base_ThighBodyArmour_L_Desert
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_136_Base_ThighBodyArmour_L_Desert, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_136_Base_ThighBodyArmour_L_Desert,
+    }
+
+    item TransmogAltItem_137_Base_ThighBodyArmour_L_Police
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_137_Base_ThighBodyArmour_L_Police, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_137_Base_ThighBodyArmour_L_Police,
+    }
+
+    item TransmogAltItem_138_Base_ThighBodyArmour_L_SWAT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_138_Base_ThighBodyArmour_L_SWAT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_138_Base_ThighBodyArmour_L_SWAT,
+    }
+
+    item TransmogAltItem_139_Base_ThighBodyArmour_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_139_Base_ThighBodyArmour_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_139_Base_ThighBodyArmour_R,
+    }
+
+    item TransmogAltItem_140_Base_ThighBodyArmour_R_Army
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_140_Base_ThighBodyArmour_R_Army, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_140_Base_ThighBodyArmour_R_Army,
+    }
+
+    item TransmogAltItem_141_Base_ThighBodyArmour_R_Civ
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_141_Base_ThighBodyArmour_R_Civ, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_141_Base_ThighBodyArmour_R_Civ,
+    }
+
+    item TransmogAltItem_142_Base_ThighBodyArmour_R_Desert
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_142_Base_ThighBodyArmour_R_Desert, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_142_Base_ThighBodyArmour_R_Desert,
+    }
+
+    item TransmogAltItem_143_Base_ThighBodyArmour_R_Police
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_143_Base_ThighBodyArmour_R_Police, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_143_Base_ThighBodyArmour_R_Police,
+    }
+
+    item TransmogAltItem_144_Base_ThighBodyArmour_R_SWAT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_144_Base_ThighBodyArmour_R_SWAT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_144_Base_ThighBodyArmour_R_SWAT,
+    }
+
+    item TransmogAltItem_145_Base_ThighBone_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_145_Base_ThighBone_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_145_Base_ThighBone_L,
+    }
+
+    item TransmogAltItem_146_Base_ThighBone_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_146_Base_ThighBone_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_146_Base_ThighBone_R,
+    }
+
+    item TransmogAltItem_147_Base_ThighMagazine_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_147_Base_ThighMagazine_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_147_Base_ThighMagazine_L,
+    }
+
+    item TransmogAltItem_148_Base_ThighMagazine_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_148_Base_ThighMagazine_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_148_Base_ThighMagazine_R,
+    }
+
+    item TransmogAltItem_149_Base_ThighMetal_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_149_Base_ThighMetal_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_149_Base_ThighMetal_L,
+    }
+
+    item TransmogAltItem_150_Base_ThighMetal_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_150_Base_ThighMetal_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_150_Base_ThighMetal_R,
+    }
+
+    item TransmogAltItem_151_Base_ThighMetalSpike_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_151_Base_ThighMetalSpike_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_151_Base_ThighMetalSpike_L,
+    }
+
+    item TransmogAltItem_152_Base_ThighMetalSpike_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_152_Base_ThighMetalSpike_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_152_Base_ThighMetalSpike_R,
+    }
+
+    item TransmogAltItem_153_Base_ThighProtective_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_153_Base_ThighProtective_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_153_Base_ThighProtective_L,
+    }
+
+    item TransmogAltItem_154_Base_ThighProtective_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_154_Base_ThighProtective_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_154_Base_ThighProtective_R,
+    }
+
+    item TransmogAltItem_155_Base_ThighScrapMetal_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_155_Base_ThighScrapMetal_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_155_Base_ThighScrapMetal_L,
+    }
+
+    item TransmogAltItem_156_Base_ThighScrapMetal_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_156_Base_ThighScrapMetal_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_156_Base_ThighScrapMetal_R,
+    }
+
+    item TransmogAltItem_157_Base_ThighScrapMetalSpike_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_157_Base_ThighScrapMetalSpike_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_157_Base_ThighScrapMetalSpike_L,
+    }
+
+    item TransmogAltItem_158_Base_ThighScrapMetalSpike_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_158_Base_ThighScrapMetalSpike_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_158_Base_ThighScrapMetalSpike_R,
+    }
+
+    item TransmogAltItem_159_Base_ThighTire_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_159_Base_ThighTire_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_159_Base_ThighTire_L,
+    }
+
+    item TransmogAltItem_160_Base_ThighTire_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_160_Base_ThighTire_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_160_Base_ThighTire_R,
+    }
+
+    item TransmogAltItem_161_Base_ThighWood_L
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_161_Base_ThighWood_L, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_161_Base_ThighWood_L,
+    }
+
+    item TransmogAltItem_162_Base_ThighWood_R
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_162_Base_ThighWood_R, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_162_Base_ThighWood_R,
+    }
+
+    item TransmogAltItem_163_Base_Vambrace_BodyArmour_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_163_Base_Vambrace_BodyArmour_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_163_Base_Vambrace_BodyArmour_Left,
+    }
+
+    item TransmogAltItem_164_Base_Vambrace_BodyArmour_Left_Army
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_164_Base_Vambrace_BodyArmour_Left_Army, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_164_Base_Vambrace_BodyArmour_Left_Army,
+    }
+
+    item TransmogAltItem_165_Base_Vambrace_BodyArmour_Left_Civ
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_165_Base_Vambrace_BodyArmour_Left_Civ, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_165_Base_Vambrace_BodyArmour_Left_Civ,
+    }
+
+    item TransmogAltItem_166_Base_Vambrace_BodyArmour_Left_Desert
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_166_Base_Vambrace_BodyArmour_Left_Desert, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_166_Base_Vambrace_BodyArmour_Left_Desert,
+    }
+
+    item TransmogAltItem_167_Base_Vambrace_BodyArmour_Left_Police
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_167_Base_Vambrace_BodyArmour_Left_Police, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_167_Base_Vambrace_BodyArmour_Left_Police,
+    }
+
+    item TransmogAltItem_168_Base_Vambrace_BodyArmour_Left_SWAT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_168_Base_Vambrace_BodyArmour_Left_SWAT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_168_Base_Vambrace_BodyArmour_Left_SWAT,
+    }
+
+    item TransmogAltItem_169_Base_Vambrace_BodyArmour_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_169_Base_Vambrace_BodyArmour_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_169_Base_Vambrace_BodyArmour_Right,
+    }
+
+    item TransmogAltItem_170_Base_Vambrace_BodyArmour_Right_Army
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_170_Base_Vambrace_BodyArmour_Right_Army, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_170_Base_Vambrace_BodyArmour_Right_Army,
+    }
+
+    item TransmogAltItem_171_Base_Vambrace_BodyArmour_Right_Civ
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_171_Base_Vambrace_BodyArmour_Right_Civ, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_171_Base_Vambrace_BodyArmour_Right_Civ,
+    }
+
+    item TransmogAltItem_172_Base_Vambrace_BodyArmour_Right_Desert
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_172_Base_Vambrace_BodyArmour_Right_Desert, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_172_Base_Vambrace_BodyArmour_Right_Desert,
+    }
+
+    item TransmogAltItem_173_Base_Vambrace_BodyArmour_Right_Police
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_173_Base_Vambrace_BodyArmour_Right_Police, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_173_Base_Vambrace_BodyArmour_Right_Police,
+    }
+
+    item TransmogAltItem_174_Base_Vambrace_BodyArmour_Right_SWAT
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_174_Base_Vambrace_BodyArmour_Right_SWAT, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_174_Base_Vambrace_BodyArmour_Right_SWAT,
+    }
+
+    item TransmogAltItem_175_Base_Vambrace_FullMetal_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_175_Base_Vambrace_FullMetal_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_175_Base_Vambrace_FullMetal_Left,
+    }
+
+    item TransmogAltItem_176_Base_Vambrace_FullMetal_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_176_Base_Vambrace_FullMetal_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_176_Base_Vambrace_FullMetal_Right,
+    }
+
+    item TransmogAltItem_177_Base_Vambrace_Leather_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_177_Base_Vambrace_Leather_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_177_Base_Vambrace_Leather_Left,
+    }
+
+    item TransmogAltItem_178_Base_Vambrace_Leather_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_178_Base_Vambrace_Leather_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_178_Base_Vambrace_Leather_Right,
+    }
+
+    item TransmogAltItem_179_Base_Vambrace_LeatherSpike_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_179_Base_Vambrace_LeatherSpike_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_179_Base_Vambrace_LeatherSpike_Left,
+    }
+
+    item TransmogAltItem_180_Base_Vambrace_LeatherSpike_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_180_Base_Vambrace_LeatherSpike_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_180_Base_Vambrace_LeatherSpike_Right,
+    }
+
+    item TransmogAltItem_181_Base_Vambrace_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_181_Base_Vambrace_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_181_Base_Vambrace_Left,
+    }
+
+    item TransmogAltItem_182_Base_Vambrace_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_182_Base_Vambrace_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_182_Base_Vambrace_Right,
+    }
+
+    item TransmogAltItem_183_Base_VambraceBone_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_183_Base_VambraceBone_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_183_Base_VambraceBone_Left,
+    }
+
+    item TransmogAltItem_184_Base_VambraceBone_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_184_Base_VambraceBone_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_184_Base_VambraceBone_Right,
+    }
+
+    item TransmogAltItem_185_Base_VambraceMagazine_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_185_Base_VambraceMagazine_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_185_Base_VambraceMagazine_Left,
+    }
+
+    item TransmogAltItem_186_Base_VambraceMagazine_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_186_Base_VambraceMagazine_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_186_Base_VambraceMagazine_Right,
+    }
+
+    item TransmogAltItem_187_Base_VambraceScrap_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_187_Base_VambraceScrap_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_187_Base_VambraceScrap_Left,
+    }
+
+    item TransmogAltItem_188_Base_VambraceScrap_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_188_Base_VambraceScrap_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_188_Base_VambraceScrap_Right,
+    }
+
+    item TransmogAltItem_189_Base_VambraceSpike_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_189_Base_VambraceSpike_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_189_Base_VambraceSpike_Left,
+    }
+
+    item TransmogAltItem_190_Base_VambraceSpike_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_190_Base_VambraceSpike_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_190_Base_VambraceSpike_Right,
+    }
+
+    item TransmogAltItem_191_Base_VambraceSpikeScrap_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_191_Base_VambraceSpikeScrap_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_191_Base_VambraceSpikeScrap_Left,
+    }
+
+    item TransmogAltItem_192_Base_VambraceSpikeScrap_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_192_Base_VambraceSpikeScrap_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_192_Base_VambraceSpikeScrap_Right,
+    }
+
+    item TransmogAltItem_193_Base_VambraceTire_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_193_Base_VambraceTire_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_193_Base_VambraceTire_Left,
+    }
+
+    item TransmogAltItem_194_Base_VambraceTire_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_194_Base_VambraceTire_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_194_Base_VambraceTire_Right,
+    }
+
+    item TransmogAltItem_195_Base_VambraceWood_Left
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_195_Base_VambraceWood_Left, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_195_Base_VambraceWood_Left,
+    }
+
+    item TransmogAltItem_196_Base_VambraceWood_Right
+    {
+        ItemType = base:clothing,
+        DisplayCategory = Transmog,
+        Weight = 0,
+        Hidden = TRUE,
+        Cosmetic = TRUE,
+        /* DisplayName = TransmogAltItem_196_Base_VambraceWood_Right, */
+        Icon = TransmogItem,
+        BodyLocation = TransmogDE:Transmog_Location,
+        ClothingItem = TransmogAltItem_196_Base_VambraceWood_Right,
+    }
+
+}

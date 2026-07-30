@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<clothingItem>
+  <m_MaleModel>media\models_X\Skinned\Clothes\Bob_Tire_Shoulderpad_L_ALT.x</m_MaleModel>
+  <m_FemaleModel>media\models_X\Skinned\Clothes\Kate_Tire_Shoulderpad_L_ALT.x</m_FemaleModel>
+  <m_AltMaleModel />
+  <m_AltFemaleModel />
+  <m_GUID>9a16da5b-60fe-5f21-a643-bcfa7c8c5c46</m_GUID>
+  <m_Static>false</m_Static>
+  <m_AllowRandomHue>false</m_AllowRandomHue>
+  <m_AllowRandomTint>false</m_AllowRandomTint>
+  <m_AttachBone />
+  <m_MasksFolder>none</m_MasksFolder>
+  <textureChoices>clothes\armor\tireshoulderpad</textureChoices>
+</clothingItem>
