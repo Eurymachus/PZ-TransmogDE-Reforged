@@ -16,7 +16,8 @@ Use these local paths when tracing Lua behavior, mod dependencies, or Project Zo
 - Steam workshop mods: `C:\Games\Steam\steamapps\workshop\content\108600`
 - Local workshop mods / style references: `C:\Users\refle\Zomboid\Workshop`
 - Project Zomboid install: `C:\Games\Steam\steamapps\common\ProjectZomboid`
-- Latest decompiled Java reference: `C:\Games\Steam\steamapps\common\ProjectZomboid\zombie_decompiled`
+- Project Zomboid 42.18 Lua and scripts reference: `C:\Games\Steam\steamapps\common\PZJava\ProjectZomboid-LUA_and_Scripts-42_18`
+- Versioned decompiled Java root: `C:\Games\Steam\steamapps\common\ProjectZomboid\tgsrr_decompiled`
 - Legacy decompiled Java reference: `C:\Games\Steam\steamapps\common\PZJava`
 
 ## Working Rules
@@ -28,9 +29,10 @@ Use these local paths when tracing Lua behavior, mod dependencies, or Project Zo
   3. Local workshop mods under `C:\Users\refle\Zomboid\Workshop` when code style or established Eurymachus patterns matter.
   4. Steam workshop mods when checking compatibility or comparable mod behavior.
   5. Project Zomboid game files.
-  6. Latest decompiled Java references in `ProjectZomboid\zombie_decompiled`.
-  7. Legacy decompiled Java references in `PZJava` when legacy comparison is useful.
+  6. The versioned 42.18 Lua and scripts reference in `PZJava\ProjectZomboid-LUA_and_Scripts-42_18` when comparing against Build 42.18.
+  7. The matching authoritative versioned Java decompile under `ProjectZomboid\tgsrr_decompiled`.
+  8. Legacy decompiled Java references in `PZJava` when legacy comparison is useful.
 - Do not edit files outside this mod workspace unless the user explicitly asks for that.
-- Use external workshop, local workshop, Project Zomboid, and Java paths as read-only references by default.
+- Use external workshop, local workshop, Project Zomboid, Lua reference, and Java paths as read-only references by default.
 - Preserve existing mod structure and Project Zomboid conventions.
 - Keep edits focused and avoid unrelated refactors.

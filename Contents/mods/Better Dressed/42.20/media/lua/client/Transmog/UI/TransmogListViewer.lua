@@ -466,8 +466,10 @@ end
 function TransmogListViewer:setKeyboardFocus()
     local view = self.panel:getActiveView()
     if not view then return end
+    local filter = view.filterWidgetMap and view.filterWidgetMap[ISItemsListTable.COLUMN_WEAPON_TYPE]
+    if not filter then return end
     Core.UnfocusActiveTextEntryBox()
-    view.filterWidgetMap.Type:focus()
+    filter:focus()
 end
 
 TransmogItemsListTable = ISItemsListTable:derive("TransmogItemsListTable")
@@ -509,9 +511,9 @@ function TransmogItemsListTable:render()
     end
 end
 
--- Remove a column and its associated filter widgets from the table
+-- Remove a column and its associated filter widget from the table
 -- Returns true if a column was removed
-local function _removeColumnByName(self, columnName)
+local function _removeColumnById(self, columnId)
     local scrollBox = self.datas
     local filters = self.filterWidgets
     if not scrollBox or not scrollBox.columns then
@@ -519,38 +521,34 @@ local function _removeColumnByName(self, columnName)
     end
 
     local removed = false
+    local filter = self.filterWidgetMap and self.filterWidgetMap[columnId]
 
     for i = #scrollBox.columns, 1, -1 do
         local col = scrollBox.columns[i]
-        if col and col.name == columnName then
+        if col and col.id == columnId then
             table.remove(scrollBox.columns, i)
             removed = true
         end
     end
 
-    if removed and filters then
+    if filter and filter.getParent then
+        local parent = filter:getParent()
+        if parent == self or parent == self.datas then
+            parent:removeChild(filter)
+        end
+    end
+
+    if filter and filters then
         for i = #filters, 1, -1 do
-            local widget = filters[i]
-            if widget and widget.columnName == columnName then
-                -- DebugLog.log(DebugType.General, "[TransmogDE] Found Widget for column: " .. tostring(columnName))
-
-                if widget and widget.getParent then
-                    local parent = widget:getParent()
-                    if parent == self or parent == self.datas then
-                        -- DebugLog.log(DebugType.General, "[TransmogDE] Removing Widget UI element for: " .. tostring(columnName))
-                        parent:removeChild(widget)
-                    else
-                        -- DebugLog.log(DebugType.General, "[TransmogDE] Widget parent is " .. tostring(parent))
-                    end
-                end
-
+            if filters[i] == filter then
                 table.remove(filters, i)
+                break
             end
         end
     end
 
-    if self.filterWidgetMap and self.filterWidgetMap[columnName] then
-        self.filterWidgetMap[columnName] = nil
+    if self.filterWidgetMap then
+        self.filterWidgetMap[columnId] = nil
     end
 
     return removed
@@ -559,13 +557,13 @@ end
 function TransmogItemsListTable:createChildren()
     local result = ISItemsListTable.createChildren(self)
 
-    _removeColumnByName(self, "#spawn")
-    _removeColumnByName(self, "Loot")
-    _removeColumnByName(self, "Forage")
-    _removeColumnByName(self, "Craft")
-    _removeColumnByName(self, "LootCategory")
+    _removeColumnById(self, ISItemsListTable.COLUMN_SPAWN_NUMBER)
+    _removeColumnById(self, ISItemsListTable.COLUMN_LOOT)
+    _removeColumnById(self, ISItemsListTable.COLUMN_FORAGE)
+    _removeColumnById(self, ISItemsListTable.COLUMN_CRAFT)
+    _removeColumnById(self, ISItemsListTable.COLUMN_LOOT_CATEGORY)
     -- Expand the last remaining combo (DisplayCategory) to reach the right edge
-    local lastCol = self.filterWidgetMap and self.filterWidgetMap.DisplayCategory
+    local lastCol = self.filterWidgetMap and self.filterWidgetMap[ISItemsListTable.COLUMN_DISPLAY_CATEGORY]
     if lastCol and lastCol.setWidth then
         -- rightEdge = full width of the table panel, minus 1px border line
         local rightEdge = self:getWidth()

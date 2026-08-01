@@ -168,18 +168,19 @@ local function wearTransmogItems(player)
             local tmogParentId = item:getModData()['TransmogParent']
             local parentItem = tmogParentId and playerInv:getItemById(tmogParentId)
             local parentDisplayName = parentItem and parentItem:getDisplayName() or "No Known Parent"
-            local parentUnequipped = parentItem and not parentItem:isEquipped()
+            local parentNotWorn = parentItem and not wornItems:contains(parentItem)
             local pmd = parentItem and parentItem:getModData()
 
-            -- If parent is missing or not equipped, we don't care about masking;
-            -- the carrier is stale and should go.
-            if not tmogParentId or not parentItem or parentUnequipped then
+            -- If the parent is missing or no longer worn, we don't care about masking;
+            -- items equipped in a hand are equipped, but must not retain a worn carrier.
+            -- The carrier is stale and should go.
+            if not tmogParentId or not parentItem or parentNotWorn then
                 TmogPrint("Item to remove: " .. tostring(itemDisplayName))
 
                 TmogPrint(tostring(item) .. " (carrier)"
                     .. " | tmogParentId = ".. tostring(tmogParentId)
                     .. " | parentItem = " .. tostring(parentDisplayName)
-                    .. " | parentUnquipped = " .. tostring(parentUnequipped))
+                    .. " | parentNotWorn = " .. tostring(parentNotWorn))
                 if pmd and pmd.Transmog and pmd.Transmog.childId == item:getID() then
                     --pmd.Transmog.childId = nil
                 end
