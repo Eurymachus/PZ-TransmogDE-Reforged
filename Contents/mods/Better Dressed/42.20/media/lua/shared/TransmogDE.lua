@@ -617,7 +617,7 @@ TransmogDE.getTransmogChild = function(invItem)
     end
 
     local container = invItem:getContainer()
-    -- if not container then return end
+    if not container then return nil end
     -- find the item by ID, ensure it exists, then return it
     return container:getItemById(itemTmogModData.childId)
 end

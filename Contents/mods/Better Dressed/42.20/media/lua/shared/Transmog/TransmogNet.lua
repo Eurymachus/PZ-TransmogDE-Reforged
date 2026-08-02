@@ -37,6 +37,9 @@ TransmogNet.Commands = {
 
 -- One-time init per playerNum
 TransmogNet._playerInitDone = TransmogNet._playerInitDone or {}
+TransmogNet._lastServerUpdateRequest = TransmogNet._lastServerUpdateRequest or {}
+
+local SERVER_UPDATE_INTERVAL_MS = 100
 
 TransmogNet.REQUESTS = TransmogNet.REQUESTS or {}
 TransmogNet.NEXT_REQUEST_ID = TransmogNet.NEXT_REQUEST_ID or 0
@@ -437,13 +440,18 @@ end
 
 TransmogNet.updatePlayer = function(player, args)
     TmogPrint("Update Request complete - Model Refresh Required")
+    local playerNum = player:getPlayerNum()
+    local pendingUpdate = TransmogDE._clothingDirty[playerNum] == true
+    TransmogDE._clothingDirty[playerNum] = nil
     local item = nil
     if (args and args.itemId) then
         item = resolveItemByRef(player, args.itemId, args.ref)
     end
     TransmogDE.updateAllConditionVisuals(player)
     TransmogDE.refreshPlayerAndSyncUI(player, item)
-    TransmogDE._clothingDirty[player:getPlayerNum()] = nil
+    TransmogDE._clothingDirty[playerNum] = pendingUpdate and true or nil
+    TransmogDE._updateInFlight = TransmogDE._updateInFlight or {}
+    TransmogDE._updateInFlight[playerNum] = nil
 end
 
 TransmogNet.wearTransmogItem = function(player, args)
@@ -724,7 +732,14 @@ end
 
 TransmogNet.requestUpdateRecieved = function(player, args)
     TmogPrint("Server recv REQUEST_UPDATE from " .. tostring(player and player:getUsername() or "nil"))
-    TransmogDE.triggerUpdate(player)
+    local now = (getTimestampMs and getTimestampMs()) or (os.time() * 1000)
+    local playerKey = player:getOnlineID()
+    local lastRequest = TransmogNet._lastServerUpdateRequest[playerKey] or 0
+
+    if (now - lastRequest) >= SERVER_UPDATE_INTERVAL_MS then
+        TransmogNet._lastServerUpdateRequest[playerKey] = now
+        TransmogDE.triggerUpdate(player)
+    end
     sendServerCommand(player, TransmogNet.MODULE_ID, TransmogNet.Commands.REQUEST_UPDATE, { ok = true })
 end
 

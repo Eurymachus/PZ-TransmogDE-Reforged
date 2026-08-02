@@ -4,3 +4,4 @@ description=A mod that allows you to hot-swap your appearance with any armour or
 poster=poster.png
 icon=icon.png
 author=Eurymachus
+modRelationships=loadModAfter:SPNCC
