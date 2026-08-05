@@ -117,6 +117,37 @@ local function tableCount(t)
     return c
 end
 
+local function copyAttachmentsProvided(sourceItem, targetItem)
+    if not (sourceItem and targetItem and sourceItem.getAttachmentsProvided) then
+        return
+    end
+
+    local provided = sourceItem:getAttachmentsProvided()
+    if not provided then
+        return
+    end
+
+    local slots = {}
+    if provided.size and provided.get then
+        for i = 0, provided:size() - 1 do
+            local slot = provided:get(i)
+            if slot then
+                slots[#slots + 1] = tostring(slot)
+            end
+        end
+    elseif type(provided) == "table" then
+        for _, slot in pairs(provided) do
+            if slot then
+                slots[#slots + 1] = tostring(slot)
+            end
+        end
+    end
+
+    if #slots > 0 then
+        targetItem:DoParam("AttachmentsProvided", table.concat(slots, ";"))
+    end
+end
+
 TransmogDE.patchAllItemsFromModData = function(modData)
     TmogPrint('patchAllItemsFromModData')
     local map = modData.itemToTransmogMap
@@ -130,6 +161,7 @@ TransmogDE.patchAllItemsFromModData = function(modData)
             if originalClothingItemAsset then
                 local tmogClothingItemAsset = tmogItem:getClothingItemAsset()
                 tmogItem:setClothingItemAsset(originalClothingItemAsset)
+                copyAttachmentsProvided(ogItem, tmogItem)
 
                 --[[if not SandboxVars.TransmogDE.DisableHeadGearFix and
                     (originalClothingItemAsset:isHat() or originalClothingItemAsset:isMask()) then
@@ -165,6 +197,10 @@ TransmogDE.patchAllItemsFromModData = function(modData)
             local altTmogItemName = TransmogDE.getAltTransmogItemName(originalItemName)
             if altTmogItemName then
                 TransmogDE.TmogItemToOgItemBodylocation[altTmogItemName] = newBodyLocation
+                local altTmogItem = ScriptManager.instance:getItem(altTmogItemName)
+                if altTmogItem then
+                    copyAttachmentsProvided(ogItem, altTmogItem)
+                end
             end
         end
     end
