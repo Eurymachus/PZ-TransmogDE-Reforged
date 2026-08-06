@@ -50,6 +50,8 @@ local function wearHideEverything(player)
 end
 
 local function wearTransmogItems(player)
+    TransmogDE.restoreUnwornHiddenHeadgearVisuals()
+
     local wornItems = player:getWornItems()
     local playerInv = player:getInventory()
 
@@ -116,6 +118,14 @@ local function wearTransmogItems(player)
         -- TmogDebugPrintTags(item)
         TmogPrint("Assessing item: " .. tostring(itemDisplayName))
         TmogPrint("BodyLocation: " .. tostring(script:getBodyLocation()))
+
+        if item
+            and not isHideHelper
+            and (not TransmogDE.isTransmogItem or not TransmogDE.isTransmogItem(item)) then
+            local isExplicitlyHidden = TransmogDE.isClothingHidden
+                and TransmogDE.isClothingHidden(item) or false
+            TransmogDE.syncHiddenHeadgearVisual(item, isExplicitlyHidden)
+        end
 
         if item and not isHideHelper then
             local visualLoc = TransmogDE.getItemVisualBodyLocation(item)
@@ -314,6 +324,10 @@ local function onClothingUpdated(player)
     end
 
     local playerNum = player:getPlayerNum() or 0
+
+    -- Unequipping or dropping hidden headgear must restore its normal item
+    -- visual before it can be rendered in inventory or in the world.
+    TransmogDE.restoreUnwornHiddenHeadgearVisuals()
 
     -- Mark clothing dirty; OnPlayerUpdate will handle the heavy work.
     --if not TransmogDE.rebuildingWornItems[playerNum] then

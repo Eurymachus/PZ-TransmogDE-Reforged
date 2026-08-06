@@ -1185,6 +1185,55 @@ TransmogDE.isClothingHidden = function(item)
     return md.transmogTo == nil
 end
 
+-- The character renderer chooses hair and beard variants from every worn
+-- ItemVisual, even when BodyLocations hides that item's model. Point an
+-- explicitly hidden head item at our blank, non-headgear asset so it no
+-- longer affects hair or beard selection. This changes only the visual for
+-- this inventory-item instance; the real script item still supplies stats,
+-- protection, condition, and equip behavior.
+TransmogDE.HiddenHeadgearVisuals = TransmogDE.HiddenHeadgearVisuals or setmetatable({}, { __mode = "k" })
+
+TransmogDE.syncHiddenHeadgearVisual = function(item, hidden)
+    if not (item and item.getScriptItem and item.getVisual) then return false end
+
+    local script = item:getScriptItem()
+    local asset = script and script:getClothingItemAsset()
+    local visual = item:getVisual()
+    if not (script and asset and visual) then return false end
+
+    local isHeadgear = asset:isHat() or asset:isMask()
+    local originalType = script:getFullName()
+
+    if hidden and isHeadgear then
+        if visual:getItemType() ~= "TransmogDE.Hide_Everything" then
+            visual:setItemType("TransmogDE.Hide_Everything")
+        end
+        TransmogDE.HiddenHeadgearVisuals[item] = originalType
+        return true
+    end
+
+    local trackedType = TransmogDE.HiddenHeadgearVisuals[item]
+    if trackedType or visual:getItemType() == "TransmogDE.Hide_Everything" then
+        visual:setItemType(trackedType or originalType)
+        TransmogDE.HiddenHeadgearVisuals[item] = nil
+        return true
+    end
+
+    return false
+end
+
+TransmogDE.restoreUnwornHiddenHeadgearVisuals = function()
+    for item, originalType in pairs(TransmogDE.HiddenHeadgearVisuals) do
+        if not item:isWorn() then
+            local visual = item:getVisual()
+            if visual then
+                visual:setItemType(originalType)
+            end
+            TransmogDE.HiddenHeadgearVisuals[item] = nil
+        end
+    end
+end
+
 TransmogDE.setClothingHidden = function(item)
     if not item then
         return
@@ -1195,6 +1244,8 @@ TransmogDE.setClothingHidden = function(item)
         moddata.lastTransmogTo = moddata.transmogTo
     end
     moddata.transmogTo = nil
+
+    TransmogDE.syncHiddenHeadgearVisual(item, true)
 
     -- UI feedback is handled by TransmogNet.notifyPlayer
 
@@ -1209,6 +1260,8 @@ TransmogDE.setClothingShown = function(item)
     else
         moddata.transmogTo = item:getScriptItem():getFullName()
     end
+
+    TransmogDE.syncHiddenHeadgearVisual(item, false)
 
     -- UI feedback is handled by TransmogNet.notifyPlayer
 
@@ -1521,6 +1574,8 @@ end
 -- Usefull for forcing the item to be removed and re-added after changing color, texture, and tmog
 TransmogDE.forceUpdateClothing = function(item)
     TmogPrint("Attempting to forceUpdateClothing")
+
+    TransmogDE.syncHiddenHeadgearVisual(item, TransmogDE.isClothingHidden(item))
 
     --_dbgTextureDump("forceUpdateClothing ENTER", item)
 
