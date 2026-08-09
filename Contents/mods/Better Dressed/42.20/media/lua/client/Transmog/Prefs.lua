@@ -8,7 +8,7 @@ local M = {}
 local INI_DIR  = "TransmogDE" -- folder in Zomboid/mods save area
 local INI_FILE = "settings.ini"
 local INI_PATH = INI_DIR .. "/" .. INI_FILE
-local KEEP     = ".keep"
+local KEEP     = ".keep.txt"
 
 local function getWinKey(win)
     winType = win.Type or "DefaultWin"
@@ -17,7 +17,7 @@ end
 
 local function createFolder(dir)
     local file = dir .. "/" .. KEEP
-    local w = getFileWriter(file, true, false); if not w then return end
+    local w = getFileWriter(file, false, true); if not w then return end
     w:close()
 end
 
@@ -40,7 +40,7 @@ end
 
 local function _writeAll(tbl)
     _ensureDir()
-    local w = getFileWriter(INI_PATH, true, false); if not w then return end
+    local w = getFileWriter(INI_PATH, false, true); if not w then return end
     for k, v in pairs(tbl) do
         w:write(("%s=%s\n"):format(tostring(k), tostring(v)))
     end
