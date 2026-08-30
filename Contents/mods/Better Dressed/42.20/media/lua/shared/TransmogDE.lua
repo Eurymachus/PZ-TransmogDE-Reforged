@@ -224,6 +224,10 @@ TransmogDE.invalidBodyLocations = {
     ["base:wound"]                           = true,
     ["base:zeddmg"]                          = true,
 
+    -- Compatibility-only visual layers
+    ["furrymod:FurB42"]                      = true,
+    ["TrueSmoking:Mask_Smoke"]               = true,
+
     -- SPNCC (character customisation layers)
     ["spncc:blank"]          = true,
     ["spncc:bodyhair"]       = true,
